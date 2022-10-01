@@ -1,0 +1,10 @@
+<div class="mb-3 form-check">
+  <input 
+  type="checkbox" 
+  class="form-check-input" 
+  id="{{fieldName}}"
+  {% if value %} checked {% endif %}>
+  <label for="{{fieldName}}" class="form-check-label"> {{fieldName}} </label>
+  
+</div>
+

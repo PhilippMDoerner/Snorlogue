@@ -1,0 +1,19 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  {{context.modelName}} List
+{% endblock title%}
+
+{% block content %}
+
+  <div class="mx-4 mt-3">
+    {% let detailUrlStub = context.detailUrlStub %}
+    {% let deleteUrlStub = context.deleteUrlStub %}
+    {% let modelName = context.modelName %}
+    {% let models = context.models%}
+
+    {% importnimja "resources/components/modelTable.nimja" %}
+  </div>
+
+
+{% endblock content %}

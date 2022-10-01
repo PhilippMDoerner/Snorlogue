@@ -1,0 +1,29 @@
+<form action="{{formUrl}}", method="{{httpMethod}}">
+  {% for field in fields %}
+    {% let fieldName = field.name %}
+
+    {% if field.kind == ModelFieldKind.STRING%}
+      {% let value = field.strVal %}
+      {% importnimja "resources/components/form/inputFields/stringInputField.nimja" %}
+
+    {% elif field.kind == ModelFieldKind.FLOAT %}
+      {% let value = field.fVal %}
+      {% importnimja "resources/components/form/inputFields/numberInputField.nimja" %}
+    
+    {% elif field.kind == ModelFieldKind.INT %}
+      {% let value = field.iVal %}
+      {% importnimja "resources/components/form/inputFields/numberInputField.nimja" %}
+    
+    {% elif field.kind == ModelFieldKind.BOOL %}
+      {% let value = field.bVal %}
+      {% importnimja "resources/components/form/inputFields/checkBoxInputFIeld.nimja" %}
+
+    {% elif field.kind == ModelFieldKind.DATE %}
+      {% let value = field.dtVal %}
+      {% importnimja "resources/components/form/inputFields/dateInputField.nimja" %}
+
+    {% endif %}
+  {% endfor %}
+
+  {% importnimja "resources/components/form/submitButton.nimja" %}
+</form>

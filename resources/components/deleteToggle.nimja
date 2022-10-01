@@ -1,0 +1,8 @@
+
+<a 
+href="/delete/{{modelName}}/{{model.id}}" 
+class="fas fa-trash link-danger"
+data-bs-toggle="tooltip" 
+data-bs-placement="top" 
+title="Delete {{model}} ?"
+></a>
