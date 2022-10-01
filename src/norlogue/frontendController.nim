@@ -2,6 +2,9 @@ import norm/model
 import prologue
 import std/[strutils, json]
 import utils/formUtils
+import pageContexts
+import nimja/parser
+import constants
 
 when defined(postgres):
   import service/postgresService
@@ -14,33 +17,43 @@ const ID_PARAM* = "id"
 const PAGE_PARAM* = "page"
 const DEFAULT_PAGE_SIZE = 50
 
-proc createCreateController*[T: Model](model: typedesc[T]): HandlerAsync =
+proc createCreateFormController*[T: Model](model: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
-    discard
+    let dummyModel = T()
 
-proc createReadController*[T: Model](model: typedesc[T]): HandlerAsync =
+    let context = initCreateContext(dummyModel)
+    let html = tmplf(getScriptDir() / "resources/pages/modelCreate.nimja", context = context)
+
+    resp htmlResponse(html)
+
+proc createDetailController*[T: Model](model: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
-    discard
+    let context = initDetailContext()
+    let html = tmplf(getScriptDir() / "resources/pages/modelDetail.nimja", context = context)
 
+    resp htmlResponse(html)
+  
 proc createListController*[T: Model](model: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let pageIndex = parseInt(ctx.getPathParams(PAGE_PARAM)).int64
     let pageSize = ctx.getPageSize()
 
     let models: seq[T] = list[T](pageIndex, pageSize)
-    discard
+    let context = initListContext[T](models)
+    let html = tmplf(getScriptDir() / "resources/pages/modelList.nimja", context = context)
 
-proc createUpdateController*[T: Model](model: typedesc[T]): HandlerAsync =
-  result = proc (ctx: Context) {.async, gcsafe.} =
-    discard
+    resp htmlResponse(html)
 
-proc createDeleteController*[T: Model](model: typedesc[T]): HandlerAsync =
+proc createConfirmDeleteController*[T: Model](model: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
-    delete(id)
-    discard
+    let model = read[T](id)
+    let context = initDeleteContext(model)
+    let html = tmplf(getScriptDir() / "resources/pages/modelDelete.nimja", context = context)
+
+    resp htmlResponse(html)
 
 proc getPageSize(ctx: Context): int =
     let pageSizeSetting: JsonNode = ctx.getSettings("pageSize")

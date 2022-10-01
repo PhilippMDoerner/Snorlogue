@@ -1,7 +1,8 @@
 import std/[tables, strformat]
 import norm/model
 import prologue
-import modelController
+import backendController
+import frontendController
 
 # proc addAdminRoutes*[T: Model](app: Prologue, route: string, models: TableRef[string, typedesc[T]], middlewares: seq[HandlerAsync] = @[] ) =
 #   ## Adds create, read, update and delete routes for every provided model.
@@ -22,27 +23,42 @@ proc validateModel[T: Model](model: typedesc[T]) =
   discard
 
 proc addCrudRoutes*[T: Model](app: Prologue, baseRoute: string, model: typedesc[T], middlewares: seq[HandlerAsync]) =
+  validateModel[T](model)
   REGISTERED_MODELS.add($T)
+
+  app.addRoute(
+    re fmt"{baseRoute}/{ID_PATTERN}/",
+    handler = createDetailController[T](),
+    httpMethod = HttpGet,
+    middlewares = middlewares
+  )
+
+  app.addRoute(
+    re fmt"{baseRoute}/?{PAGE_PATTERN}/",
+    handler = createListController[T](),
+    httpMethod = HttpGet,
+    middlewares = middlewares
+  )
+
+  app.addRoute(
+    re fmt"{baseRoute}/{ID_PATTERN}/",
+    handler = createConfirmDeleteController[T](),
+    httpMethod = HttpGet,
+    middlewares = middlewares
+  )
+
+  app.addRoute(
+    re fmt"{baseRoute}/",
+    handler = createCreateFormController[T](),
+    httpMethod = HttpGet,
+    middlewares = middlewares
+  )
 
   app.addRoute(
     re fmt"{baseRoute}/",
     handler = createCreateController[T](),
     httpMethod = HttpPost,
     middlewares = middlewares,
-  )
-
-  app.addRoute(
-    re fmt"{baseRoute}/{ID_PATTERN}/",
-    handler = createReadController[T](),
-    httpMethod = HttpGet,
-    middlewares = middlewares
-  )
-
-  app.addRoute(
-    re fmt"{baseRoute}/?{PAGE_PATTERN}",
-    handler = createListController[T](),
-    httpMethod = HttpGet,
-    middlewares = middlewares
   )
 
   app.addRoute(
