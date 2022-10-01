@@ -17,7 +17,7 @@ proc createCreateController*[T: Model](model: typedesc[T]): HandlerAsync =
     create(newModel)
     
     let detailPageUrl = fmt"{generateUrlStub(Page.DETAIL, T)}/{newModel.id}/"
-    redirect(detailPageUrl)
+    resp redirect(detailPageUrl)
 
 proc createUpdateController*[T: Model](model: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
@@ -27,12 +27,12 @@ proc createUpdateController*[T: Model](model: typedesc[T]): HandlerAsync =
     update(updateModel)
     
     let detailPageUrl = fmt"{generateUrlStub(Page.DETAIL, T)}/{updateModel.id}/"
-    redirect(detailPageUrl)
+    resp redirect(detailPageUrl)
 
 proc createDeleteController*[T: Model](model: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
-    delete(id)
+    delete(T, id)
 
     let listPageUrl = fmt"{generateUrlStub(Page.LIST, T)}/"
-    redirect(listPageUrl)
+    resp redirect(listPageUrl)
