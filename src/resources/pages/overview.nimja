@@ -1,0 +1,32 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  Admin Overview
+{% endblock title%}
+
+{% block content %}
+  {% let sqlUrl = context.sqlUrl %}
+  {% importnimja "resources/components/form/sqlForm.nimja" %}
+
+
+  <h3 class="mb-3">All Models</h3>
+    <table class="table table-light table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for (modelName, modelLink) in context.modelLinks.pairs %}
+          <tr>
+            <td>
+              <strong><a href="{{modelLink}}">{{modelName}}</a></strong>
+            </td>
+          </tr>
+        {% endfor %}
+    
+      </tbody>
+    </table>
+
+{% endblock content %}

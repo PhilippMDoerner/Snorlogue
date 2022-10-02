@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "Philipp Doerner"
-description   = "A new awesome nimble package"
+description   = "A Prologue extension. Provides an admin environment"
 license       = "MIT"
 srcDir        = "src"
 

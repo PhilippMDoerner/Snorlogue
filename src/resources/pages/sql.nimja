@@ -1,0 +1,41 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  Admin SQL Console
+{% endblock title%}
+
+{% block content %}
+  <header class="mb-3">
+    <h2 class="text-center">SQL Console</h2>
+    <div class="text-muted text-center">{{context.query}}</div>  
+  </header>
+
+  {% let sqlUrl = context.sqlUrl %}
+  {% importnimja "resources/components/form/sqlForm.nimja" %}
+  
+  <a href="{{context.overviewUrl}}" class="btn btn-secondary my-2">Admin Overview</a>
+
+  {% if context.columns.isSome() and context.rows.isSome() %}
+    <table class="table table-light table-striped table-hover">
+      <thead>
+        <tr>
+          {% for column in context.columns.get() %}
+            <th scope="col">{{column.capitalizeAscii()}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in context.rows.get() %}
+          <tr>
+            {% for value in row %}
+              <td> {{value}} </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+
+  <a href="{{context.overviewUrl}}" class="btn btn-secondary">Admin Overview</a>
+{% endblock content %}

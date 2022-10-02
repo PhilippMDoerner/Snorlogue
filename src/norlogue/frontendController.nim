@@ -1,6 +1,6 @@
 import norm/model
 import prologue
-import std/[strutils, strformat, options, sugar]
+import std/[strutils, strformat, options, sugar, os]
 import utils/[formUtils, controllerUtils]
 import pageContexts
 import nimja/parser
@@ -41,7 +41,8 @@ proc createListController*[T: Model](modelType: typedesc[T]): HandlerAsync =
     let pageSize = ctx.getPageSize()
 
     let models: seq[T] = list[T](pageIndex, pageSize)
-    let context = initListContext[T](models)
+    let count: int64 = count(T)
+    let context = initListContext[T](models, count, pageIndex, pageSize)
     let html = renderNimjaPage("modelList.nimja", context)
 
     resp htmlResponse(html)
@@ -57,8 +58,24 @@ proc createConfirmDeleteController*[T: Model](modelType: typedesc[T]): HandlerAs
 
 proc createOverviewController*(registeredModels: seq[string]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
-    let context = initOverviewContext(registeredModels)    
-    let html = tmplf("/home/philipp/dev/playground/src/resources/pages/overview.nimja", context = context)
-
+    let context = initOverviewContext(registeredModels)   
+    let html = renderNimjaPage("overview.nimja", context) 
 
     resp htmlResponse(html)
+
+proc sqlController*(ctx: Context) {.async, gcsafe.} =
+  let queryParam = ctx.getFormParamsOption("sql")
+  if queryParam.isSome():
+    let query = queryParam.get().strip()
+    
+    let queryResult = executeQuery(query)
+    let rows = queryResult.map(res => res[0])
+    let columns = queryResult.map(res => res[1])
+    
+    let context = initSqlContext(query, rows, columns)
+    let html = renderNimjaPage("sql.nimja", context)
+
+    resp htmlResponse(html)
+  
+  else:
+    resp("Missing SQL query", code = Http400)

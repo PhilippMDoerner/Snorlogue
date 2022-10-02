@@ -1,0 +1,15 @@
+<form id="delete-form" action="{{formUrl}}" method="POST">
+  <div class="d-flex flex-column justify-content-center">
+    <div class="align-self-center">
+      Delete <strong> {{model}} </strong> ?
+    </div>
+
+    <div class="align-self-center">
+      <a href="{{backButtonUrl}}" class="btn btn-secondary"> No </a>
+      <button type="submit" value="Submit" class="btn btn-danger"> Yes </button>
+    </div>
+  </div>
+
+  <input type="number" class="d-none" name="id" form="delete-form" value="{{model.id}}">
+  <input  type="text" class="d-none" name="request-type" form="delete-form" value="DELETE" >
+</form>

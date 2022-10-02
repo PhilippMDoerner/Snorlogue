@@ -1,0 +1,18 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  Delete {{context.model}}
+{% endblock title%}
+
+{% block content %}
+  <h2 class="text-center">Delete {{context.modelName}}</h2>
+
+  {% let model = context.model %}
+  {% let formUrl = context.deleteUrl %}
+  {% let backButtonUrl = context.detailUrl %}
+  {% let httpMethod = "DELETE" %}
+
+  {% importnimja "resources/components/form/deleteForm.nimja" %}
+
+
+{% endblock content %}

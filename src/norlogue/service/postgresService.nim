@@ -1,6 +1,8 @@
 import norm/model
 import norm/postgres
-import std/[strformat]
+import std/[strformat, options, strutils, sequtils]
+
+export postgres
 
 proc read*[T: Model](id: int64): T =
   var targetEntry: T = new(T)
@@ -38,3 +40,38 @@ proc delete*[T: Model](id: int64) =
   var modelToDelete = T(id: id)
   withDb:
     db.delete(modelToDelete)
+
+proc count*[T: Model](modelType: typedesc[T]): int64 =
+  withDb:
+    result = db.count(T)
+  
+proc executeQuery*(query: string): Option[seq[Row]] =
+  let isSelectQuery = query.toUpper().startsWith("SELECT")
+
+  withDb: 
+    if isSelectQuery:
+      let rows = db.getAllRows(sql query)
+      result = some(rows)
+      
+    else:
+      db.exec(sql query)
+      result = none(seq[Row])
+
+type QueryResult = (seq[Row], seq[string])
+
+proc executeQuery*(query: string): Option[QueryResult] =
+  let isSelectQuery = query.toUpper().startsWith("SELECT")
+
+  withDb: 
+    if isSelectQuery:
+      var columns: DbColumns
+      var rows: seq[Row] = @[]
+      for row in db.instantRows(columns, sql query):
+        rows.add(row)
+
+      let columnNames = columns.mapIt(it.name)
+      result = some(QueryResult(rows, columnNames))
+
+    else:
+      db.exec(sql query)
+      result = none(QueryResult)

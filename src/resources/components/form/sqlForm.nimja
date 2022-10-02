@@ -1,0 +1,11 @@
+<form action="{{sqlUrl}}" method="POST" id="sql-form" style="height: 9rem;" class="mb-3 mx-auto w-75 d-flex flex-column">
+  <label for="sql">SQL Input</label>
+
+  <input type="text" style="flex: 1;" class="form-control h-auto" id="sql" form="sql-form" name="sql">
+
+  <div>
+    <button type="reset" class="btn btn-secondary">Reset</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+

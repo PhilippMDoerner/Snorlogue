@@ -1,6 +1,15 @@
-<form action="{{formUrl}}", method="{{httpMethod}}">
+{% let isUpdateForm = requestType == "PUT"%}
+
+<form id="form" action="{{formUrl}}" method="POST">
   {% for field in fields %}
     {% let fieldName = field.name %}
+
+    {% let isIdField = fieldName == "id" %}
+    {% let isCreateForm = requestType == "POST" %}
+    {% let skipField = isCreateForm and isIdField %}
+    {% if skipField %}
+      {% continue %}
+    {% endif %}
 
     {% if field.kind == ModelFieldKind.STRING%}
       {% let value = field.strVal %}
@@ -24,6 +33,8 @@
 
     {% endif %}
   {% endfor %}
+  <input type="text" value="{{requestType}}" name="request-type" class="d-none">
 
-  {% importnimja "resources/components/form/submitButton.nimja" %}
+  <a href="{{backButtonUrl}}" class="btn btn-secondary"> {{backButtonLabel}}</a>
+  <button type="submit" value="Submit" class="btn btn-primary">{{buttonLabel}}</button>
 </form>

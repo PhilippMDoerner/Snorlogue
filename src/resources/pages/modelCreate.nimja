@@ -1,0 +1,20 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  Create new {{context.modelName}}
+{% endblock title%}
+
+{% block content %}
+  <h2 class="text-center">Create {{context.modelName}}</h2>
+
+  {% let model = context.model %}
+  {% let formUrl = context.createUrl %}
+  {% let modelName = context.modelName %}
+  {% let fields = context.fields %}
+  {% let buttonLabel = "Create" %}
+  {% let requestType = "POST" %}
+  {% let backButtonUrl = context.listUrl %}
+  {% let backButtonLabel = "Back to Table" %}
+
+  {% importnimja "resources/components/form/form.nimja" %}
+{% endblock content %}

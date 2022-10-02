@@ -13,15 +13,24 @@
     <script src="https://kit.fontawesome.com/5215a7d3f1.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body>
-    <div class="mb-5 d-flex flex-row justify-content-center">
-        <a class="text-reset" href="{{context.overviewUrl}}">
+<body style="background-color: #d1ffd1;">
+    <div class="mb-4 d-flex flex-column align-items-center">
+        <a class="text-reset text-center" href="{{context.overviewUrl}}">
             <h1> Admin </h1>
         </a>
     </div>
 
-    {% block content %} {% endblock content %}
+    <div class="mx-4 mt-3 mb-5">
+        {% block content %} {% endblock content %}
+    </div>
+
     <script>
+        // Enables all bootstrap tooltips on the page
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
         /**
          * @description Adds an animation to an element and removes it once the animation has completed.
          * @param element The HTMLElement to be animated

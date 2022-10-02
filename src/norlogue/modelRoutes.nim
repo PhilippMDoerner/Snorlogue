@@ -1,4 +1,4 @@
-import std/[tables, strformat, strutils]
+import std/[tables, strformat, strutils, logging]
 import norm/model
 import prologue
 import backendController
@@ -40,6 +40,7 @@ proc addCrudRoutes*[T: Model](app: var Prologue, modelType: typedesc[T], middlew
     httpMethod = HttpGet,
     middlewares = middlewares
   )
+  debug(fmt"Added admin route GET    '/{baseRoute}/{$Page.DETAIL}/{ID_PATTERN}/'")
 
   app.addRoute(
     re fmt"/{baseRoute}/{$Page.LIST}/{PAGE_PATTERN}/",
@@ -47,13 +48,15 @@ proc addCrudRoutes*[T: Model](app: var Prologue, modelType: typedesc[T], middlew
     httpMethod = HttpGet,
     middlewares = middlewares
   )
+  debug(fmt"Added admin route GET    '/{baseRoute}/{$Page.LIST}/{PAGE_PATTERN}/'")
 
   app.addRoute(
-    re fmt"/{baseRoute}/{$Page.LIST}/",
+    fmt"/{baseRoute}/{$Page.LIST}/",
     handler = createListController(T),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
+  debug(fmt"Added admin route GET    '/{baseRoute}/{$Page.LIST}/'")
 
   app.addRoute(
     re fmt"/{baseRoute}/{$Page.DELETE}/{ID_PATTERN}/",
@@ -61,39 +64,38 @@ proc addCrudRoutes*[T: Model](app: var Prologue, modelType: typedesc[T], middlew
     httpMethod = HttpGet,
     middlewares = middlewares
   )
+  debug(fmt"Added admin route GET    '/{baseRoute}/{$Page.DELETE}/{ID_PATTERN}/'")
 
   app.addRoute(
-    re fmt"/{baseRoute}/{$Page.CREATE}/",
+    fmt"/{baseRoute}/{$Page.CREATE}/",
     handler = createCreateFormController(T),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
+  debug(fmt"Added admin route GET    '/{baseRoute}/{$Page.CREATE}/'")
 
   app.addRoute(
-    re fmt"/{baseRoute}/",
-    handler = createCreateController(T),
+    fmt"/{baseRoute}/",
+    handler = createBackendController(T),
     httpMethod = HttpPost,
     middlewares = middlewares,
   )
+  debug(fmt"Added admin route POST   '/{baseRoute}/'")
 
-  app.addRoute(
-    re fmt"/{baseRoute}/{ID_PATTERN}/",
-    handler = createDeleteController(T),
-    httpMethod = HttpDelete,
-    middlewares = middlewares
-  )
-
-  app.addRoute(
-    re fmt"/{baseRoute}/{ID_PATTERN}/",
-    handler = createUpdateController(T),
-    httpMethod = HttpPut,
-    middlewares = middlewares
-  )
 
 proc addAdminRoutes*(app: var Prologue, middlewares: seq[HandlerAsync] = @[]) =
   app.addRoute(
-    re fmt"/{$Page.OVERVIEW}/",
+    fmt"/{$Page.OVERVIEW}/",
     handler = createOverviewController(REGISTERED_MODELS),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
+  debug(fmt"Added admin route GET    '/{$Page.OVERVIEW}/'")
+
+  app.addRoute(
+    fmt"/{$Page.SQL}/",
+    handler = sqlController,
+    httpMethod = HttpPost,
+    middlewares = middlewares
+  )
+  debug(fmt"Added admin route GET    '/{$Page.SQL}/'")

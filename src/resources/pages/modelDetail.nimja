@@ -1,0 +1,26 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  {{context.model}}
+{% endblock title%}
+
+{% block content %}
+  <h2 class="text-center">Update {{context.modelName}} </h1>
+
+  <h5>{{context.model}}</h5>
+  {% let model = context.model %}
+  {% let formUrl = context.updateUrl %}
+  {% let modelName = context.modelName %}
+  {% let fields = context.fields %}
+  {% let buttonLabel = "Update" %}
+  {% let requestType = "PUT" %}
+  {% let backButtonUrl = context.listUrl %}
+  {% let backButtonLabel = "Back to Table" %}
+
+  {% importnimja "resources/components/form/form.nimja" %}
+
+  <a href="{{context.deleteUrl}}" class="float-end btn btn-danger">
+    <i class="fas fa-trash mr-2"></i>
+    Delete {{context.model}} ?
+  </a>
+{% endblock content %}

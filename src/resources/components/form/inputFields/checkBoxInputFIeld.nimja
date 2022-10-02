@@ -1,0 +1,12 @@
+<div class="mb-3 form-check">
+  <input 
+  type="checkbox" 
+  class="form-check-input" 
+  id="{{fieldName}}"
+  form="form"
+  name="{{fieldName}}"
+  {% if isUpdateForm and value %} checked {% endif %}>
+  <label for="{{fieldName}}" class="form-check-label"> {{fieldName.capitalizeAscii()}} </label>
+  
+</div>
+

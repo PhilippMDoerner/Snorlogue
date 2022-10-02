@@ -1,0 +1,26 @@
+<nav aria-label="{{modelName}} Table Page navigation">
+  <ul class="pagination my-3">
+    {% if not isFirstPage %}
+      <li class="page-item">
+        <a class="page-link" href="{{listUrlStub}}{{currentPageIndex - 1}}/" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% endif %}
+    
+    {% for index in pageIndices %}
+      {% let isActivePage = index == currentPageIndex %}
+      <li class="page-item {% if isActivePage %} active {% endif %}">
+        <a class="page-link" href="{{listUrlStub}}{{index}}/">{{index}}</a>
+      </li>
+      
+    {% endfor %}
+    {% if not isLastPage %}
+      <li class="page-item">
+        <a class="page-link" href="{{listUrlStub}}{{currentPageIndex + 1}}/" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>

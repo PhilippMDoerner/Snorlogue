@@ -1,0 +1,48 @@
+<header class="mb-3 d-flex flex-row align-items-center">
+  <h3 class="m-0">{{modelName}}s</h3>
+  <span class="mx-3 text-muted"> ({{modelCount}} entries) </span>
+</header>
+<a class="btn btn-primary" href="{{createUrl}}">
+  <i class="fas fa-plus"></i>
+  Create {{modelName}} 
+</a>
+
+{% importnimja "resources/components/pagination.nimja" %}
+
+<table class="table table-light table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">
+        <!-- Checkbox for selecting all at once -->
+      </th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for model in models %}
+      <tr>
+        <th scope="row">{{model.id}}</th>
+        <td>
+          <strong><a href="{{detailUrlStub}}{{model.id}}/">{{model}}</a></strong>
+        </td>
+        <td>
+          <!-- Checkbox for multi-delete selection -->
+        </td>
+        <td>
+          <a 
+          href="{{deleteUrlStub}}{{model.id}}/" 
+          class="fas fa-trash link-danger"
+          data-bs-toggle="tooltip" 
+          data-bs-placement="top" 
+          title="Delete {{model}} ?"
+          ></a>
+
+        </td>
+      </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+{% importnimja "resources/components/pagination.nimja" %}
