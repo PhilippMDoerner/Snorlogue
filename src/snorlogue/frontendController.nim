@@ -4,14 +4,14 @@ import std/[strutils, strformat, options, sugar, os]
 import utils/[formUtils, controllerUtils]
 import pageContexts
 import nimja/parser
-import constants
+import ./constants
 
 when defined(postgres):
   import service/postgresService
 elif defined(sqlite):
   import service/sqliteService
 else:
-  newException(Defect, "snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
+  newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
 
 proc renderNimjaPage*[T: PageContext](pageName: static string, context: T): string =
   const pagePath = fmt"resources/pages/{pageName}"
@@ -35,12 +35,16 @@ proc createDetailController*[T: Model](modelType: typedesc[T]): HandlerAsync =
 
     resp htmlResponse(html)
   
-proc createListController*[T: Model](modelType: typedesc[T]): HandlerAsync =
+proc createListController*[T: Model](
+  modelType: typedesc[T], 
+  sortFields: seq[string],
+  sortDirection: SortDirection
+): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let pageIndex = ctx.getPathParamsOption(PAGE_PARAM).map(pIndex => parseInt(pIndex)).get(0)
     let pageSize = ctx.getPageSize()
 
-    let models: seq[T] = list[T](pageIndex, pageSize)
+    let models: seq[T] = list[T](pageIndex, pageSize, sortFields, sortDirection)
     let count: int64 = count(T)
     let context = initListContext[T](models, count, pageIndex, pageSize)
     let html = renderNimjaPage("modelList.nimja", context)

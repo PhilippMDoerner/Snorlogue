@@ -1,6 +1,7 @@
 import norm/model
 import norm/postgres
 import std/[strformat, options, strutils, sequtils]
+import ../constants
 
 export postgres
 
@@ -21,11 +22,17 @@ proc create*[T: Model](newModel: var T) =
   withDb:
     db.insert(newModel)
 
-proc list*[T: Model](pageIndex: int, pageSize: int): seq[T] =
+proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sortDirection: SortDirection): seq[T] =
   var entryList: seq[T] = @[T()]
 
   let firstPageEntryIndex = pageIndex * pageSize
-  let condition = fmt"LIMIT {pageSize} OFFSET {firstPageEntryIndex} ORDER BY id ASC"
+  let orderColumns = sortFields.join(", ")
+  let condition = fmt"""
+    id > 0 
+    ORDER BY {orderColumns} {$sortDirection} 
+    LIMIT {pageSize} 
+    OFFSET {firstPageEntryIndex}
+  """
 
   withDb:
     db.select(entryList, condition)

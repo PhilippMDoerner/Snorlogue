@@ -7,7 +7,7 @@ when defined(postgres):
 elif defined(sqlite):
   import service/sqliteService
 else:
-  newException(Defect, "snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
+  newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
 
 
 type Page* = enum
@@ -35,7 +35,7 @@ proc generateUrlStub*[T: Model](action: Page, model: typedesc[T]): string =
 proc extractFields*[T: Model](model: T): seq[ModelField] =
   result = @[]
   for name, value in model[].fieldPairs:
-    result.add(convertToModelField(value, name))
+    result.add(toModelField(value, name))
 
 
 
@@ -56,12 +56,16 @@ type ModelListContext*[T] = object of PageContext
   isLastPage*: bool
 
 proc getPaginationIndices(pageIndex: int, maxPageIndex: int): seq[int] =
-  let isLastPage = pageIndex == maxPageIndex
-  let isFirstPage = pageIndex == 0
+  let isBeforeLastPage = pageIndex < maxPageIndex
+  let isBeforeSecondLastPage = pageIndex < maxPageIndex - 1
+  let isAfterFirstPage = pageIndex > 0
+  let isAfterSecondPage = pageIndex > 1
 
-  if(not isFirstPage): result.add(pageIndex - 1)
+  if(isAfterSecondPage): result.add(pageIndex - 2)
+  if(isAfterFirstPage): result.add(pageIndex - 1)
   result.add(pageIndex)
-  if(not isLastPage): result.add(pageIndex + 1)
+  if(isBeforeLastPage): result.add(pageIndex + 1)
+  if(isBeforeSecondLastPage): result.add(pageIndex + 2)
 
 proc initListContext*[T](models: seq[T], totalModelCount: int64, pageIndex: int, pageSize: int): ModelListContext[T] =
   let maxPageIndex: int = floor(totalModelCount.int / pageSize).int

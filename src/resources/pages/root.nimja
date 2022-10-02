@@ -20,7 +20,7 @@
         </a>
     </div>
 
-    <div class="mx-4 mt-3 mb-5">
+    <div class="mx-5 mt-3 mb-5">
         {% block content %} {% endblock content %}
     </div>
 

@@ -6,6 +6,6 @@
   id="{{fieldName}}" 
   form="form"
   name="{{fieldName}}"
-  {% if isUpdateForm %} value="{{value}}" {% endif %}>
+  {% if isUpdateForm and value.isSome() %} value="{{value.get()}}" {% endif %}>
  
 </div>

@@ -5,7 +5,7 @@
   id="{{fieldName}}"
   form="form"
   name="{{fieldName}}"
-  {% if isUpdateForm and value %} checked {% endif %}>
+  {% if isUpdateForm and value.get(false) %} checked {% endif %}>
   <label for="{{fieldName}}" class="form-check-label"> {{fieldName.capitalizeAscii()}} </label>
   
 </div>

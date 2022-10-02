@@ -1,9 +1,9 @@
 import std/[tables, strformat, strutils, logging]
 import norm/model
 import prologue
-import backendController
-import frontendController
-import constants
+import ./backendController
+import ./frontendController
+import ./constants
 import pageContexts
 import nimja/parser
 
@@ -28,7 +28,13 @@ proc validateModel[T: Model](model: typedesc[T]) =
   ## 2) Model has no other model fields, they should be only FK fields
   discard
 
-proc addCrudRoutes*[T: Model](app: var Prologue, modelType: typedesc[T], middlewares: seq[HandlerAsync] = @[]) =
+proc addCrudRoutes*[T: Model](
+  app: var Prologue, 
+  modelType: typedesc[T], 
+  middlewares: seq[HandlerAsync] = @[], 
+  sortFields: seq[string] = @["id"],
+  sortDirection: SortDirection = SortDirection.ASC
+) =
   validateModel[T](modelType)
   REGISTERED_MODELS.add($T)
   
@@ -44,7 +50,7 @@ proc addCrudRoutes*[T: Model](app: var Prologue, modelType: typedesc[T], middlew
 
   app.addRoute(
     re fmt"/{baseRoute}/{$Page.LIST}/{PAGE_PATTERN}/",
-    handler = createListController(T),
+    handler = createListController(T, sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -52,7 +58,7 @@ proc addCrudRoutes*[T: Model](app: var Prologue, modelType: typedesc[T], middlew
 
   app.addRoute(
     fmt"/{baseRoute}/{$Page.LIST}/",
-    handler = createListController(T),
+    handler = createListController(T, sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
