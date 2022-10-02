@@ -11,7 +11,7 @@ when defined(postgres):
 elif defined(sqlite):
   import service/sqliteService
 else:
-  newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
+  newException(Defect, "snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
 
 proc renderNimjaPage*[T: PageContext](pageName: static string, context: T): string =
   const pagePath = fmt"resources/pages/{pageName}"
