@@ -11,5 +11,5 @@
   </div>
 
   <input type="number" class="d-none" name="id" form="delete-form" value="{{model.id}}">
-  <input  type="text" class="d-none" name="request-type" form="delete-form" value="DELETE" >
+  <input  type="text" class="d-none" name="request-type" form="delete-form" value="delete" >
 </form>

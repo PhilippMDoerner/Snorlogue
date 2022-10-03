@@ -93,7 +93,7 @@ macro unrollSeq(x: static seq[string], name, body: untyped) =
     )
 
 
-proc fetchForeignKeyValues*[T: Model](model: typedesc[T]): Table[string, seq[ForeignKeyValue]] =
+proc fetchForeignKeyValues*[T: Model](model: typedesc[T]): Table[string, seq[IntOption]] =
   const fkFields: seq[string] = getForeignKeyFields(T)
 
   withDb:
@@ -101,5 +101,5 @@ proc fetchForeignKeyValues*[T: Model](model: typedesc[T]): Table[string, seq[For
       var foreignKeyModels = @[T().getField(fieldName).getCustomPragmaVal(fk)()]
       db.selectAll(foreignKeyModels)
 
-      let fkOptions = foreignKeyModels.mapIt(ForeignKeyValue(name: $it, value: it.id))
+      let fkOptions = foreignKeyModels.mapIt(IntOption(name: $it, value: it.id))
       result[fieldName] = fkOptions

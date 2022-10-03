@@ -7,8 +7,6 @@ import ./constants except `$`
 import pageContexts
 import nimja/parser
 
-proc `$`*[T: Model](model: T): string = fmt"{$T} #{model.id}"
-
 # proc addAdminRoutes*[T: Model](app: Prologue, route: string, models: TableRef[string, typedesc[T]], middlewares: seq[HandlerAsync] = @[] ) =
 #   ## Adds create, read, update and delete routes for every provided model.
 #   ## Also adds an overview-route over all models, which will show them split into sections as per the provided model table.

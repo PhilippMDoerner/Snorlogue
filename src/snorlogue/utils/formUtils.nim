@@ -7,18 +7,19 @@ import ../constants
 
 export fileFieldUtils
 
-type ModelFieldKind* = enum
+type FormFieldKind* = enum
   STRING
   INT
   FLOAT
   DATE
   BOOL
   INTSELECT
+  STRSELECT
   FILE
 
-type ModelField* = object
+type FormField* = object
   name*: string
-  case kind*: ModelFieldKind
+  case kind*: FormFieldKind
   of STRING: 
     strVal*: Option[string]
   of FLOAT: 
@@ -30,44 +31,64 @@ type ModelField* = object
   of BOOL: 
     bVal*: Option[bool]
   of INTSELECT: 
-    seqVal*: Option[int64]
-    options*: seq[ForeignKeyValue]
+    intSeqVal*: Option[int64]
+    intOptions*: seq[IntOption]
+  of STRSELECT:
+    strSeqVal*: Option[string]
+    strOptions*: seq[StringOption]
   of FILE:
     fileVal*: Option[Filename]
 
 # Convert: Model value --> Form Field Data
 
-func toModelField*(value: Option[string], fieldName: string): ModelField = 
-  ModelField(name: fieldName, kind: ModelFieldKind.STRING, strVal: value)
+func toFormField*(value: Option[string], fieldName: string): FormField = 
+  FormField(name: fieldName, kind: FormFieldKind.STRING, strVal: value)
 
-func toModelField*(value: Option[int] | Option[int32] | Option[int64], fieldName: string): ModelField = 
+func toFormField*(value: Option[int] | Option[int32] | Option[int64], fieldName: string): FormField = 
   let mappedValue = value.map(val => val.int64)
-  ModelField(name: fieldName, kind: ModelFieldKind.INT, iVal: mappedValue)
+  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: mappedValue)
 
-func toModelField*(value: Option[float] | Option[float32] | Option[float64], fieldName: string): ModelField = 
+func toFormField*(value: Option[float] | Option[float32] | Option[float64], fieldName: string): FormField = 
   let mappedValue = value.map(val => val.float64)
-  ModelField(name: fieldName, kind: ModelFieldKind.FLOAT, fVal: mappedValue)
+  FormField(name: fieldName, kind: FormFieldKind.FLOAT, fVal: mappedValue)
 
-func toModelField*(value: Option[bool], fieldName: string): ModelField = 
-  ModelField(name: fieldName, kind: ModelFieldKind.BOOL, bVal: value)
+func toFormField*(value: Option[bool], fieldName: string): FormField = 
+  FormField(name: fieldName, kind: FormFieldKind.BOOL, bVal: value)
 
-func toModelField*(value: Option[Datetime], fieldName: string): ModelField = 
-  ModelField(name: fieldName, kind: ModelFieldKind.DATE, dtVal: value)
+func toFormField*(value: Option[Datetime], fieldName: string): FormField = 
+  FormField(name: fieldName, kind: FormFieldKind.DATE, dtVal: value)
 
-func toModelField*(value: Option[Filename], fieldName: string): ModelField =
-  ModelField(name: fieldName, kind: ModelFieldKind.FILE, fileVal: value)
+func toFormField*(value: Option[Filename], fieldName: string): FormField =
+  FormField(name: fieldName, kind: FormFieldKind.FILE, fileVal: value)
 
-func toModelField*[T](value: T, fieldName: string): ModelField = 
-  toModelField(some value, fieldName)
+func toFormField*[T](value: T, fieldName: string): FormField = 
+  toFormField(some value, fieldName)
 
-func toFkModelField*(value: Option[int64], fkOptions: seq[ForeignKeyValue], fieldName: string): ModelField =
-  var options = fkOptions
-  options.sort((opt1, opt2: ForeignKeyValue) => cmp(opt1.name, opt2.name))
+func toSelectFormField*(value: Option[int64], intOptions: seq[IntOption], fieldName: string): FormField =
+  var options = intOptions
+  options.sort((opt1, opt2: IntOption) => cmp(opt1.name, opt2.name))
 
-  result = ModelField(name: fieldName, kind: ModelFieldKind.INTSELECT, seqVal: value, options: options)
+  result = FormField(name: fieldName, kind: FormFieldKind.INTSELECT, intSeqVal: value, intOptions: options)
 
-func toFkModelField*(value: int64, fkOptions: seq[ForeignKeyValue], fieldName: string): ModelField = 
-  toFkModelField(some value, fkOptions, fieldName)
+func toSelectFormField*(value: int64, intOptions: seq[IntOption], fieldName: string): FormField = 
+  toSelectFormField(some value, intOptions, fieldName)
+
+func toSelectFormField*(value: Option[string], stringOptions: seq[StringOption], fieldName: string): FormField =
+  var options = stringOptions
+  options.sort((opt1, opt2: StringOption) => cmp(opt1.name, opt2.name))
+
+  result = FormField(name: fieldName, kind: FormFieldKind.STRSELECT, strSeqVal: value, strOptions: options)
+
+func toSelectFormField*(value: string, stringOptions: seq[StringOption], fieldName: string): FormField = 
+  toSelectFormField(some value, stringOptions, fieldName)
+
+func toSelectFormField*[T: enum](value: T, fieldName: string): FormField =
+  var enumOptions: seq[IntOption] = @[]
+  for enumValue in T:
+    enumOptions.add(IntOption(name: $enumValue, value: enumValue.int))
+
+  toSelectFormField(value.int, enumOptions, fieldName)
+
 
 # Convert: string from HTML form --> Model value
 func convert*(formValue: string, T: typedesc[SomeInteger]): T = parseInt(formValue).T

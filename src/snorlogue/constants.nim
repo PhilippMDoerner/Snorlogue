@@ -23,8 +23,10 @@ proc extractMetaData*[T: Model](modelType: typedesc[T]): ModelMetaData {.compile
     table: T.table().strip(chars = {'\"'})
   )
 
-type ForeignKeyValue* = object
+type IntOption* = object
   name*: string
   value*: int64
 
-#proc `$`*[T: Model](model: T): string = fmt"{$T} #{model.id}"
+type StringOption* = object
+  name*: string
+  value*: string

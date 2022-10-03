@@ -16,32 +16,37 @@ method="POST"
       {% continue %}
     {% endif %}
 
-    {% if field.kind == ModelFieldKind.STRING%}
+    {% if field.kind == FormFieldKind.STRING%}
       {% let value = field.strVal %}
       {% importnimja "resources/components/form/inputFields/stringInputField.nimja" %}
 
-    {% elif field.kind == ModelFieldKind.FLOAT %}
+    {% elif field.kind == FormFieldKind.FLOAT %}
       {% let value = field.fVal %}
       {% importnimja "resources/components/form/inputFields/numberInputField.nimja" %}
     
-    {% elif field.kind == ModelFieldKind.INT %}
+    {% elif field.kind == FormFieldKind.INT %}
       {% let value = field.iVal %}
       {% importnimja "resources/components/form/inputFields/numberInputField.nimja" %}
     
-    {% elif field.kind == ModelFieldKind.BOOL %}
+    {% elif field.kind == FormFieldKind.BOOL %}
       {% let value = field.bVal %}
       {% importnimja "resources/components/form/inputFields/checkBoxInputField.nimja" %}
 
-    {% elif field.kind == ModelFieldKind.DATE %}
+    {% elif field.kind == FormFieldKind.DATE %}
       {% let value = field.dtVal %}
       {% importnimja "resources/components/form/inputFields/dateInputField.nimja" %}
 
-    {% elif field.kind == ModelFieldKind.INTSELECT %}
-      {% let value = field.seqVal %}
-      {% let options = field.options %}
+      {% elif field.kind == FormFieldKind.INTSELECT %}
+      {% let value = field.intSeqVal %}
+      {% let options = field.intOptions %}
       {% importnimja "resources/components/form/inputFields/intSelectField.nimja" %}
 
-    {% elif field.kind == ModelFieldKind.FILE %}
+    {% elif field.kind == FormFieldKind.STRSELECT %}
+      {% let value = field.strSeqVal %}
+      {% let options = field.strOptions %}
+      {% importnimja "resources/components/form/inputFields/intSelectField.nimja" %}
+
+    {% elif field.kind == FormFieldKind.FILE %}
       {% let value = field.fileVal %}
       {% importnimja "resources/components/form/inputFields/fileField.nimja" %}
 
