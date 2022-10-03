@@ -1,11 +1,11 @@
 import norm/model
 import prologue
 import std/[strutils, strformat, options, sequtils, sugar, os]
-import utils/[formUtils, controllerUtils, macroUtils]
+import utils/[controllerUtils, macroUtils, modelUtils]
 import pageContexts
 import nimja/parser
 import ./constants
-import ./service/modelAnalysisService
+import ./service/[formService, modelAnalysisService]
 
 
 when defined(postgres):
@@ -24,9 +24,7 @@ proc createCreateFormController*[T: Model](modelType: typedesc[T]): HandlerAsync
   result = proc (ctx: Context) {.async, gcsafe.} =
     let dummyModel = T()
 
-    let fkOptions = fetchForeignKeyValues(T)
-
-    let context = initCreateContext(dummyModel, fkOptions)
+    let context = initCreateContext(dummyModel)
     let html = renderNimjaPage("modelCreate.nimja", context)
 
     resp htmlResponse(html)
@@ -35,8 +33,7 @@ proc createDetailController*[T: Model](modelType: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
-    let fkOptions = fetchForeignKeyValues(T)
-    let context = initDetailContext(model, fkOptions)
+    let context = initDetailContext(model)
     let html = renderNimjaPage("modelDetail.nimja", context)
 
     resp htmlResponse(html)

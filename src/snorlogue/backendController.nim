@@ -2,7 +2,7 @@ import norm/model
 import prologue
 import std/[strutils, json, strformat, os, options, sequtils]
 import ./constants
-import ./utils/formUtils
+import ./service/formService
 
 when defined(postgres):
   import service/postgresService

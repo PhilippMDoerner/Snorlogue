@@ -1,7 +1,8 @@
 import norm/[pragmas, model]
 import std/[strformat, strutils, sequtils, tables, math, options, sugar]
-import utils/formUtils
+import ./service/formService
 import ./constants
+import ./utils/modelUtils
 
 when defined(postgres):
   import service/postgresService
@@ -32,22 +33,6 @@ proc generateUrlStub*(action: Page, modelName: string): string =
 proc generateUrlStub*[T: Model](action: Page, model: typedesc[T]): string =
   let modelName = ($model).toLower()
   result = generateUrlStub(action, modelName)
-
-proc extractFields*[T: Model](model: T, allFkOptions: Table[string, seq[IntOption]]): seq[FormField] =
-  ## Extracts the MetaData of all fields on a model and turns it into FormFields 
-  ## which are used to generate HTML form fields. 
-  result = @[]
-  for name, value in model[].fieldPairs:
-    const isFkField = value.hasCustomPragma(fk)
-    const isEnumField = value is enum
-    when isFkField:
-      let fkOptions = allFkOptions[name]
-      result.add(toSelectFormField(value, fkOptions, name))
-    elif isEnumField:
-      result.add(toSelectFormField(value, name))
-
-    else:
-      result.add(toFormField(value, name))
   
 proc hasFileField*(fields: seq[FormField]): bool =
   fields.any(field => field.kind == FormFieldKind.FILE)
@@ -113,8 +98,8 @@ type ModelDetailContext*[T] = object of PageContext
   updateUrl*: string
   listUrl*: string
 
-proc initDetailContext*[T: Model](model: T, fkOptions: Table[string, seq[IntOption]]): ModelDetailContext[T] =
-  let fields: seq[FormField] = extractFields[T](model, fkOptions)
+proc initDetailContext*[T: Model](model: T): ModelDetailContext[T] =
+  let fields: seq[FormField] = extractFields[T](model)
 
   ModelDetailContext[T](
     overviewUrl: fmt"{generateUrlStub(Page.OVERVIEW, T)}/",
@@ -153,8 +138,8 @@ type ModelCreateContext*[T] = object of PageContext
   fields*: seq[FormField]
   hasFileField*: bool
 
-proc initCreateContext*[T: Model](model: T, fkOptions: Table[string, seq[IntOption]]): ModelCreateContext[T] =
-  let fields: seq[FormField] = extractFields(model, fkOptions)
+proc initCreateContext*[T: Model](model: T): ModelCreateContext[T] =
+  let fields: seq[FormField] = extractFields(model)
 
   ModelCreateContext[T](
     overviewUrl: fmt"{generateUrlStub(Page.OVERVIEW, T)}/",

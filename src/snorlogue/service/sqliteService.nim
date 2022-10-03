@@ -1,7 +1,7 @@
 import norm/[sqlite, model, pragmas]
 import std/[strformat, options, strutils, sequtils, sugar, tables]
 import std/macros except getCustomPragmaVal
-import ../constants except `$`
+import ../constants
 import ../utils/macroUtils
 import ./modelAnalysisService
 
@@ -92,14 +92,7 @@ macro unrollSeq(x: static seq[string], name, body: untyped) =
       )
     )
 
-
-proc fetchForeignKeyValues*[T: Model](model: typedesc[T]): Table[string, seq[IntOption]] =
-  const fkFields: seq[string] = getForeignKeyFields(T)
-
+proc listAll*[T: Model](modelType: typedesc[T]): seq[T] =
+  result = @[T()]
   withDb:
-    unrollSeq(fkFields, fieldName) :
-      var foreignKeyModels = @[T().getField(fieldName).getCustomPragmaVal(fk)()]
-      db.selectAll(foreignKeyModels)
-
-      let fkOptions = foreignKeyModels.mapIt(IntOption(name: $it, value: it.id))
-      result[fieldName] = fkOptions
+    db.selectAll(result)

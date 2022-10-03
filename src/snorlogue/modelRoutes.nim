@@ -6,6 +6,9 @@ import ./frontendController
 import ./constants except `$`
 import pageContexts
 import nimja/parser
+import ./utils/modelUtils
+
+#proc `$`*[T: Model](model: T): string = fmt"{$T} #{model.id}"
 
 # proc addAdminRoutes*[T: Model](app: Prologue, route: string, models: TableRef[string, typedesc[T]], middlewares: seq[HandlerAsync] = @[] ) =
 #   ## Adds create, read, update and delete routes for every provided model.
