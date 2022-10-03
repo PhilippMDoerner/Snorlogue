@@ -12,30 +12,41 @@
 
   {% let sqlUrl = context.sqlUrl %}
   {% importnimja "resources/components/form/sqlForm.nimja" %}
-  
-  <a href="{{context.overviewUrl}}" class="btn btn-secondary my-2">Admin Overview</a>
+  {% if context.queryErrorMsg.isSome() %}
+    <div class="text-center text-danger ">
+      <strong class="fs-5">
+        {{ context.queryErrorMsg.get() }}
+      </strong>
+    </div>
 
-  {% if context.columns.isSome() and context.rows.isSome() %}
-    <table class="table table-light table-striped table-hover">
-      <thead>
-        <tr>
-          {% for column in context.columns.get() %}
-            <th scope="col">{{column.capitalizeAscii()}}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in context.rows.get() %}
+  {% endif %} 
+
+  {% let backButtonUrl = context.overviewUrl %}
+  {% let backButtonLabel = "Admin Overview" %}
+  {% importnimja "resources/components/backButton.nimja" %}
+
+  <div>
+    {% if context.columns.isSome() and context.rows.isSome() %}
+      <table class="table table-light table-striped table-hover">
+        <thead>
           <tr>
-            {% for value in row %}
-              <td> {{value}} </td>
+            {% for column in context.columns.get() %}
+              <th scope="col">{{column.capitalizeAscii()}}</th>
             {% endfor %}
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endif %}
+        </thead>
+        <tbody>
+          {% for row in context.rows.get() %}
+            <tr>
+              {% for value in row %}
+                <td> {{value}} </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
 
-
-  <a href="{{context.overviewUrl}}" class="btn btn-secondary">Admin Overview</a>
+  {% importnimja "resources/components/backButton.nimja" %}
 {% endblock content %}

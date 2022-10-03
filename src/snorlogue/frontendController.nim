@@ -1,10 +1,11 @@
 import norm/model
 import prologue
-import std/[strutils, strformat, options, sugar, os]
-import utils/[formUtils, controllerUtils]
+import std/[strutils, strformat, options, sequtils, sugar, os]
+import utils/[formUtils, controllerUtils, macroUtils]
 import pageContexts
 import nimja/parser
 import ./constants
+import ./service/modelAnalysisService
 
 when defined(postgres):
   import service/postgresService
@@ -21,7 +22,9 @@ proc createCreateFormController*[T: Model](modelType: typedesc[T]): HandlerAsync
   result = proc (ctx: Context) {.async, gcsafe.} =
     let dummyModel = T()
 
-    let context = initCreateContext(dummyModel)
+    let fkOptions = fetchForeignKeyValues(T)
+
+    let context = initCreateContext(dummyModel, fkOptions)
     let html = renderNimjaPage("modelCreate.nimja", context)
 
     resp htmlResponse(html)
@@ -30,7 +33,10 @@ proc createDetailController*[T: Model](modelType: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
-    let context = initDetailContext(model)
+
+    let fkOptions = fetchForeignKeyValues(T)
+
+    let context = initDetailContext(model, fkOptions)
     let html = renderNimjaPage("modelDetail.nimja", context)
 
     resp htmlResponse(html)
@@ -60,7 +66,7 @@ proc createConfirmDeleteController*[T: Model](modelType: typedesc[T]): HandlerAs
 
     resp htmlResponse(html)
 
-proc createOverviewController*(registeredModels: seq[string]): HandlerAsync =
+proc createOverviewController*(registeredModels: seq[ModelMetaData]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let context = initOverviewContext(registeredModels)   
     let html = renderNimjaPage("overview.nimja", context) 
@@ -72,11 +78,18 @@ proc sqlController*(ctx: Context) {.async, gcsafe.} =
   if queryParam.isSome():
     let query = queryParam.get().strip()
     
-    let queryResult = executeQuery(query)
+    var queryResult: Option[(seq[Row], seq[string])]
+    var errorMsg: Option[string] = none(string)
+    try:
+      queryResult = executeQuery(query)
+    except DbError:
+      queryResult = none(QueryResult)
+      errorMsg = some(getCurrentExceptionMsg())
+
     let rows = queryResult.map(res => res[0])
     let columns = queryResult.map(res => res[1])
     
-    let context = initSqlContext(query, rows, columns)
+    let context = initSqlContext(query, rows, columns, errorMsg)
     let html = renderNimjaPage("sql.nimja", context)
 
     resp htmlResponse(html)

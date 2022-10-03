@@ -1,7 +1,9 @@
-import norm/model
-import norm/sqlite
-import std/[strformat, options, strutils, sequtils]
+import norm/[sqlite, model, pragmas]
+import std/[strformat, options, strutils, sequtils, sugar, tables]
+import std/macros except getCustomPragmaVal
 import ../constants
+import ../utils/macroUtils
+import ./modelAnalysisService
 
 export sqlite
 
@@ -52,7 +54,7 @@ proc count*[T: Model](modelType: typedesc[T]): int64 =
   withDb:
     result = db.count(T)
 
-type QueryResult = (seq[Row], seq[string])
+type QueryResult* = (seq[Row], seq[string])
 
 proc executeQuery*(query: string): Option[QueryResult] =
   let isSelectQuery = query.toUpper().startsWith("SELECT")
@@ -71,3 +73,29 @@ proc executeQuery*(query: string): Option[QueryResult] =
     else:
       db.exec(sql query)
       result = none(QueryResult)
+
+
+
+macro unrollSeq(x: static seq[string], name, body: untyped) =
+  result = newStmtList()
+  for a in x:
+    result.add(
+      newBlockStmt(
+        newStmtList(
+          newConstStmt(name, newLit(a)),
+          copy body
+        )
+      )
+    )
+
+
+proc fetchForeignKeyValues*[T: Model](model: typedesc[T]): Table[string, seq[ForeignKeyValue]] =
+  const fkFields: seq[string] = getForeignKeyFields(T)
+
+  withDb:
+    unrollSeq(fkFields, fieldName) :
+      var foreignKeyModels = @[T().getField(fieldName).getCustomPragmaVal(fk)()]
+      db.selectAll(foreignKeyModels)
+
+      let fkOptions = foreignKeyModels.mapIt(ForeignKeyValue(name: $it, value: it.id))
+      result[fieldName] = fkOptions

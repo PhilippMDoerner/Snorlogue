@@ -31,10 +31,15 @@
       {% let value = field.dtVal %}
       {% importnimja "resources/components/form/inputFields/dateInputField.nimja" %}
 
+    {% elif field.kind == ModelFieldKind.INTSELECT %}
+      {% let value = field.seqVal %}
+      {% let options = field.options %}
+      {% importnimja "resources/components/form/inputFields/intSelectField.nimja" %}
+
     {% endif %}
   {% endfor %}
   <input type="text" value="{{requestType}}" name="request-type" class="d-none">
 
-  <a href="{{backButtonUrl}}" class="btn btn-secondary"> {{backButtonLabel}}</a>
+  {% importnimja "resources/components/backButton.nimja" %}
   <button type="submit" value="Submit" class="btn btn-primary">{{buttonLabel}}</button>
 </form>

@@ -14,15 +14,17 @@
       <thead>
         <tr>
           <th scope="col">Name</th>
+          <th scope="col">Table</th>
         </tr>
       </thead>
       <tbody>
 
-        {% for (modelName, modelLink) in context.modelLinks.pairs %}
+        {% for (metaData, modelLink) in context.modelLinks.pairs %}
           <tr>
             <td>
-              <strong><a href="{{modelLink}}">{{modelName}}</a></strong>
+              <strong><a href="{{modelLink}}">{{metaData.name}}</a></strong>
             </td>
+            <td>{{metaData.table}}</td>
           </tr>
         {% endfor %}
     

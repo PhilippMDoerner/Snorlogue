@@ -19,7 +19,7 @@ import nimja/parser
 const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)"
 const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
 
-var REGISTERED_MODELS*: seq[string] = @[]
+var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
 
 
 proc validateModel[T: Model](model: typedesc[T]) =
@@ -36,7 +36,8 @@ proc addCrudRoutes*[T: Model](
   sortDirection: SortDirection = SortDirection.ASC
 ) =
   validateModel[T](modelType)
-  REGISTERED_MODELS.add($T)
+  const modelMetaData = extractMetaData(T)
+  REGISTERED_MODELS.add(modelMetaData)
   
   let baseRoute = ($T).toLower()
 

@@ -1,7 +1,8 @@
-import std/[times, strutils, sugar, options, strformat, logging, typetraits]
+import std/[times, strutils, sugar, options, strformat, logging, typetraits, algorithm]
 import norm/model
 import prologue
 import ./macroUtils
+import ../constants
 
 type ModelFieldKind* = enum
   STRING
@@ -9,15 +10,24 @@ type ModelFieldKind* = enum
   FLOAT
   DATE
   BOOL
+  INTSELECT
 
 type ModelField* = object
   name*: string
   case kind*: ModelFieldKind
-  of STRING: strVal*: Option[string]
-  of FLOAT: fVal*: Option[float64]
-  of INT: iVal*: Option[int64]
-  of DATE: dtVal*: Option[DateTime]
-  of BOOL: bVal*: Option[bool]
+  of STRING: 
+    strVal*: Option[string]
+  of FLOAT: 
+    fVal*: Option[float64]
+  of INT: 
+    iVal*: Option[int64]
+  of DATE: 
+    dtVal*: Option[DateTime]
+  of BOOL: 
+    bVal*: Option[bool]
+  of INTSELECT: 
+    seqVal*: Option[int64]
+    options*: seq[ForeignKeyValue]
 
 # Convert: Model value --> Form Field Data
 
@@ -41,6 +51,15 @@ proc toModelField*(value: Option[Datetime], fieldName: string): ModelField =
 proc toModelField*[T](value: T, fieldName: string): ModelField = 
   toModelField(some value, fieldName)
 
+proc toFkModelField*(value: Option[int64], fkOptions: seq[ForeignKeyValue], fieldName: string): ModelField =
+  var options = fkOptions
+  options.sort((opt1, opt2: ForeignKeyValue) => cmp(opt1.name, opt2.name))
+
+  result = ModelField(name: fieldName, kind: ModelFieldKind.INTSELECT, seqVal: value, options: options)
+
+proc toFkModelField*(value: int64, fkOptions: seq[ForeignKeyValue], fieldName: string): ModelField = 
+  toFkModelField(some value, fkOptions, fieldName)
+
 # Convert: string from HTML form --> Model value
 func convert*(formValue: string, T: typedesc[SomeInteger]): T = parseInt(formValue).T
 
@@ -52,14 +71,14 @@ func convert*(formValue: string, T: typedesc[bool]): T = parseBool(formValue)
 
 proc convert*(formValue: string, T: typedesc[DateTime]): T = parse(formValue)
 
-proc convert*[T](formValue: string, O: typedesc[Option[T]]): O = some formValue.convert(T)
+proc convert*[T](formValue: string, O: typedesc[Option[T]]): O = 
+  let hasValue = formValue != ""
+  result = if hasValue: some formValue.convert(T) else: none(T)
 
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
   result = T()
   for name, dummyValue in T()[].fieldPairs:
     let formValueStr: Option[string] = ctx.getFormParamsOption(name)
-    echo name
-    echo formValueStr
     
     if formValueStr.isNone():
       when dummyValue is Option:
@@ -75,6 +94,5 @@ proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: sta
         discard #Do nothing
 
       else:
-        mixin to
         let formValue = formValueStr.get().convert(typeOf(dummyValue))
         result.setField(name, formValue)
