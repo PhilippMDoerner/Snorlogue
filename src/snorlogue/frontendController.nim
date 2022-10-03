@@ -7,12 +7,14 @@ import nimja/parser
 import ./constants
 import ./service/modelAnalysisService
 
+
 when defined(postgres):
   import service/postgresService
 elif defined(sqlite):
   import service/sqliteService
 else:
   newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
+
 
 proc renderNimjaPage*[T: PageContext](pageName: static string, context: T): string =
   const pagePath = fmt"resources/pages/{pageName}"
@@ -33,9 +35,7 @@ proc createDetailController*[T: Model](modelType: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
-
     let fkOptions = fetchForeignKeyValues(T)
-
     let context = initDetailContext(model, fkOptions)
     let html = renderNimjaPage("modelDetail.nimja", context)
 
@@ -75,24 +75,24 @@ proc createOverviewController*(registeredModels: seq[ModelMetaData]): HandlerAsy
 
 proc sqlController*(ctx: Context) {.async, gcsafe.} =
   let queryParam = ctx.getFormParamsOption("sql")
-  if queryParam.isSome():
-    let query = queryParam.get().strip()
-    
-    var queryResult: Option[(seq[Row], seq[string])]
-    var errorMsg: Option[string] = none(string)
-    try:
-      queryResult = executeQuery(query)
-    except DbError:
-      queryResult = none(QueryResult)
-      errorMsg = some(getCurrentExceptionMsg())
-
-    let rows = queryResult.map(res => res[0])
-    let columns = queryResult.map(res => res[1])
-    
-    let context = initSqlContext(query, rows, columns, errorMsg)
-    let html = renderNimjaPage("sql.nimja", context)
-
-    resp htmlResponse(html)
-  
-  else:
+  if queryParam.isNone():
     resp("Missing SQL query", code = Http400)
+    return
+
+  let query = queryParam.get().strip()
+  
+  var queryResult: Option[(seq[Row], seq[string])]
+  var errorMsg: Option[string] = none(string)
+  try:
+    queryResult = executeQuery(query)
+  except DbError:
+    queryResult = none(QueryResult)
+    errorMsg = some(getCurrentExceptionMsg())
+
+  let rows = queryResult.map(res => res[0])
+  let columns = queryResult.map(res => res[1])
+  
+  let context = initSqlContext(query, rows, columns, errorMsg)
+  let html = renderNimjaPage("sql.nimja", context)
+
+  resp htmlResponse(html)

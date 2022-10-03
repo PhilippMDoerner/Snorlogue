@@ -16,7 +16,7 @@
   {% let requestType = "PUT" %}
   {% let backButtonUrl = context.listUrl %}
   {% let backButtonLabel = "Back to Table" %}
-
+  {% let isFileForm = context.hasFileField %}
   {% importnimja "resources/components/form/form.nimja" %}
 
   <a href="{{context.deleteUrl}}" class="float-end btn btn-danger">

@@ -1,7 +1,7 @@
 import norm/[sqlite, model, pragmas]
 import std/[strformat, options, strutils, sequtils, sugar, tables]
 import std/macros except getCustomPragmaVal
-import ../constants
+import ../constants except `$`
 import ../utils/macroUtils
 import ./modelAnalysisService
 
@@ -57,6 +57,10 @@ proc count*[T: Model](modelType: typedesc[T]): int64 =
 type QueryResult* = (seq[Row], seq[string])
 
 proc executeQuery*(query: string): Option[QueryResult] =
+  let isForbiddenQuery = query.toUpper().split(" ").any(word => word in ["ALTER", "CREATE", "DROP", "TRUNCATE"])
+  if isForbiddenQuery:
+    raise newException(DbError, "DDL statements (those containing 'ALTER', 'CREATE', 'DROP' or 'TRUNCATE' are not allowed to prevent breaking your application. Please only use DML.") 
+
   let isSelectQuery = query.toUpper().startsWith("SELECT")
 
   withDb: 

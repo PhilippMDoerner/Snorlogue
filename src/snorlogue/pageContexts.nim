@@ -1,5 +1,5 @@
 import norm/[pragmas, model]
-import std/[strformat, strutils, tables, math, options, sugar]
+import std/[strformat, strutils, sequtils, tables, math, options, sugar]
 import utils/formUtils
 import ./constants
 
@@ -34,6 +34,8 @@ proc generateUrlStub*[T: Model](action: Page, model: typedesc[T]): string =
   result = generateUrlStub(action, modelName)
 
 proc extractFields*[T: Model](model: T, allFkOptions: Table[string, seq[ForeignKeyValue]]): seq[ModelField] =
+  ## Extracts the MetaData of all fields on a model and turns it into FormFields 
+  ## which are used to generate HTML form fields. 
   result = @[]
   for name, value in model[].fieldPairs:
     const isFkField = value.hasCustomPragma(fk)
@@ -45,7 +47,8 @@ proc extractFields*[T: Model](model: T, allFkOptions: Table[string, seq[ForeignK
     else:
       result.add(toModelField(value, name))
   
-
+proc hasFileField*(fields: seq[ModelField]): bool =
+  fields.any(field => field.kind == ModelFieldKind.FILE)
 
 
 type PageContext* = object of RootObj
@@ -102,6 +105,7 @@ type ModelDetailContext*[T] = object of PageContext
   modelName*: string
   model*: T
   fields*: seq[ModelField]
+  hasFileField*: bool
   fkOptions*: Table[string, ForeignKeyValue]
   deleteUrl*: string
   updateUrl*: string
@@ -116,6 +120,7 @@ proc initDetailContext*[T: Model](model: T, fkOptions: Table[string, seq[Foreign
     modelName: $T,
     model: model,
     fields: fields,
+    hasFileField: hasFileField(fields),
     deleteUrl: fmt"{generateUrlStub(Page.DELETE, T)}/{model.id}/",
     updateUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/",
     listUrl: fmt"{generateUrlStub(Page.LIST, T)}/"
@@ -144,6 +149,7 @@ type ModelCreateContext*[T] = object of PageContext
   listUrl*: string
   createUrl*: string
   fields*: seq[ModelField]
+  hasFileField*: bool
 
 proc initCreateContext*[T: Model](model: T, fkOptions: Table[string, seq[ForeignKeyValue]]): ModelCreateContext[T] =
   let fields: seq[ModelField] = extractFields(model, fkOptions)
@@ -153,6 +159,7 @@ proc initCreateContext*[T: Model](model: T, fkOptions: Table[string, seq[Foreign
     
     modelName: $T,
     fields: fields,
+    hasFileField: hasFileField(fields),
     listUrl: fmt"{generateUrlStub(Page.LIST, T)}/",
     createUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/",
   )

@@ -3,9 +3,11 @@ import norm/model
 import prologue
 import ./backendController
 import ./frontendController
-import ./constants
+import ./constants except `$`
 import pageContexts
 import nimja/parser
+
+proc `$`*[T: Model](model: T): string = fmt"{$T} #{model.id}"
 
 # proc addAdminRoutes*[T: Model](app: Prologue, route: string, models: TableRef[string, typedesc[T]], middlewares: seq[HandlerAsync] = @[] ) =
 #   ## Adds create, read, update and delete routes for every provided model.
@@ -44,7 +46,7 @@ proc addCrudRoutes*[T: Model](
   app.addRoute(
     re fmt"/{baseRoute}/{$Page.DETAIL}/{ID_PATTERN}/",
     handler = createDetailController[T](T),
-    httpMethod = HttpGet,
+    httpMethod = [HttpGet, HttpPost],
     middlewares = middlewares
   )
   debug(fmt"Added admin route GET    '/{baseRoute}/{$Page.DETAIL}/{ID_PATTERN}/'")

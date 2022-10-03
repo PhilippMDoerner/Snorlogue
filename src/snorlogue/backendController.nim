@@ -1,6 +1,6 @@
 import norm/model
 import prologue
-import std/[strutils, json, strformat, options]
+import std/[strutils, json, strformat, os, options, sequtils]
 import ./constants
 import ./utils/formUtils
 
@@ -12,11 +12,11 @@ else:
   newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
 
 type RequestType = enum
-  POST
-  DELETE
-  PUT
-  PATCH
-  GET
+  POST = "post"
+  DELETE = "delete"
+  PUT = "put"
+  PATCH = "patch"
+  GET = "get"
 
 
 proc createHandler[T: Model](ctx: Context, model: typedesc[T]) =
@@ -31,7 +31,7 @@ proc updateHandler[T: Model](ctx: Context, model: typedesc[T]) =
   update(updateModel)
   
   let detailPageUrl = fmt"{generateUrlStub(Page.DETAIL, T)}/{updateModel.id}/"
-  resp redirect(detailPageUrl)
+  resp redirect(detailPageUrl, body = "")
 
 proc deleteHandler[T: Model](ctx: Context, model: typedesc[T]) =
   let idStr: Option[string] = ctx.getFormParamsOption(ID_PARAM)

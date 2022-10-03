@@ -15,6 +15,7 @@
   {% let requestType = "POST" %}
   {% let backButtonUrl = context.listUrl %}
   {% let backButtonLabel = "Back to Table" %}
+  {% let isFileForm = context.hasFileField %}
 
   {% importnimja "resources/components/form/form.nimja" %}
 {% endblock content %}

@@ -1,6 +1,11 @@
 {% let isUpdateForm = requestType == "PUT"%}
 
-<form id="form" action="{{formUrl}}" method="POST">
+<form 
+id="form" 
+action="{{formUrl}}" 
+method="POST" 
+{% if isFileForm %} enctype="multipart/form-data" {% endif %}>
+  
   {% for field in fields %}
     {% let fieldName = field.name %}
 
@@ -25,7 +30,7 @@
     
     {% elif field.kind == ModelFieldKind.BOOL %}
       {% let value = field.bVal %}
-      {% importnimja "resources/components/form/inputFields/checkBoxInputFIeld.nimja" %}
+      {% importnimja "resources/components/form/inputFields/checkBoxInputField.nimja" %}
 
     {% elif field.kind == ModelFieldKind.DATE %}
       {% let value = field.dtVal %}
@@ -36,9 +41,13 @@
       {% let options = field.options %}
       {% importnimja "resources/components/form/inputFields/intSelectField.nimja" %}
 
+    {% elif field.kind == ModelFieldKind.FILE %}
+      {% let value = field.fileVal %}
+      {% importnimja "resources/components/form/inputFields/fileField.nimja" %}
+
     {% endif %}
   {% endfor %}
-  <input type="text" value="{{requestType}}" name="request-type" class="d-none">
+  <input type="text" value="{{requestType.toLower()}}" name="request-type" class="d-none">
 
   {% importnimja "resources/components/backButton.nimja" %}
   <button type="submit" value="Submit" class="btn btn-primary">{{buttonLabel}}</button>
