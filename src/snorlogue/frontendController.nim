@@ -18,7 +18,8 @@ else:
 
 proc renderNimjaPage*[T: PageContext](pageName: static string, context: T): string =
   const pagePath = fmt"resources/pages/{pageName}"
-  tmplf(getScriptDir() / pagePath, context = context)
+  const packagePath = currentSourcePath().parentDir().parentDir()
+  tmplf(packagePath / pagePath, context = context)
 
 proc createCreateFormController*[T: Model](modelType: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
