@@ -8,17 +8,21 @@
   <h2 class="text-center">Update {{context.modelName}} </h1>
 
   <h5>{{context.model}}</h5>
-  {% let model = context.model %}
-  {% let formUrl = context.updateUrl %}
-  {% let modelName = context.modelName %}
-  {% let fields = context.fields %}
-  {% let buttonLabel = "Update" %}
-  {% let requestType = "PUT" %}
-  {% let backButtonUrl = context.listUrl %}
-  {% let backButtonLabel = "Back to Table" %}
-  {% let isFileForm = context.hasFileField %}
-  {% importnimja "resources/components/form/form.nimja" %}
+  {% scope %}
+    {% let model = context.model %}
+    {% let formUrl = context.updateUrl %}
+    {% let modelName = context.modelName %}
+    {% let fields = context.fields %}
+    {% let buttonLabel = "Update" %}
+    {% let requestType = "PUT" %}
+    {% let backButtonUrl = context.listUrl %}
+    {% let backButtonLabel = "Back to Table" %}
+    {% let isFileForm = context.hasFileField %}
+    
+    {% importnimja "resources/components/form/form.nimja" %}
 
+  {% endscope %}
+  
   <a href="{{context.deleteUrl}}" class="float-end btn btn-danger">
     <i class="fas fa-trash mr-2"></i>
     Delete {{context.model}} ?

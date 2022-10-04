@@ -10,8 +10,11 @@
     <div class="text-muted text-center">{{context.query}}</div>  
   </header>
 
-  {% let sqlUrl = context.sqlUrl %}
-  {% importnimja "resources/components/form/sqlForm.nimja" %}
+  {% scope %}
+    {% let sqlUrl = context.sqlUrl %}
+    {% importnimja "resources/components/form/sqlForm.nimja" %}
+  {% endscope%}
+
   {% if context.queryErrorMsg.isSome() %}
     <div class="text-center text-danger ">
       <strong class="fs-5">
@@ -21,9 +24,11 @@
 
   {% endif %} 
 
-  {% let backButtonUrl = context.overviewUrl %}
-  {% let backButtonLabel = "Admin Overview" %}
-  {% importnimja "resources/components/backButton.nimja" %}
+  {% scope %}
+    {% let backButtonUrl = context.overviewUrl %}
+    {% let backButtonLabel = "Admin Overview" %}
+    {% importnimja "resources/components/backButton.nimja" %}
+  {% endscope %}
 
   <div>
     {% if context.columns.isSome() and context.rows.isSome() %}
@@ -48,5 +53,9 @@
     {% endif %}
   </div>
 
-  {% importnimja "resources/components/backButton.nimja" %}
+  {% scope %}
+    {% let backButtonUrl = context.overviewUrl %}
+    {% let backButtonLabel = "Admin Overview" %}
+    {% importnimja "resources/components/backButton.nimja" %}
+  {% endscope %}
 {% endblock content %}

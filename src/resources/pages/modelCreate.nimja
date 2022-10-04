@@ -6,16 +6,17 @@
 
 {% block content %}
   <h2 class="text-center">Create {{context.modelName}}</h2>
+  {% scope %}
+    {% let model = context.model %}
+    {% let formUrl = context.createUrl %}
+    {% let modelName = context.modelName %}
+    {% let fields = context.fields %}
+    {% let buttonLabel = "Create" %}
+    {% let requestType = "POST" %}
+    {% let backButtonUrl = context.listUrl %}
+    {% let backButtonLabel = "Back to Table" %}
+    {% let isFileForm = context.hasFileField %}
 
-  {% let model = context.model %}
-  {% let formUrl = context.createUrl %}
-  {% let modelName = context.modelName %}
-  {% let fields = context.fields %}
-  {% let buttonLabel = "Create" %}
-  {% let requestType = "POST" %}
-  {% let backButtonUrl = context.listUrl %}
-  {% let backButtonLabel = "Back to Table" %}
-  {% let isFileForm = context.hasFileField %}
-
-  {% importnimja "resources/components/form/form.nimja" %}
+    {% importnimja "resources/components/form/form.nimja" %}
+  {% endscope %}
 {% endblock content %}

@@ -1,3 +1,4 @@
+(# Defined for the individual form fields #)
 {% let isUpdateForm = requestType == "PUT"%}
 
 <form 
@@ -36,7 +37,7 @@ method="POST"
       {% let value = field.dtVal %}
       {% importnimja "resources/components/form/inputFields/dateInputField.nimja" %}
 
-      {% elif field.kind == FormFieldKind.INTSELECT %}
+    {% elif field.kind == FormFieldKind.INTSELECT %}
       {% let value = field.intSeqVal %}
       {% let options = field.intOptions %}
       {% importnimja "resources/components/form/inputFields/intSelectField.nimja" %}

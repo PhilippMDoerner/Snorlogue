@@ -5,9 +5,10 @@
 {% endblock title%}
 
 {% block content %}
-  {% let sqlUrl = context.sqlUrl %}
-  {% importnimja "resources/components/form/sqlForm.nimja" %}
-
+  {% scope %}
+    {% let sqlUrl = context.sqlUrl %}
+    {% importnimja "resources/components/form/sqlForm.nimja" %}
+  {% endscope %}
 
   <h3 class="mb-3">All Models</h3>
     <table class="table table-light table-striped table-hover">

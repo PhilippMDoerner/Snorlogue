@@ -10,28 +10,37 @@
     <span class="mx-3 text-muted"> ({{context.totalModelCount}} entries) </span>
   </header>
 
-  {% let backButtonUrl = context.overviewUrl %}
-  {% let backButtonLabel = "Admin Overview" %}
-  {% importnimja "resources/components/backButton.nimja" %}
+  {% scope %}
+    {% let backButtonUrl = context.overviewUrl %}
+    {% let backButtonLabel = "Admin Overview" %}
+    {% importnimja "resources/components/backButton.nimja" %}
+  {% endscope %}
 
   <a class="btn btn-primary" href="{{context.createUrl}}">
     <i class="fas fa-plus"></i>
     Create {{context.modelName}} 
   </a>
 
+  {% scope %}
+    {% let detailUrlStub = context.detailUrlStub %}
+    {% let deleteUrlStub = context.deleteUrlStub %}
+    {% let listUrlStub = context.listUrlStub %}
+    {% let createUrl = context.createUrl %}
+    {% let modelName = context.modelName %}
+    {% let pageIndices = context.pageIndices %}
+    {% let currentPageIndex = context.currentPageIndex %}
+    {% let models = context.models %}
+    {% let isFirstPage = context.isFirstPage %}
+    {% let isLastPage = context.isLastPage %}
 
-  {% let detailUrlStub = context.detailUrlStub %}
-  {% let deleteUrlStub = context.deleteUrlStub %}
-  {% let listUrlStub = context.listUrlStub %}
-  {% let createUrl = context.createUrl %}
-  {% let modelName = context.modelName %}
-  {% let pageIndices = context.pageIndices %}
-  {% let currentPageIndex = context.currentPageIndex %}
-  {% let models = context.models %}
-  {% let isFirstPage = context.isFirstPage %}
-  {% let isLastPage = context.isLastPage %}
+    {% importnimja "resources/components/modelTable.nimja" %}
+  {% endscope %}
 
-  {% importnimja "resources/components/modelTable.nimja" %}
 
-  {% importnimja "resources/components/backButton.nimja" %}
+  {% scope %}
+    {% let backButtonUrl = context.overviewUrl %}
+    {% let backButtonLabel = "Admin Overview" %}
+    {% importnimja "resources/components/backButton.nimja" %}
+  {% endscope %}
+
 {% endblock content %}

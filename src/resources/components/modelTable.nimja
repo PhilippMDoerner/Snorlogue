@@ -1,5 +1,4 @@
-{% importnimja "resources/components/pagination.nimja" %}
-
+{% importnimja  "./resources/components/pagination.nimja" %}
 <table class="table table-light table-striped table-hover">
   <thead>
     <tr>
@@ -36,4 +35,4 @@
 
   </tbody>
 </table>
-{% importnimja "resources/components/pagination.nimja" %}
+{% importnimja  "./resources/components/pagination.nimja" %}
