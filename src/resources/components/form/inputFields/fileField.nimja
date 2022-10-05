@@ -1,17 +1,46 @@
 <div class="mb-3">
-  <label for="{{fieldName}}" class="form-label"> 
-    {{fieldName.capitalizeAscii()}}
-    {% if isUpdateForm and value.isSome() %}
-      <span class="text-muted">
-        - Stored in: "{{value.get()}}"
-      </span> 
+  <div>
+    <label for="{{fieldName}}" class="form-label"> 
+      {{fieldName.capitalizeAscii()}}
+      {% if isUpdateForm and value.isSome() %}
+        <span class="text-muted">
+          - Stored in: "{{value.get()}}"
+        </span> 
+      {% endif %}
+    </label>
+    <input 
+    type="file" 
+    class="form-control" 
+    id="{{fieldName}}" 
+    form="form"
+    name="{{fieldName}}">
+  </div>
+  {% if value.isSome() %}
+    {% let mediaUrl = value.get().string %}
+    {% let isImageFile = mediaUrl.endsWith(".jpeg") or mediaUrl.endsWith(".jpg") or mediaUrl.endsWith(".png") or mediaUrl.endsWith(".webp") %}
+    {% let isAudioFile = mediaUrl.endsWith(".mp3") or mediaUrl.endsWith(".wav") %}
+    {% let isVideoFile = mediaUrl.endsWith(".mp4") or mediaUrl.endsWith(".webm") %}
+
+    {% if isImageFile %}
+      <div class="text-muted">Current Image Preview</div>
+      <img src="{{mediaUrl}}" alt="Current Image">
+
+    {% elif isAudioFile %}
+      {% let fileEnding = mediaUrl[mediaUrl.high-2..mediaUrl.high] %}
+      <div class="text-muted">Current Audio File Preview</div>
+      <audio controls>
+        <source src="{{mediaUrl}}" type="audio/{{fileEnding}}">
+        Your browser does not support the audio element.
+      </audio> 
+
+    {% elif isVideoFile %}
+      {% let fileEnding = mediaUrl[mediaUrl.high-2..mediaUrl.high] %}
+      <div class="text-muted">Current Video File Preview</div>
+      <video width="640" height="480" autoplay muted>
+        <source src="{{mediaUrl}}" type="video/{{fileEnding}}">
+        Your browser does not support the video tag.
+      </video> 
+
     {% endif %}
-  </label>
-  <input 
-  type="file" 
-  class="form-control" 
-  id="{{fieldName}}" 
-  form="form"
-  name="{{fieldName}}">
- 
+  {% endif %}
 </div>
