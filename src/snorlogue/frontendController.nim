@@ -1,6 +1,6 @@
 import norm/model
 import prologue
-import std/[strutils, strformat, options, sequtils, sugar, os]
+import std/[strutils, strformat, options, sequtils, sugar, os, re]
 import utils/[controllerUtils, macroUtils, modelUtils]
 import pageContexts
 import nimja/parser
@@ -15,11 +15,6 @@ elif defined(sqlite):
 else:
   newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
 
-
-proc renderNimjaPage*[T: PageContext](pageName: static string, context: T): string =
-  const pagePath = fmt"resources/pages/{pageName}"
-  const packagePath = currentSourcePath().parentDir().parentDir()
-  tmplf(packagePath / pagePath, context = context)
 
 proc createCreateFormController*[T: Model](modelType: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
