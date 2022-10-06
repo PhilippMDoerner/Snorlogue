@@ -7,7 +7,6 @@
 {% block content %}
   <h2 class="text-center">Create {{context.modelName}}</h2>
   {% scope %}
-    {% let model = context.model %}
     {% let formUrl = context.createUrl %}
     {% let modelName = context.modelName %}
     {% let fields = context.fields %}
