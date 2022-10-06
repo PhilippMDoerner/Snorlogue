@@ -8,6 +8,8 @@ import pageContexts
 import nimja/parser
 import ./utils/modelUtils
 
+export pageContexts
+
 #proc `$`*[T: Model](model: T): string = fmt"{$T} #{model.id}"
 
 # proc addAdminRoutes*[T: Model](app: Prologue, route: string, models: TableRef[string, typedesc[T]], middlewares: seq[HandlerAsync] = @[] ) =

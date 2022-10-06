@@ -148,7 +148,7 @@ proc initCreateContext*[T: Model](model: T): ModelCreateContext[T] =
     fields: fields,
     hasFileField: hasFileField(fields),
     listUrl: fmt"{generateUrlStub(Page.LIST, T)}/",
-    createUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/",
+    createUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/"
   )
 
 

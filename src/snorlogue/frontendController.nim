@@ -27,6 +27,7 @@ proc createCreateFormController*[T: Model](modelType: typedesc[T]): HandlerAsync
 
 proc createDetailController*[T: Model](modelType: typedesc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
+    mixin toFormField
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
     let context = initDetailContext(model)
