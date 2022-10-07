@@ -15,13 +15,6 @@ const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
 
 var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
 
-
-proc validateModel[T: Model](model: typedesc[T]) =
-  ## Ensure the following: 
-  ## 1) Model is not read only
-  ## 2) Model has no other model fields, they should be only FK fields
-  discard
-
 proc addCrudRoutes*[T: Model](
   app: var Prologue, 
   modelType: typedesc[T], 
