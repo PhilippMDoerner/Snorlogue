@@ -1,4 +1,4 @@
-(# Defined for the individual fields #)
+{# Defined for the individual field templates#}
 {% let isUpdateForm = requestType == "PUT"%}
 
 <form 
