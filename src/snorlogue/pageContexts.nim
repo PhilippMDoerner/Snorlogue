@@ -8,7 +8,7 @@ when defined(postgres):
 elif defined(sqlite):
   import service/sqliteService
 else:
-  newException(Defect, "Norlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'")
+  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
 
 type Page* = enum
