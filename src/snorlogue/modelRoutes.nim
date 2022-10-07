@@ -10,17 +10,6 @@ import ./service/modelAnalysisService
 
 export pageContexts
 
-#proc `$`*[T: Model](model: T): string = fmt"{$T} #{model.id}"
-
-# proc addAdminRoutes*[T: Model](app: Prologue, route: string, models: TableRef[string, typedesc[T]], middlewares: seq[HandlerAsync] = @[] ) =
-#   ## Adds create, read, update and delete routes for every provided model.
-#   ## Also adds an overview-route over all models, which will show them split into sections as per the provided model table.
-#   ## All routes will have the middlewares provided in the `middlewares` param attached to them.
-#   app.addModelOverviewRoute(route, models, middlewares)
-#
-#   for sectionHeading, sectionModels in models.mpairs:
-#       for model in sectionModels:
-#         app.addCrudRoutes(route, model, middlewares)
 const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)"
 const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
 
@@ -37,10 +26,16 @@ proc addCrudRoutes*[T: Model](
   app: var Prologue, 
   modelType: typedesc[T], 
   middlewares: seq[HandlerAsync] = @[], 
-  urlPrefix: string = "admin",
+  urlPrefix: static string = "admin",
   sortFields: seq[string] = @["id"],
   sortDirection: SortDirection = SortDirection.ASC
 ) =
+  ## Adds create, read, update and delete routes for the provided `modelType`.
+  ## These routes will be available after the pattern 
+  ## `fmt"{urlPrefix}/{modelName}/[create|delete|detail|list]/"
+  ## Model entries shown in the list page can be sorted according 
+  ## to the provided field names in ascending or descending order.
+
   validateModel[T](modelType)
   const modelMetaData = extractMetaData(T)
   REGISTERED_MODELS.add(modelMetaData)
@@ -99,8 +94,14 @@ proc addCrudRoutes*[T: Model](
 proc addAdminRoutes*(
   app: var Prologue, 
   middlewares: seq[HandlerAsync] = @[],
-  urlPrefix: string = "admin"
+  urlPrefix: static string = "admin"
 ) =
+  ## Adds an overview and an "sql" route.
+  ## The overview route provides an overview over all registered models
+  ## The sql route provides a page to execute raw SQL and look at the results.
+  ## This view supports DML SQL only.
+  ## These routes will be available after the pattern 
+  ## `fmt"{urlPrefix}/[overview | sql]/"
   app.addRoute(
     fmt"/{urlPrefix}/{$Page.OVERVIEW}/",
     handler = createOverviewController(REGISTERED_MODELS),
