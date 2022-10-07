@@ -19,28 +19,31 @@ type RequestType = enum
   GET = "get"
 
 
-proc createHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string) =
-  var newModel = parseFormData(ctx, T)
-  create(newModel)
+proc createHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string) {.gcsafe.} =
+  {.cast(gcsafe).}:
+    var newModel = parseFormData(ctx, T)
+    create(newModel)
   
   let detailPageUrl = fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{newModel.id}/"
   resp redirect(detailPageUrl)
 
-proc updateHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string) =
-  var updateModel = parseFormData(ctx, T)
-  update(updateModel)
+proc updateHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string) {.gcsafe.} =
+  {.cast(gcsafe).}:
+    var updateModel = parseFormData(ctx, T)
+    update(updateModel)
   
   let detailPageUrl = fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{updateModel.id}/"
   resp redirect(detailPageUrl, body = "")
 
-proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string) =
+proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string) {.gcsafe.}=
   let idStr: Option[string] = ctx.getFormParamsOption(ID_PARAM)
   if idStr.isNone():
     resp("", code = Http400)
     return
 
   let id = parseInt(idStr.get()).int64
-  delete(T, id)
+  {.cast(gcsafe).}:
+    delete(T, id)
 
   let listPageUrl = fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/"
   resp redirect(listPageUrl)
