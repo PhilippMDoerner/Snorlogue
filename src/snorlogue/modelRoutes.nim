@@ -96,7 +96,11 @@ proc addCrudRoutes*[T: Model](
   debug(fmt"Added admin route POST   '/{urlPrefix}/{baseRoute}/'")
 
 
-proc addAdminRoutes*(app: var Prologue, middlewares: seq[HandlerAsync] = @[]) =
+proc addAdminRoutes*(
+  app: var Prologue, 
+  middlewares: seq[HandlerAsync] = @[],
+  urlPrefix: string = "admin"
+) =
   app.addRoute(
     fmt"/{urlPrefix}/{$Page.OVERVIEW}/",
     handler = createOverviewController(REGISTERED_MODELS),
