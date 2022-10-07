@@ -61,33 +61,34 @@ proc createConfirmDeleteController*[T: Model](modelType: typedesc[T], urlPrefix:
 
     resp htmlResponse(html)
 
-proc createOverviewController*(registeredModels: seq[ModelMetaData]): HandlerAsync =
+proc createOverviewController*(registeredModels: seq[ModelMetaData], urlPrefix: static string): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
-    let context = initOverviewContext(registeredModels)   
+    let context = initOverviewContext(registeredModels, urlPrefix)   
     let html = renderNimjaPage("overview.nimja", context) 
 
     resp htmlResponse(html)
 
-proc sqlController*(ctx: Context) {.async, gcsafe.} =
-  let queryParam = ctx.getFormParamsOption("sql")
-  if queryParam.isNone():
-    resp("Missing SQL query", code = Http400)
-    return
+proc createSqlController*(urlPrefix: static string): HandlerAsync =
+  result = proc(ctx: Context) {.async, gcsafe.} =
+    let queryParam = ctx.getFormParamsOption("sql")
+    if queryParam.isNone():
+      resp("Missing SQL query", code = Http400)
+      return
 
-  let query = queryParam.get().strip()
-  
-  var queryResult: Option[(seq[Row], seq[string])]
-  var errorMsg: Option[string] = none(string)
-  try:
-    queryResult = executeQuery(query)
-  except DbError:
-    queryResult = none(QueryResult)
-    errorMsg = some(getCurrentExceptionMsg())
+    let query = queryParam.get().strip()
+    
+    var queryResult: Option[(seq[Row], seq[string])]
+    var errorMsg: Option[string] = none(string)
+    try:
+      queryResult = executeQuery(query)
+    except DbError:
+      queryResult = none(QueryResult)
+      errorMsg = some(getCurrentExceptionMsg())
 
-  let rows = queryResult.map(res => res[0])
-  let columns = queryResult.map(res => res[1])
-  
-  let context = initSqlContext(urlPrefix, query, rows, columns, errorMsg)
-  let html = renderNimjaPage("sql.nimja", context)
+    let rows = queryResult.map(res => res[0])
+    let columns = queryResult.map(res => res[1])
+    
+    let context = initSqlContext(urlPrefix, query, rows, columns, errorMsg)
+    let html = renderNimjaPage("sql.nimja", context)
 
-  resp htmlResponse(html)
+    resp htmlResponse(html)

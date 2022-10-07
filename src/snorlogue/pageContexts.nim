@@ -22,7 +22,7 @@ type Page* = enum
 
 proc generateUrlStub*(urlPrefix: static string, action: Page, modelName: string): string =
   result.add(fmt"/{urlPrefix}")
-
+  case action:
   of Page.OVERVIEW, Page.SQL:
     result.add fmt"/{$action}"
   of Page.BACKEND:
