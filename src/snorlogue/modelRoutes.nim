@@ -37,7 +37,7 @@ proc addCrudRoutes*[T: Model](
 
   app.addRoute(
     re fmt"/{urlPrefix}/{baseRoute}/{$Page.DETAIL}/{ID_PATTERN}/",
-    handler = createDetailController[T](T),
+    handler = createDetailController[T](T, urlPrefix),
     httpMethod = [HttpGet, HttpPost],
     middlewares = middlewares
   )
@@ -45,7 +45,7 @@ proc addCrudRoutes*[T: Model](
 
   app.addRoute(
     re fmt"/{urlPrefix}/{baseRoute}/{$Page.LIST}/{PAGE_PATTERN}/",
-    handler = createListController(T, sortFields, sortDirection),
+    handler = createListController(T, urlPrefix,  sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -53,7 +53,7 @@ proc addCrudRoutes*[T: Model](
 
   app.addRoute(
     fmt"/{urlPrefix}/{baseRoute}/{$Page.LIST}/",
-    handler = createListController(T, sortFields, sortDirection),
+    handler = createListController(T, urlPrefix, sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -61,7 +61,7 @@ proc addCrudRoutes*[T: Model](
 
   app.addRoute(
     re fmt"/{urlPrefix}/{baseRoute}/{$Page.DELETE}/{ID_PATTERN}/",
-    handler = createConfirmDeleteController(T),
+    handler = createConfirmDeleteController(T, urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -69,7 +69,7 @@ proc addCrudRoutes*[T: Model](
 
   app.addRoute(
     fmt"/{urlPrefix}/{baseRoute}/{$Page.CREATE}/",
-    handler = createCreateFormController(T),
+    handler = createCreateFormController(T, urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -77,7 +77,7 @@ proc addCrudRoutes*[T: Model](
 
   app.addRoute(
     fmt"/{urlPrefix}/{baseRoute}/",
-    handler = createBackendController(T),
+    handler = createBackendController(T, urlPrefix),
     httpMethod = HttpPost,
     middlewares = middlewares,
   )
@@ -97,7 +97,7 @@ proc addAdminRoutes*(
   ## `fmt"{urlPrefix}/[overview | sql]/"
   app.addRoute(
     fmt"/{urlPrefix}/{$Page.OVERVIEW}/",
-    handler = createOverviewController(REGISTERED_MODELS),
+    handler = createOverviewController(REGISTERED_MODELS, urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -105,7 +105,7 @@ proc addAdminRoutes*(
 
   app.addRoute(
     fmt"/{urlPrefix}/{$Page.SQL}/",
-    handler = sqlController,
+    handler = createSqlController(urlPrefix),
     httpMethod = HttpPost,
     middlewares = middlewares
   )

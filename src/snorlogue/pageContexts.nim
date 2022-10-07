@@ -20,18 +20,19 @@ type Page* = enum
   BACKEND
   SQL = "sql"
 
-proc generateUrlStub*(action: Page, modelName: string): string =
-  result = case action:
-  of Page.OVERVIEW, Page.SQL:
-    fmt"/{$action}"
-  of Page.BACKEND:
-    fmt"/{modelName}"
-  else:
-    fmt"/{modelName}/{$action}"
+proc generateUrlStub*(urlPrefix: static string, action: Page, modelName: string): string =
+  result.add(fmt"/{urlPrefix}")
 
-proc generateUrlStub*[T: Model](action: Page, model: typedesc[T]): string =
+  of Page.OVERVIEW, Page.SQL:
+    result.add fmt"/{$action}"
+  of Page.BACKEND:
+    result.add fmt"/{modelName}"
+  else:
+    result.add fmt"/{modelName}/{$action}"
+
+proc generateUrlStub*[T: Model](urlPrefix: static string, action: Page, model: typedesc[T]): string =
   let modelName = ($model).toLower()
-  result = generateUrlStub(action, modelName)
+  result = generateUrlStub(urlPrefix, action, modelName)
   
 proc hasFileField*(fields: seq[FormField]): bool =
   fields.any(field => field.kind == FormFieldKind.FILE)
@@ -65,21 +66,21 @@ proc getPaginationIndices(pageIndex: int, maxPageIndex: int): seq[int] =
   if(isBeforeLastPage): result.add(pageIndex + 1)
   if(isBeforeSecondLastPage): result.add(pageIndex + 2)
 
-proc initListContext*[T](models: seq[T], totalModelCount: int64, pageIndex: int, pageSize: int): ModelListContext[T] =
+proc initListContext*[T](models: seq[T], urlPrefix: static string, totalModelCount: int64, pageIndex: int, pageSize: int): ModelListContext[T] =
   let maxPageIndex: int = floor(totalModelCount.int / pageSize).int
   let isLastPage = pageIndex == maxPageIndex
   let isFirstPage = pageIndex == 0
 
   result = ModelListContext[T](
-    overviewUrl: fmt"{generateUrlStub(Page.OVERVIEW, T)}/",
+    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
 
     modelName: $T,
     models: models,
     totalModelCount: totalModelCount,
-    createUrl: fmt"{generateUrlStub(Page.CREATE, T)}/",
-    deleteUrLStub: fmt"{generateUrlStub(Page.DELETE, T)}/",
-    detailUrlStub: fmt"{generateUrlStub(Page.DETAIL, T)}/",
-    listUrlStub: fmt"{generateUrlStub(Page.LIST, T)}/",
+    createUrl: fmt"{generateUrlStub(urlPrefix, Page.CREATE, T)}/",
+    deleteUrLStub: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/",
+    detailUrlStub: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/",
+    listUrlStub: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
     pageIndices: getPaginationIndices(pageIndex, maxPageIndex),
     currentPageIndex: pageIndex,
     isFirstPage: isFirstPage,
@@ -97,19 +98,19 @@ type ModelDetailContext*[T] = object of PageContext
   updateUrl*: string
   listUrl*: string
 
-proc initDetailContext*[T: Model](model: T): ModelDetailContext[T] =
+proc initDetailContext*[T: Model](model: T, urlPrefix: static string): ModelDetailContext[T] =
   let fields: seq[FormField] = extractFields[T](model)
 
   ModelDetailContext[T](
-    overviewUrl: fmt"{generateUrlStub(Page.OVERVIEW, T)}/",
+    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
 
     modelName: $T,
     model: model,
     fields: fields,
     hasFileField: hasFileField(fields),
-    deleteUrl: fmt"{generateUrlStub(Page.DELETE, T)}/{model.id}/",
-    updateUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/",
-    listUrl: fmt"{generateUrlStub(Page.LIST, T)}/"
+    deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/{model.id}/",
+    updateUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
+    listUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/"
   )
 
 
@@ -119,13 +120,13 @@ type ModelDeleteContext*[T] = object of PageContext
   model*: T
   modelName*: string
 
-proc initDeleteContext*[T: Model](model: T): ModelDeleteContext[T] =
+proc initDeleteContext*[T: Model](model: T, urlPrefix: static string): ModelDeleteContext[T] =
   ModelDeleteContext[T](
-    overviewUrl: fmt"{generateUrlStub(Page.OVERVIEW, T)}/",
+    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
 
     model: model,
-    deleteUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/",
-    detailUrl: fmt"{generateUrlStub(Page.DETAIL, T)}/{model.id}/",
+    deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
+    detailUrl: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{model.id}/",
     modelName: $T
   )
 
@@ -137,17 +138,17 @@ type ModelCreateContext*[T] = object of PageContext
   fields*: seq[FormField]
   hasFileField*: bool
 
-proc initCreateContext*[T: Model](model: T): ModelCreateContext[T] =
+proc initCreateContext*[T: Model](model: T, urlPrefix: static string): ModelCreateContext[T] =
   let fields: seq[FormField] = extractFields(model)
 
   ModelCreateContext[T](
-    overviewUrl: fmt"{generateUrlStub(Page.OVERVIEW, T)}/",
+    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
     
     modelName: $T,
     fields: fields,
     hasFileField: hasFileField(fields),
-    listUrl: fmt"{generateUrlStub(Page.LIST, T)}/",
-    createUrl: fmt"{generateUrlStub(Page.BACKEND, T)}/"
+    listUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
+    createUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/"
   )
 
 
@@ -161,16 +162,16 @@ proc sort(entry1, entry2: (ModelMetaData, string)): int =
   else: 
     -1
 
-proc initOverviewContext*(metaDataEntries: seq[ModelMetaData]): OverviewContext =
+proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static string): OverviewContext =
   var modelLinks = initOrderedTable[ModelMetaData, string]()
   for metaData in metaDataEntries:
-    modelLinks[metaData] = fmt"{generateUrlStub(Page.LIST, metaData.name.toLower())}/"
+    modelLinks[metaData] = fmt"{generateUrlStub(urlPrefix, Page.LIST, metaData.name.toLower())}/"
 
   modelLinks.sort(sort)
   OverviewContext(
-    overviewUrl: fmt"""{generateUrlStub(Page.OVERVIEW, "")}/""",
+    overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
 
-    sqlUrl: fmt"""{generateUrlStub(Page.SQL, "")}/""",
+    sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
     modelLinks: modelLinks
   )
 
@@ -181,13 +182,13 @@ type SqlContext* = object of PageContext
   columns*: Option[seq[string]]
   queryErrorMsg*: Option[string]
 
-proc initSqlContext*(query: string, rows: Option[seq[Row]], columnNames: Option[seq[string]], errorMsg: Option[string]): SqlContext =
+proc initSqlContext*(urlPrefix: static string, query: string, rows: Option[seq[Row]], columnNames: Option[seq[string]], errorMsg: Option[string]): SqlContext =
   let columns: seq[string] = @[]
 
   SqlContext(
-    overviewUrl: fmt"""{generateUrlStub(Page.OVERVIEW, "")}/""",
+    overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
 
-    sqlUrl: fmt"""{generateUrlStub(Page.SQL, "")}/""",
+    sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
     query: query,
     rows: rows,
     columns: columnNames,
