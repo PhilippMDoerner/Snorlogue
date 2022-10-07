@@ -29,7 +29,7 @@ proc addCrudRoutes*[T: Model](
   ## Model entries shown in the list page can be sorted according 
   ## to the provided field names in ascending or descending order.
 
-  validateModel[T](modelType)
+  static: validateModel[T](T)
   const modelMetaData = extractMetaData(T)
   REGISTERED_MODELS.add(modelMetaData)
   
