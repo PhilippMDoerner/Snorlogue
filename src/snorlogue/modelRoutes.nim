@@ -6,7 +6,7 @@ import ./frontendController
 import ./constants except `$`
 import pageContexts
 import nimja/parser
-import ./utils/modelUtils
+import ./service/modelAnalysisService
 
 export pageContexts
 

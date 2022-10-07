@@ -1,8 +1,7 @@
 import norm/[pragmas, model]
 import std/[strformat, strutils, sequtils, tables, math, options, sugar]
-import ./service/formService
+import ./service/[modelAnalysisService, formService]
 import ./constants
-import ./utils/modelUtils
 
 when defined(postgres):
   import service/postgresService

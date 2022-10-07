@@ -1,7 +1,7 @@
 import norm/model
 import prologue
 import std/[strutils, strformat, options, sequtils, sugar, os, re]
-import utils/[controllerUtils, macroUtils, modelUtils]
+import utils/[controllerUtils, macroUtils]
 import pageContexts
 import nimja/parser
 import ./constants
