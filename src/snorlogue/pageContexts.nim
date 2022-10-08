@@ -20,6 +20,7 @@ proc hasFileField*(fields: seq[FormField]): bool =
 
 type PageContext* = object of RootObj
   currentPage*: Page
+  currentUrl*: string
   overviewUrl*: string
   sqlUrl*: string
   modelTypes*: seq[ModelMetaData]
@@ -59,6 +60,7 @@ proc initListContext*[T](models: seq[T], urlPrefix: static string, totalModelCou
       overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
       sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
       currentPage: Page.LIST,
+      currentUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
       modelTypes: REGISTERED_MODELS,
 
       modelName: $T,
@@ -93,6 +95,7 @@ proc initDetailContext*[T: Model](model: T, urlPrefix: static string): ModelDeta
       overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
       sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
       currentPage: Page.DETAIL,
+      currentUrl: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/",
       modelTypes: REGISTERED_MODELS,
 
       modelName: $T,
@@ -116,6 +119,7 @@ proc initDeleteContext*[T: Model](model: T, urlPrefix: static string): ModelDele
     ModelDeleteContext[T](
       overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
       sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+      currentUrl: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/",
       currentPage: Page.DELETE,
       modelTypes: REGISTERED_MODELS,
 
@@ -139,6 +143,7 @@ proc initCreateContext*[T: Model](model: T, urlPrefix: static string): ModelCrea
     ModelCreateContext[T](
       overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
       sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+      currentUrl: fmt"{generateUrlStub(urlPrefix, Page.CREATE, T)}/",
       currentPage: Page.CREATE,
       modelTypes: REGISTERED_MODELS,
 
@@ -171,6 +176,7 @@ proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static
       overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
       sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
       currentPage: Page.OVERVIEW,
+      currentUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
       modelTypes: REGISTERED_MODELS,
 
       modelLinks: modelLinks
@@ -189,6 +195,7 @@ proc initSqlContext*(urlPrefix: static string, query: string, rows: Option[seq[R
     SqlContext(
       overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
       sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
+      currentUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
       currentPage: Page.SQL,
       modelTypes: REGISTERED_MODELS,
 

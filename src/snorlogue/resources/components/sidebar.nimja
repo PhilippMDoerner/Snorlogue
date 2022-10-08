@@ -1,14 +1,13 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light h-100 min-vh-100" style="width: 280px;">
   <a href="{{overviewUrl}}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-    <span class="fas fa-home"></span>
-    <span class="fs-4">Sidebar</span>
+    <span class="fs-4"> Database Administration</span>
   </a>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
     <li cass="nav-item">
       <a href="{{overviewUrl}}" 
-      class="nav-link link-dark {% if currentPage == Page.OVERVIEW %} active {% endif %}" 
-      {% if currentPage == Page.OVERVIEW %} aria-current="page" {% endif %} 
+      class="nav-link {% if currentUrl == overviewUrl %} active {% else %} link-dark {% endif %}" 
+      {% if currentUrl == overviewUrl %} aria-current="page" {% endif %} 
       title="Overview" 
       data-bs-toggle="tooltip" 
       data-bs-placement="right" 
@@ -20,8 +19,8 @@
 
     <li class="nav-item">
       <a href="{{sqlUrl}}" 
-      class="nav-link link-dark {% if currentPage == Page.SQL %} active {% endif %}" 
-      {% if currentPage == Page.SQL %} aria-current="page" {% endif %} 
+      class="nav-link {% if currentUrl == sqlUrl %} active {% else %} link-dark {% endif %}" 
+      {% if currentUrl == sqlUrl %} aria-current="page" {% endif %} 
       title="SQL" 
       data-bs-toggle="tooltip" 
       data-bs-placement="right" 
@@ -35,7 +34,7 @@
         {% for model in models %}
           <li class="nav-item">
             <a href="{{model.url}}" 
-            class="nav-link link-dark"
+            class="nav-link {% if currentUrl == model.url %} active {% else %} link-dark {% endif %}"
             title="{{model.table}}" 
             data-bs-toggle="tooltip" 
             data-bs-placement="right" 
