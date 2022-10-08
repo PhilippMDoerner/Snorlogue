@@ -1,4 +1,4 @@
-import std/[times, strutils, sugar, json, os, options, strformat, logging, typetraits, algorithm]
+import std/[times, strutils, sugar, json, os, options, strformat, logging, typetraits]
 import norm/[pragmas, pragmasutils, model]
 import prologue
 import ../utils/macroUtils

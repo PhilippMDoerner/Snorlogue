@@ -1,9 +1,8 @@
 import norm/model
 import prologue
-import std/[strutils, strformat, options, sequtils, sugar, os, re]
-import utils/[controllerUtils, macroUtils]
-import pageContexts
-import nimja/parser
+import std/[strutils, options, sequtils, sugar]
+import ./utils/[controllerUtils]
+import ./pageContexts
 import ./constants
 import ./service/[formService, modelAnalysisService]
 

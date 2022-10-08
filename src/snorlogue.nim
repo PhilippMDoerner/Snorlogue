@@ -1,6 +1,6 @@
 import snorlogue/modelRoutes
-import std/strutils
 import snorlogue/service/fieldUtils/[fieldTypes, fileFieldUtils]
+import std/strutils
 
 export fileFieldUtils
 export fieldTypes

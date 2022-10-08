@@ -1,5 +1,4 @@
-import norm/model
-import norm/postgres
+import norm/[model, postgres]
 import std/[strformat, options, strutils, sequtils]
 import ../constants
 
