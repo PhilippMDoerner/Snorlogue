@@ -9,8 +9,11 @@
     <!-- Bootstrap -->
     {% importnimja "resources/js/popper.min.js.nimja" %}
     {% importnimja "resources/js/bootstrap.bundle.min.js.nimja" %}
-    {% importnimja "resources/js/fontawesome.js.nimja" %}
     {% importnimja "resources/css/animate.min.css.nimja" %}
+    {% importnimja "resources/css/fontawesome6.2.0_1.nimja" %}
+    {% importnimja "resources/css/fontawesome6.2.0_2.nimja" %}
+    {% importnimja "resources/css/fontawesome6.2.0_3.nimja" %}
+    {% importnimja "resources/css/fontawesome6.2.0_4.nimja" %}
     {% importnimja "resources/css/bootstrap.min.css.nimja" %}
 </head>
 <body style="background-color: #d1ffd1;">
