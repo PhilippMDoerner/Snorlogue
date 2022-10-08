@@ -14,6 +14,8 @@ requires "norm >= 2.5.0"
 requires "prologue >= 0.6.0"
 requires "nimja >= 0.8.4"
 
+skipDirs = @["example"]
+
 task run_example, "NOTE TO USER: ADJUST `--define:basePath` FLAG!!! - Compiles and runs the snorlogue example":
   ## You will further have to modify nimja/sharedhelper.nim getScriptDir() to return "nimbleTaskFix"
   ## const basePath {.strdefine.} = getProjectPath()
