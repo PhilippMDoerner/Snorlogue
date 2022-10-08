@@ -13,7 +13,7 @@
       data-bs-toggle="tooltip" 
       data-bs-placement="right" 
       data-bs-original-title="Overview">
-        <span class="fas fa-home"></span>
+        <span class="fas fa-home mr-2"></span>
         Overview
       </a>
     </li>
@@ -26,10 +26,28 @@
       data-bs-toggle="tooltip" 
       data-bs-placement="right" 
       data-bs-original-title="Direct Database Access">
-        <span class="fas fa-database"></span>
+        <span class="fas fa-database mr-2"></span>
         SQL
       </a>
     </li>
+    <li class="ml-2">
+      <ul class="nav nav-pills flex-column mb-auto">
+        {% for model in models %}
+          <li class="nav-item">
+            <a href="{{model.url}}" 
+            class="nav-link link-dark"
+            title="{{model.table}}" 
+            data-bs-toggle="tooltip" 
+            data-bs-placement="right" 
+            data-bs-original-title="{{model.table}}">
+              <span class="fas fa-table mr-2"></span>
+              {{model.name}}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+
   </ul>
   <hr>
 </div>

@@ -20,6 +20,7 @@
                 {% let overviewUrl = context.overviewUrl %}
                 {% let sqlUrl = context.sqlUrl %}
                 {% let currentPage = context.currentPage %}
+                {% let models = context.modelTypes %}
                 {% importnimja "resources/components/sidebar.nimja" %}
             {%  endscope %}
         </div>

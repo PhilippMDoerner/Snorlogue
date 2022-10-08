@@ -1,6 +1,9 @@
 import norm/model
 import std/[strformat, strutils, sequtils, tables, math, options, sugar]
 import ./service/[modelAnalysisService, formService]
+import ./utils/urlUtils
+
+export urlUtils
 
 when defined(postgres):
   import service/postgresService
@@ -9,29 +12,7 @@ elif defined(sqlite):
 else:
   {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
-
-type Page* = enum
-  CREATE = "create"
-  DELETE = "delete"
-  DETAIL = "detail"
-  LIST = "list"
-  OVERVIEW = "overview"
-  BACKEND
-  SQL = "sql"
-
-proc generateUrlStub*(urlPrefix: static string, action: Page, modelName: string): string =
-  result.add(fmt"/{urlPrefix}")
-  case action:
-  of Page.OVERVIEW, Page.SQL:
-    result.add fmt"/{$action}"
-  of Page.BACKEND:
-    result.add fmt"/{modelName}"
-  else:
-    result.add fmt"/{modelName}/{$action}"
-
-proc generateUrlStub*[T: Model](urlPrefix: static string, action: Page, model: typedesc[T]): string =
-  let modelName = ($model).toLower()
-  result = generateUrlStub(urlPrefix, action, modelName)
+var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
   
 proc hasFileField*(fields: seq[FormField]): bool =
   fields.any(field => field.kind == FormFieldKind.FILE)
@@ -41,6 +22,7 @@ type PageContext* = object of RootObj
   currentPage*: Page
   overviewUrl*: string
   sqlUrl*: string
+  modelTypes*: seq[ModelMetaData]
 
 type ModelListContext*[T] = object of PageContext
   modelName*: string
@@ -72,23 +54,25 @@ proc initListContext*[T](models: seq[T], urlPrefix: static string, totalModelCou
   let isLastPage = pageIndex == maxPageIndex
   let isFirstPage = pageIndex == 0
 
-  result = ModelListContext[T](
-    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
-    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
-    currentPage: Page.LIST,
+  {.cast(gcsafe).}:
+    result = ModelListContext[T](
+      overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+      sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+      currentPage: Page.LIST,
+      modelTypes: REGISTERED_MODELS,
 
-    modelName: $T,
-    models: models,
-    totalModelCount: totalModelCount,
-    createUrl: fmt"{generateUrlStub(urlPrefix, Page.CREATE, T)}/",
-    deleteUrLStub: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/",
-    detailUrlStub: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/",
-    listUrlStub: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
-    pageIndices: getPaginationIndices(pageIndex, maxPageIndex),
-    currentPageIndex: pageIndex,
-    isFirstPage: isFirstPage,
-    isLastPage: isLastPage
-  )
+      modelName: $T,
+      models: models,
+      totalModelCount: totalModelCount,
+      createUrl: fmt"{generateUrlStub(urlPrefix, Page.CREATE, T)}/",
+      deleteUrLStub: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/",
+      detailUrlStub: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/",
+      listUrlStub: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
+      pageIndices: getPaginationIndices(pageIndex, maxPageIndex),
+      currentPageIndex: pageIndex,
+      isFirstPage: isFirstPage,
+      isLastPage: isLastPage
+    )
 
 
 type ModelDetailContext*[T] = object of PageContext
@@ -104,19 +88,21 @@ type ModelDetailContext*[T] = object of PageContext
 proc initDetailContext*[T: Model](model: T, urlPrefix: static string): ModelDetailContext[T] =
   let fields: seq[FormField] = extractFields[T](model)
 
-  ModelDetailContext[T](
-    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
-    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
-    currentPage: Page.DETAIL,
+  {.cast(gcsafe).}:
+    ModelDetailContext[T](
+      overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+      sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+      currentPage: Page.DETAIL,
+      modelTypes: REGISTERED_MODELS,
 
-    modelName: $T,
-    model: model,
-    fields: fields,
-    hasFileField: hasFileField(fields),
-    deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/{model.id}/",
-    updateUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
-    listUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/"
-  )
+      modelName: $T,
+      model: model,
+      fields: fields,
+      hasFileField: hasFileField(fields),
+      deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.DELETE, T)}/{model.id}/",
+      updateUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
+      listUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/"
+    )
 
 
 type ModelDeleteContext*[T] = object of PageContext
@@ -126,16 +112,18 @@ type ModelDeleteContext*[T] = object of PageContext
   modelName*: string
 
 proc initDeleteContext*[T: Model](model: T, urlPrefix: static string): ModelDeleteContext[T] =
-  ModelDeleteContext[T](
-    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
-    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
-    currentPage: Page.DELETE,
+  {.cast(gcsafe).}:
+    ModelDeleteContext[T](
+      overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+      sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+      currentPage: Page.DELETE,
+      modelTypes: REGISTERED_MODELS,
 
-    model: model,
-    deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
-    detailUrl: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{model.id}/",
-    modelName: $T
-  )
+      model: model,
+      deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
+      detailUrl: fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{model.id}/",
+      modelName: $T
+    )
 
 
 type ModelCreateContext*[T] = object of PageContext
@@ -147,18 +135,19 @@ type ModelCreateContext*[T] = object of PageContext
 
 proc initCreateContext*[T: Model](model: T, urlPrefix: static string): ModelCreateContext[T] =
   let fields: seq[FormField] = extractFields(model)
+  {.cast(gcsafe).}:
+    ModelCreateContext[T](
+      overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+      sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+      currentPage: Page.CREATE,
+      modelTypes: REGISTERED_MODELS,
 
-  ModelCreateContext[T](
-    overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
-    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
-    currentPage: Page.CREATE,
-
-    modelName: $T,
-    fields: fields,
-    hasFileField: hasFileField(fields),
-    listUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
-    createUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/"
-  )
+      modelName: $T,
+      fields: fields,
+      hasFileField: hasFileField(fields),
+      listUrl: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",
+      createUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/"
+    )
 
 
 type OverviewContext* = object of PageContext
@@ -176,13 +165,16 @@ proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static
     modelLinks[metaData] = fmt"{generateUrlStub(urlPrefix, Page.LIST, metaData.name.toLower())}/"
 
   modelLinks.sort(sort)
-  OverviewContext(
-    overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
-    sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
-    currentPage: Page.OVERVIEW,
 
-    modelLinks: modelLinks
-  )
+  {.cast(gcsafe).}:
+    OverviewContext(
+      overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
+      sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
+      currentPage: Page.OVERVIEW,
+      modelTypes: REGISTERED_MODELS,
+
+      modelLinks: modelLinks
+    )
 
 type SqlContext* = object of PageContext
   query*: string
@@ -193,13 +185,15 @@ type SqlContext* = object of PageContext
 proc initSqlContext*(urlPrefix: static string, query: string, rows: Option[seq[Row]], columnNames: Option[seq[string]], errorMsg: Option[string]): SqlContext =
   let columns: seq[string] = @[]
 
-  SqlContext(
-    overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
-    sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
-    currentPage: Page.SQL,
+  {.cast(gcsafe).}:
+    SqlContext(
+      overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
+      sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
+      currentPage: Page.SQL,
+      modelTypes: REGISTERED_MODELS,
 
-    query: query,
-    rows: rows,
-    columns: columnNames,
-    queryErrorMsg: errorMsg
-  )
+      query: query,
+      rows: rows,
+      columns: columnNames,
+      queryErrorMsg: errorMsg
+    )

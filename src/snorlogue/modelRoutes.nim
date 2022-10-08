@@ -13,8 +13,6 @@ export pageContexts
 const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)"
 const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
 
-var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
-
 proc addCrudRoutes*[T: Model](
   app: var Prologue, 
   modelType: typedesc[T], 
@@ -30,7 +28,7 @@ proc addCrudRoutes*[T: Model](
   ## to the provided field names in ascending or descending order.
 
   static: validateModel[T](T)
-  const modelMetaData = extractMetaData(T)
+  const modelMetaData = extractMetaData(urlPrefix, T)
   REGISTERED_MODELS.add(modelMetaData)
   
   let baseRoute = ($T).toLower()
