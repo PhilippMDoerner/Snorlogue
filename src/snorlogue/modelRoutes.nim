@@ -110,3 +110,11 @@ proc addAdminRoutes*(
     middlewares = middlewares
   )
   debug(fmt"Added admin route GET    '/{urlPrefix}/{$Page.SQL}/'")
+
+  app.addRoute(
+    fmt"/{urlPrefix}/{$Page.SQL}/",
+    handler = createSqlFrontendController(urlPrefix),
+    httpMethod = HttpGet,
+    middlewares = middlewares
+  )
+  debug(fmt"Added admin route GET    '/{urlPrefix}/{$Page.SQL}/'")

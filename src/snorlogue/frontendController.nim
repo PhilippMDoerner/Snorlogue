@@ -91,3 +91,12 @@ proc createSqlController*(urlPrefix: static string): HandlerAsync =
     let html = renderNimjaPage("sql.nimja", context)
 
     resp htmlResponse(html)
+
+  
+
+proc createSqlFrontendController*(urlPrefix: static string): HandlerAsync =
+  result = proc(ctx: Context) {.async, gcsafe.} =
+    let context = initSqlContext(urlPrefix, "", none(seq[Row]), none(seq[string]), none(string))
+    let html = renderNimjaPage("sql.nimja", context)
+
+    resp htmlResponse(html)

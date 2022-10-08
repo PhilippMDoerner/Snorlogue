@@ -38,7 +38,9 @@ proc hasFileField*(fields: seq[FormField]): bool =
 
 
 type PageContext* = object of RootObj
+  currentPage*: Page
   overviewUrl*: string
+  sqlUrl*: string
 
 type ModelListContext*[T] = object of PageContext
   modelName*: string
@@ -72,6 +74,8 @@ proc initListContext*[T](models: seq[T], urlPrefix: static string, totalModelCou
 
   result = ModelListContext[T](
     overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+    currentPage: Page.LIST,
 
     modelName: $T,
     models: models,
@@ -102,6 +106,8 @@ proc initDetailContext*[T: Model](model: T, urlPrefix: static string): ModelDeta
 
   ModelDetailContext[T](
     overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+    currentPage: Page.DETAIL,
 
     modelName: $T,
     model: model,
@@ -122,6 +128,8 @@ type ModelDeleteContext*[T] = object of PageContext
 proc initDeleteContext*[T: Model](model: T, urlPrefix: static string): ModelDeleteContext[T] =
   ModelDeleteContext[T](
     overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
+    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+    currentPage: Page.DELETE,
 
     model: model,
     deleteUrl: fmt"{generateUrlStub(urlPrefix, Page.BACKEND, T)}/",
@@ -142,7 +150,9 @@ proc initCreateContext*[T: Model](model: T, urlPrefix: static string): ModelCrea
 
   ModelCreateContext[T](
     overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
-    
+    sqlUrl: fmt"{generateUrlStub(urlPrefix, Page.SQL, T)}/",
+    currentPage: Page.CREATE,
+
     modelName: $T,
     fields: fields,
     hasFileField: hasFileField(fields),
@@ -153,7 +163,6 @@ proc initCreateContext*[T: Model](model: T, urlPrefix: static string): ModelCrea
 
 type OverviewContext* = object of PageContext
   modelLinks*: OrderedTable[ModelMetaData, string]
-  sqlUrl*: string
 
 proc sort(entry1, entry2: (ModelMetaData, string)): int =
   if entry1[0].name > entry2[0].name: 
@@ -169,13 +178,13 @@ proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static
   modelLinks.sort(sort)
   OverviewContext(
     overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
-
     sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
+    currentPage: Page.OVERVIEW,
+
     modelLinks: modelLinks
   )
 
 type SqlContext* = object of PageContext
-  sqlUrl*: string
   query*: string
   rows*: Option[seq[Row]]
   columns*: Option[seq[string]]
@@ -186,8 +195,9 @@ proc initSqlContext*(urlPrefix: static string, query: string, rows: Option[seq[R
 
   SqlContext(
     overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
-
     sqlUrl: fmt"""{generateUrlStub(urlPrefix, Page.SQL, "")}/""",
+    currentPage: Page.SQL,
+
     query: query,
     rows: rows,
     columns: columnNames,

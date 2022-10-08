@@ -1,0 +1,32 @@
+<div class="d-flex flex-column flex-shrink-0 bg-light h-100 min-vh-100" style="width: 4.5rem;">
+  <a href="/" class="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+    <svg class="fas fa-house" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+    <span class="visually-hidden">Icon-only</span>
+  </a>
+  <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+    <li class="nav-item">
+      <a href="{{overviewUrl}}" 
+      class="nav-link py-3 border-bottom {% if currentPage == Page.OVERVIEW %} active {% endif %}" 
+      {% if currentPage == Page.OVERVIEW %} aria-current="page" {% endif %} 
+      title="Overview" 
+      data-bs-toggle="tooltip" 
+      data-bs-placement="right" 
+      data-bs-original-title="Overview">
+        <span class="fas fa-home"></span>
+      </a>
+    </li>
+    
+    <li>
+      <a href="{{sqlUrl}}" 
+      class="nav-link py-3 border-bottom {% if currentPage == Page.SQL %} active {% endif %}" 
+      {% if currentPage == Page.SQL %} aria-current="page" {% endif %} 
+      title="SQL" 
+      data-bs-toggle="tooltip" 
+      data-bs-placement="right" 
+      data-bs-original-title="Dashboard">
+        <span class="fas fa-database"></span>
+      </a>
+    </li>
+
+  </ul>
+</div>
