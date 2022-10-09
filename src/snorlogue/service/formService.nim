@@ -81,23 +81,25 @@ func toModelValue*(formValue: string, T: typedesc[bool]): T = parseBool(formValu
 
 func toModelValue*(formValue: string, T: typedesc[DateTime]): T = parse(formValue)
 
-func toModelValue*(formValue: string, T: typedesc[Filename]): T = formValue.Filename
-
 func toModelValue*[T](formValue: string, O: typedesc[Option[T]]): O = 
   let hasValue = formValue != ""
   result = if hasValue: some formValue.toModelValue(T) else: none(T)
 
+proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string): string =
+  let file = ctx.getUploadFile(fileFieldName)
+  if not dirExists(mediaDirectory):
+   raise newException(IOError, fmt"The media directory '{mediaDirectory}' does not exist or is not accessible. Configure one with the setting '{MEDIA_ROOT_SETTING}' or create it/make it accessible.")
+  
+  file.save(mediaDirectory)
+  result = file.fileName
+
 proc handleFileFormData(ctx: Context, fileFieldName: string): Filename =
   ## Handles files sent via HTTP requests. Stores the file and returns the filepath.
-  let file = ctx.getUploadFile(fileFieldName)
-  let mediaRoot = ctx.getSettings(MEDIA_ROOT_SETTING).getStr(DEFAULT_MEDIA_ROOT)
-  if not dirExists(mediaRoot):
-   raise newException(IOError, fmt"The media directory '{mediaRoot}' does not exist or is not accessible. Configure one with the setting '{MEDIA_ROOT_SETTING}' or create it/make it accessible.")
-  
-  file.save(mediaRoot)
+  let mediaDirectory = ctx.getSettings(MEDIA_ROOT_SETTING).getStr(DEFAULT_MEDIA_ROOT)
 
-  let filepath = fmt"{mediaRoot}/{file.filename}"
-  result = filepath.Filename
+  let fileName = ctx.saveFile(fileFieldName, mediaDirectory)
+  let fullFilePath = fmt"{mediaDirectory}/{filename}"
+  result = fullFilePath.Filename
 
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
   ## Parses the form data into a model instance
