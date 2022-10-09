@@ -1,6 +1,5 @@
 import norm/[pragmas, model]
 import std/[macros, tables, typetraits, strutils, strformat]
-import ../utils/urlUtils
 
 type ModelMetaData* = object
   name*: string

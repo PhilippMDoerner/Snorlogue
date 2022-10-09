@@ -1,4 +1,4 @@
-import std/[tables, strformat, strutils, logging, sequtils]
+import std/[tables, strformat, strutils, logging]
 import norm/model
 import prologue
 import nimja/parser

@@ -85,20 +85,28 @@ func toModelValue*[T](formValue: string, O: typedesc[Option[T]]): O =
   let hasValue = formValue != ""
   result = if hasValue: some formValue.toModelValue(T) else: none(T)
 
-proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string): string =
+proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string, subdir: Option[string]): string =
   let file = ctx.getUploadFile(fileFieldName)
   if not dirExists(mediaDirectory):
    raise newException(IOError, fmt"The media directory '{mediaDirectory}' does not exist or is not accessible. Configure one with the setting '{MEDIA_ROOT_SETTING}' or create it/make it accessible.")
   
-  file.save(mediaDirectory)
-  result = file.fileName
+  let isStoredInSubDirectory = subdir.isSome()
+  let storageDirectory = if isStoredInSubDirectory: fmt"{mediaDirectory}/{subdir.get()}" else: fmt"{mediaDirectory}"
 
-proc handleFileFormData(ctx: Context, fileFieldName: string): Filename =
+  if not dirExists(storageDirectory):
+    createDir(storageDirectory)
+
+  file.save(storageDirectory)
+  let fullFilepath = fmt"{storageDirectory}/{file.fileName}"
+  result = fullFilepath
+  
+
+
+proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[string]): Filename =
   ## Handles files sent via HTTP requests. Stores the file and returns the filepath.
   let mediaDirectory = ctx.getSettings(MEDIA_ROOT_SETTING).getStr(DEFAULT_MEDIA_ROOT)
 
-  let fileName = ctx.saveFile(fileFieldName, mediaDirectory)
-  let fullFilePath = fmt"{mediaDirectory}/{filename}"
+  let fullFilePath = ctx.saveFile(fileFieldName, mediaDirectory, subdir)
   result = fullFilePath.Filename
 
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
@@ -128,8 +136,11 @@ proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: sta
       else:
         const isFileField = typeOf(dummyValue) is Filename
         when isFileField:
-          let formValue = handleFileFormData(ctx, name)
+          const hasSubDirectory = hasCustomPragma(dummyValue, subdir)
+          const fileSubdir = when hasSubDirectory: some(getCustomPragmaVal(dummyValue, subdir)) else: none(string)
+          let formValue = handleFileFormData(ctx, name, fileSubdir)
           result.setField(name, formValue)
+
         else:
           let formValue = formValueStr.get().toModelValue(typeOf(dummyValue))
           result.setField(name, formValue)

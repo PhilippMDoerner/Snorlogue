@@ -1,5 +1,5 @@
 import norm/model
-import std/[strformat, strutils, sequtils, tables, math, options, sugar]
+import std/[strformat, sequtils, tables, math, options, sugar]
 import ./service/[modelAnalysisService, formService]
 import ./utils/urlUtils
 

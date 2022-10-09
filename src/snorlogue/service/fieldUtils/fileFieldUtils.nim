@@ -14,3 +14,6 @@ proc add*(x: var Filename, s: Filename) = x.string.add(s.string)
 func to*(dbVal: DbValue, T: typedesc[Filename]): T = dbVal.s.Filename
 func dbValue*(val: Filename): DbValue = dbValue(val.string)
 func dbType*(T: typedesc[Filename]): string = "TEXT"
+
+# subdir pragma
+template subdir*(directory: string) {.pragma.}
