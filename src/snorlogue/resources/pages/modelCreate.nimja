@@ -10,7 +10,7 @@
     {% let formUrl = context.createUrl %}
     {% let modelName = context.modelName %}
     {% let fields = context.fields %}
-    {% let buttonLabel = "Create" %}
+    {% let buttonLabel = """<span class="fas fa-floppy-disk"></span> Create""" %}
     {% let requestType = "POST" %}
     {% let backButtonUrl = context.listUrl %}
     {% let backButtonLabel = "Back to Table" %}
