@@ -1,6 +1,6 @@
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light h-100 min-vh-100 border border-end border-info" style="width: 280px;">
   <a href="{{overviewUrl}}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-    <strong class="fs-4"> Prologue Database Administration</storng>
+    <strong class="fs-4"> Prologue Database Administration</strong>
   </a>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
