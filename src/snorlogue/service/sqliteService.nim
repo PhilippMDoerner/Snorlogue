@@ -18,9 +18,15 @@ proc read*[T: Model](id: int64): T =
 
   result = targetEntry
 
-proc create*[T: Model](newModel: var T) {.gcsafe.}=
+proc create*[T: Model](newModel: var T, beforeCreateEvent: EventProc[T], afterCreateEvent: EventProc[T]) {.gcsafe.}=
   withDb:
+    if beforeCreateEvent != nil:
+      beforeCreateEvent(db, newModel)
+
     db.insert(newModel)
+
+    if afterCreateEvent != nil:
+      afterCreateEvent(db, newModel)
 
 proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sortDirection: SortDirection): seq[T] =
   var entryList: seq[T] = @[T()]
@@ -39,13 +45,22 @@ proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sor
 
   result = entryList
 
-proc update*[T: Model](updateModel: var T) {.gcsafe.}=
+proc update*[T: Model](updateModel: var T, beforeUpdateEvent: EventProc[T], afterUpdateEvent: EventProc[T]) {.gcsafe.}=
   withDb:
+    if beforeUpdateEvent != nil:
+      beforeUpdateEvent(db, updateModel)
+
     db.update(updateModel)
 
-proc delete*[T: Model](modelType: typedesc[T], id: int64) {.gcsafe.} =
+    if afterUpdateEvent != nil:
+      afterUpdateEvent(db, updateModel)
+
+proc delete*[T: Model](modelType: typedesc[T], id: int64, beforeDeleteEvent: EventProc[T]) {.gcsafe.} =
   var modelToDelete = T(id: id)
   withDb:
+    if beforeDeleteEvent != nil:
+      beforeDeleteEvent(db, modelToDelete)
+
     db.delete(modelToDelete)
 
 proc count*[T: Model](modelType: typedesc[T]): int64 =
@@ -75,20 +90,6 @@ proc executeQuery*(query: string): Option[QueryResult] =
     else:
       db.exec(sql query)
       result = none(QueryResult)
-
-
-
-macro unrollSeq(x: static seq[string], name, body: untyped) =
-  result = newStmtList()
-  for a in x:
-    result.add(
-      newBlockStmt(
-        newStmtList(
-          newConstStmt(name, newLit(a)),
-          copy body
-        )
-      )
-    )
 
 proc listAll*[T: Model](modelType: typedesc[T]): seq[T] =
   result = @[T()]

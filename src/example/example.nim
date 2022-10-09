@@ -1,7 +1,7 @@
 import prologue
 import norm/[sqlite, model]
 import ../snorlogue
-import std/[strutils, options, logging]
+import std/[strutils, options, strformat, logging]
 from os import `putEnv`
 
 putEnv("DB_HOST", "db.sqlite3")
@@ -14,6 +14,8 @@ type Creature* = ref object of Model
 
 proc `$`*(model: Creature): string = model.name
 
+proc afterCreateAction(connection: DbConn, model: Creature): void =
+  echo fmt"Just created Creature '{model.name}'!"
 
 proc main() =
 
@@ -22,8 +24,8 @@ proc main() =
     db.createTables(creature1)
     db.insert(creature1)
 
-  var app = newApp()
-  app.addCrudRoutes(Creature)
+  var app: Prologue = newApp()
+  app.addCrudRoutes(Creature, afterCreateEvent = afterCreateAction)
   app.addAdminRoutes()
   app.run()
 
