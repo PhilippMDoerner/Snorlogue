@@ -5,6 +5,7 @@ An plugin for the prologue web-framework of the nim-language.
 Provides an admin interface that allows basic CRUD interactions with any registered model.
 Further enables directly interacting with the database via raw SQL.
 
+## Example Screenshots
 ### Table Overview Page
 ![Table overview of all tables in example](https://i.imgur.com/YiEumKz.png "Table overview of all tables in example")
 
