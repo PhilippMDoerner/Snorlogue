@@ -111,6 +111,7 @@ proc addAdminRoutes*(
   ## This view supports DML SQL only.
   ## These routes will be available after the pattern 
   ## `fmt"{urlPrefix}/[overview | sql]/"
+  debug fmt"Add Admin Overview Pages with {REGISTERED_MODELS.len} models"
   const overviewUrl = fmt"/{urlPrefix}/{$Page.OVERVIEW}/"
   app.addRoute(
     overviewUrl,
