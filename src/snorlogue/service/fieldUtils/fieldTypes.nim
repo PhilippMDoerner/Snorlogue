@@ -1,4 +1,4 @@
-import std/[times, options]
+import std/[options]
 
 type Filename* = distinct string
 
@@ -30,7 +30,7 @@ type FormField* = object
   of INT: 
     iVal*: Option[int64]
   of DATE: 
-    dtVal*: Option[DateTime]
+    dtVal*: Option[string]
   of BOOL: 
     bVal*: Option[bool]
   of INTSELECT: 

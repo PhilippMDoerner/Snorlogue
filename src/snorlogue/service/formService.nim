@@ -40,7 +40,7 @@ func toFormField*(value: Option[bool], fieldName: string): FormField =
 
 func toFormField*(value: Option[DateTime], fieldName: string): FormField = 
   ## Converts field data of DateTime field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.DATE, dtVal: value)
+  FormField(name: fieldName, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(UTC_TIME_FORMAT)))
 
 func toFormField*(value: Option[Filename], fieldName: string): FormField =
   ## Converts field data of Filename field on Model into FormField to generate HTML Form Fields 

@@ -8,7 +8,7 @@ elif defined(sqlite):
 else:
   {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
-
+const UTC_TIME_FORMAT* = "yyyy-MM-dd'T'HH:mm:ss'.'ffffff'Z'"
 const ID_PARAM* = "id"
 const PAGE_PARAM* = "page"
 const DEFAULT_PAGE_SIZE* = 50
