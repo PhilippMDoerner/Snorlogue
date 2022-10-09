@@ -13,7 +13,7 @@
     {% importnimja "resources/js/fontawesome.js.nimja" %}
     {% importnimja "resources/css/bootstrap.min.css.nimja" %}
 </head>
-<body style="background-color: #d1ffd1;">
+<body style="background-color: #e2e2e2;">
     <div class="d-flex flex-row">
         <div>
             {% scope %}

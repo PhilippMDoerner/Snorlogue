@@ -1,6 +1,6 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light h-100 min-vh-100 border border-end" style="width: 280px;">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light h-100 min-vh-100 border border-end border-info" style="width: 280px;">
   <a href="{{overviewUrl}}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-    <span class="fs-4"> Database Administration</span>
+    <strong class="fs-4"> Prologue Database Administration</storng>
   </a>
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
@@ -34,7 +34,7 @@
         {% for model in models %}
           <li class="nav-item">
             <a href="{{model.url}}" 
-            class="nav-link {% if currentUrl == model.url %} active {% else %} link-dark {% endif %}"
+            class="nav-link {% if currentUrl == model.url or model.name.toLower() in currentUrl.toLower() %} active {% else %} link-dark {% endif %}"
             title="{{model.table}}" 
             data-bs-toggle="tooltip" 
             data-bs-placement="right" 
