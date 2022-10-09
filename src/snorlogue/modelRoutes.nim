@@ -7,20 +7,11 @@ import ./frontendController
 import ./constants except `$`
 import ./pageContexts
 import ./service/modelAnalysisService
-import prologue/middlewares/staticfile
 
 export pageContexts
 
 const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)"
 const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
-
-proc getMediaSetting*(app: Prologue): string =
-  let settings = app.gScope.settings
-  let hasMediaDirectorySetting = settings.hasKey(MEDIA_ROOT_SETTING)
-  if hasMediaDirectorySetting:
-    result = settings[MEDIA_ROOT_SETTING].getStr()
-  else:
-    result = DEFAULT_MEDIA_ROOT
 
 proc addCrudRoutes*[T: Model](
   app: var Prologue, 
@@ -52,8 +43,6 @@ proc addCrudRoutes*[T: Model](
   const modelMetaData = extractMetaData(urlPrefix, T)
   REGISTERED_MODELS.add(modelMetaData)
   
-  app.use(staticFileMiddleware(app.getMediaSetting()))
-
   let modelName = ($T).toLower()
 
   app.addRoute(
