@@ -43,55 +43,61 @@ proc addCrudRoutes*[T: Model](
   const modelMetaData = extractMetaData(urlPrefix, T)
   REGISTERED_MODELS.add(modelMetaData)
   
-  let modelName = ($T).toLower()
+  const modelName = ($T).toLower()
 
+  const detailUrl = fmt"/{urlPrefix}/{modelName}/{$Page.DETAIL}/{ID_PATTERN}/"
   app.addRoute(
-    re fmt"/{urlPrefix}/{modelName}/{$Page.DETAIL}/{ID_PATTERN}/",
+    re detailUrl,
     handler = createDetailController[T](T, urlPrefix),
     httpMethod = [HttpGet, HttpPost],
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{modelName}/{$Page.DETAIL}/{ID_PATTERN}/'")
+  debug(fmt"Added admin route GET    '{detailUrl}'")
 
+  const pageableListUrl = fmt"/{urlPrefix}/{modelName}/{$Page.LIST}/{PAGE_PATTERN}/"
   app.addRoute(
-    re fmt"/{urlPrefix}/{modelName}/{$Page.LIST}/{PAGE_PATTERN}/",
+    re pageableListUrl,
     handler = createListController(T, urlPrefix,  sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{modelName}/{$Page.LIST}/{PAGE_PATTERN}/'")
+  debug(fmt"Added admin route GET    '{pageableListUrl}'")
 
+  const listUrl = fmt"/{urlPrefix}/{modelName}/{$Page.LIST}/"
   app.addRoute(
-    fmt"/{urlPrefix}/{modelName}/{$Page.LIST}/",
+    listUrl,
     handler = createListController(T, urlPrefix, sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{modelName}/{$Page.LIST}/'")
+  debug(fmt"Added admin route GET    '{listUrl}'")
 
+  const deleteUrl = fmt"/{urlPrefix}/{modelName}/{$Page.DELETE}/{ID_PATTERN}/"
   app.addRoute(
-    re fmt"/{urlPrefix}/{modelName}/{$Page.DELETE}/{ID_PATTERN}/",
+    re deleteUrl,
     handler = createConfirmDeleteController(T, urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{modelName}/{$Page.DELETE}/{ID_PATTERN}/'")
+  debug(fmt"Added admin route GET    '{deleteUrl}'")
 
+  const createUrl = fmt"/{urlPrefix}/{modelName}/{$Page.CREATE}/"
   app.addRoute(
-    fmt"/{urlPrefix}/{modelName}/{$Page.CREATE}/",
+    createUrl,
     handler = createCreateFormController(T, urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{modelName}/{$Page.CREATE}/'")
+  debug(fmt"Added admin route GET    '{createUrl}'")
 
+  const backendUrl = fmt"/{urlPrefix}/{modelName}/"
   app.addRoute(
-    fmt"/{urlPrefix}/{modelName}/",
+    backendUrl,
     handler = createBackendController(T, urlPrefix, beforeCreateEvent, afterCreateEvent, beforeUpdateEvent, afterUpdateEvent, beforeDeleteEvent),
     httpMethod = HttpPost,
     middlewares = middlewares,
   )
-  debug(fmt"Added admin route POST   '/{urlPrefix}/{modelName}/'")
+  debug(fmt"Added admin route POST   '{backendUrl}'")
 
 
 proc addAdminRoutes*(
@@ -105,26 +111,29 @@ proc addAdminRoutes*(
   ## This view supports DML SQL only.
   ## These routes will be available after the pattern 
   ## `fmt"{urlPrefix}/[overview | sql]/"
+  const overviewUrl = fmt"/{urlPrefix}/{$Page.OVERVIEW}/"
   app.addRoute(
-    fmt"/{urlPrefix}/{$Page.OVERVIEW}/",
+    overviewUrl,
     handler = createOverviewController(REGISTERED_MODELS, urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{$Page.OVERVIEW}/'")
+  debug(fmt"Added admin route GET    '{overviewUrl}'")
 
+  const sqlUrl = fmt"/{urlPrefix}/{$Page.SQL}/"
   app.addRoute(
-    fmt"/{urlPrefix}/{$Page.SQL}/",
+    sqlUrl,
     handler = createSqlController(urlPrefix),
     httpMethod = HttpPost,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{$Page.SQL}/'")
+  debug(fmt"Added admin route GET    '{sqlUrl}'")
 
+  const sqlNoQueryUrl = fmt"/{urlPrefix}/{$Page.SQL}/"
   app.addRoute(
-    fmt"/{urlPrefix}/{$Page.SQL}/",
+    sqlNoQueryUrl,
     handler = createSqlFrontendController(urlPrefix),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
-  debug(fmt"Added admin route GET    '/{urlPrefix}/{$Page.SQL}/'")
+  debug(fmt"Added admin route GET    '{sqlNoQueryUrl}'")
