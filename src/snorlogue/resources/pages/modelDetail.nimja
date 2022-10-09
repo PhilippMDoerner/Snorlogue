@@ -13,7 +13,7 @@
     {% let formUrl = context.updateUrl %}
     {% let modelName = context.modelName %}
     {% let fields = context.fields %}
-    {% let buttonLabel = "Update" %}
+    {% let buttonLabel = """<span class="fas fa-floppy-disk"></span> Update""" %}
     {% let requestType = "PUT" %}
     {% let backButtonUrl = context.listUrl %}
     {% let backButtonLabel = "Back to Table" %}
