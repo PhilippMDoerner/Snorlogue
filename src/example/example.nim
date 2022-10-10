@@ -7,10 +7,22 @@ from os import `putEnv`
 putEnv("DB_HOST", "db.sqlite3")
 addHandler(newConsoleLogger(levelThreshold = lvlDebug))
 
+type CreatureFamily* = enum
+  HUMANOID
+  CELESTIAL
+  DEMONIC
+
 type Creature* = ref object of Model
   name*: string
   description*: Option[string]
-  image* {.subdir:"creature_images".}: FilePath
+  family*: CreatureFamily
+
+func dbType*(T: typedesc[CreatureFamily]): string = "INTEGER"
+func dbValue*(val: CreatureFamily): DbValue = dbValue(val.int)
+proc to*(dbVal: DbValue, T: typedesc[CreatureFamily]): CreatureFamily = dbVal.i.CreatureFamily
+
+withDb:
+  db.createTables(Creature())
 
 proc `$`*(model: Creature): string = model.name
 
