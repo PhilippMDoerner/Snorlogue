@@ -1,6 +1,6 @@
 import std/[options]
 
-type Filename* = distinct string
+type FilePath* = distinct string
 
 type IntOption* = object
   name*: string
@@ -40,4 +40,4 @@ type FormField* = object
     strSeqVal*: Option[string]
     strOptions*: seq[StringOption]
   of FILE:
-    fileVal*: Option[Filename]
+    fileVal*: Option[FilePath]

@@ -10,7 +10,7 @@ addHandler(newConsoleLogger(levelThreshold = lvlDebug))
 type Creature* = ref object of Model
   name*: string
   description*: Option[string]
-  image* {.subdir:"creature_images".}: Filename
+  image* {.subdir:"creature_images".}: FilePath
 
 proc `$`*(model: Creature): string = model.name
 

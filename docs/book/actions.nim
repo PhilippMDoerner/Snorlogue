@@ -18,7 +18,7 @@ nbCode:
 
   # Define the type
   type Image* = ref object of Model
-    imageFile*: Filename
+    imageFile*: FilePath
 
   proc `$`*(entry: Image): string = fmt"Image #{entry.creature_id}"
 
@@ -29,7 +29,7 @@ nbCode:
 
   # Setup the server
   let action: ActionProc = proc(connection: DbConn, entry: Image) = 
-    entry.imageFile = entry.imageFile.string.split('/')[^1].Filename
+    entry.imageFile = entry.imageFile.string.split('/')[^1].FilePath
 
   var app: Prologue = newApp()
   app.addCrudRoutes(Image, beforeCreateAction = action, beforeUpdateAction = action)

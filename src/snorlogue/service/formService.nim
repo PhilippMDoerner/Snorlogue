@@ -47,8 +47,8 @@ func toFormField*(value: Option[DateTime], fieldName: string): FormField =
   ## Converts field data of DateTime field on Model into FormField to generate HTML Form Fields 
   FormField(name: fieldName, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(UTC_TIME_FORMAT)))
 
-func toFormField*(value: Option[Filename], fieldName: string): FormField =
-  ## Converts field data of Filename field on Model into FormField to generate HTML Form Fields 
+func toFormField*(value: Option[FilePath], fieldName: string): FormField =
+  ## Converts field data of FilePath field on Model into FormField to generate HTML Form Fields 
   FormField(name: fieldName, kind: FormFieldKind.FILE, fileVal: value)
 
 func toFormField*[T](value: T, fieldName: string): FormField = 
@@ -107,12 +107,12 @@ proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string, subdi
   
 
 
-proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[string]): Filename =
+proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[string]): FilePath =
   ## Handles files sent via HTTP requests. Stores the file and returns the filepath.
   let mediaDirectory = ctx.getSettings(MEDIA_ROOT_SETTING).getStr(DEFAULT_MEDIA_ROOT)
 
   let fullFilePath = ctx.saveFile(fileFieldName, mediaDirectory, subdir)
-  result = fullFilePath.Filename
+  result = fullFilePath.FilePath
 
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
   ## Parses the form data into a model instance
@@ -139,7 +139,7 @@ proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: sta
 
       # Model Field is Normal Field and Form has value --> Parse into field
       else:
-        const isFileField = typeOf(dummyValue) is Filename
+        const isFileField = typeOf(dummyValue) is FilePath
         when isFileField:
           const hasSubDirectory = hasCustomPragma(dummyValue, subdir)
           const fileSubdir = when hasSubDirectory: some(getCustomPragmaVal(dummyValue, subdir)) else: none(string)

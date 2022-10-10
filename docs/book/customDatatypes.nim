@@ -16,7 +16,7 @@ By default, Snorlogue can deal with the following Nim types in Model fields:
   - ``Natural``
   - ``uint/uint8/16/32/64``
   - ``string``
-  - ``Filename``
+  - ``FilePath``
   - ``DateTime``
   - ``fk*`` (type int64 annotated with norm's `fk` pragma)
 
@@ -29,7 +29,7 @@ Available HTML templates are represented by the `FormField` type and include:
   - Text input (default for `string`)
   - Number input (default for `int/float/Natural`)
   - Datetime input (default for `DateTime`)
-  - File input (Default for `Filename`)
+  - File input (Default for `FilePath`)
   - Select with number values (Default for `fk`)
   - Select with string values
 
