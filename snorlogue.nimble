@@ -29,3 +29,11 @@ task run_example, "NOTE TO USER: ADJUST `--define:basePath` FLAG!!! - Compiles a
   --define:basePath:"<HOME_DIRECTORY>/.nimble/pkgs/snorlogue-0.1.0/snorlogue"
   --outdir:"src/example"
   setCommand "c", "src/example/example.nim"
+
+task docs, "Write the package docs":
+  exec "nim doc --verbosity:0 --define:sqlite --project --index:on " &
+    "--git.url:git@github.com:PhilippMDoerner/Snorlogue.git" &
+    "--git.commit:master " &
+    "-o:docs/apidocs " &
+    "src/snorlogue.nim"
+
