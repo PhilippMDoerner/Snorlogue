@@ -4,14 +4,14 @@ import prologue
 import nimja/parser
 import ./backendController
 import ./frontendController
-import ./constants except `$`
+import ./constants
 import ./pageContexts
 import ./service/modelAnalysisService
 
+export constants
 export pageContexts
 
-const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)"
-const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
+
 
 proc addCrudRoutes*[T: Model](
   app: var Prologue, 
@@ -26,18 +26,21 @@ proc addCrudRoutes*[T: Model](
   beforeUpdateEvent: EventProc[T] = nil,
   afterUpdateEvent: EventProc[T] = nil
 ) =
-  ## Adds create, read, update and delete routes for the provided `modelType`.
-  ## These routes will be available after the pattern 
-  ## `fmt"{urlPrefix}/{modelName}/[create|delete|detail|list]/"
+  ## Adds create, read, update and delete routes with the specified middleware for the provided `modelType`.
+  ## These routes will use URLs that match the following pattern: 
+  ## `urlPrefix/modelName/[create|delete|detail|list]/`. 
+  ## By specifying `urlPrefix` you can customize the start of these URLs.
+  ## 
   ## Model entries shown in the list page can be sorted according 
-  ## to the provided field names in ascending or descending order.
+  ## to the provided `sortFields`, you can sort them in ascending or descending order.
+  ## 
   ## You can also provide event procs to execute before/after you create/update/delete
-  ## an entry.
-  ## `beforeCreateEvent` - Gets executed before creating a model. Note that the model will not have an id yet.
-  ## `afterCreateEvent` - Gets executed after creating a model
-  ## `beforeUpdateEvent` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
-  ## `afterUpdateEvent` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
-  ## `beforeCreateEvent` - Gets executed just before deleting a model
+  ## an entry:
+  ## - `beforeCreateEvent` - Gets executed before creating a model. Note that the model will not have an id yet.
+  ## - `afterCreateEvent` - Gets executed after creating a model
+  ## - `beforeUpdateEvent` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
+  ## - `afterUpdateEvent` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
+  ## - `beforeCreateEvent` - Gets executed just before deleting a model
 
   static: validateModel[T](T)
   const modelMetaData = extractMetaData(urlPrefix, T)
@@ -110,7 +113,7 @@ proc addAdminRoutes*(
   ## The sql route provides a page to execute raw SQL and look at the results.
   ## This view supports DML SQL only.
   ## These routes will be available after the pattern 
-  ## `fmt"{urlPrefix}/[overview | sql]/"
+  ## `urlPrefix/[overview | sql]/`
   debug fmt"Add Admin Overview Pages with {REGISTERED_MODELS.len} models"
   const overviewUrl = fmt"/{urlPrefix}/{$Page.OVERVIEW}/"
   app.addRoute(
