@@ -18,14 +18,8 @@ proc afterCreateAction(connection: DbConn, model: Creature): void =
   echo fmt"Just created Creature '{model.name}'!"
 
 proc main() =
-
-  withDb:
-    var creature1 = Creature(name: "Bat", description: some "Flies in the dark", image: "/some/test/filepath".Filename)
-    db.createTables(creature1)
-    db.insert(creature1)
-
   var app: Prologue = newApp()
-  app.addCrudRoutes(Creature, afterCreateEvent = afterCreateAction)
+  app.addCrudRoutes(Creature, afterCreateAction = afterCreateAction)
   app.addAdminRoutes()
   app.run()
 

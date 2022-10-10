@@ -19,23 +19,23 @@ type RequestType = enum
   GET = "get"
 
 
-proc createHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeCreateEvent: EventProc[T], afterCreateEvent: EventProc[T]) {.gcsafe.} =
+proc createHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T]) {.gcsafe.} =
   {.cast(gcsafe).}:
     var newModel = parseFormData(ctx, T)
-    create(newModel, beforeCreateEvent, afterCreateEvent)
+    create(newModel, beforeCreateAction, afterCreateAction)
   
   let detailPageUrl = fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{newModel.id}/"
   resp redirect(detailPageUrl)
 
-proc updateHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeUpdateEvent: EventProc[T], afterUpdateEvent: EventProc[T]) {.gcsafe.} =
+proc updateHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeUpdateAction: ActionProc[T], afterUpdateAction: ActionProc[T]) {.gcsafe.} =
   {.cast(gcsafe).}:
     var updateModel = parseFormData(ctx, T)
-    update(updateModel, beforeUpdateEvent, afterUpdateEvent)
+    update(updateModel, beforeUpdateAction, afterUpdateAction)
   
   let detailPageUrl = fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{updateModel.id}/"
   resp redirect(detailPageUrl, body = "")
 
-proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeDeleteEvent: EventProc[T]) {.gcsafe.}=
+proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeDeleteAction: ActionProc[T]) {.gcsafe.}=
   let idStr: Option[string] = ctx.getFormParamsOption(ID_PARAM)
   if idStr.isNone():
     resp("", code = Http400)
@@ -43,20 +43,20 @@ proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static
 
   let id = parseInt(idStr.get()).int64
   {.cast(gcsafe).}:
-    delete(T, id, beforeDeleteEvent)
+    delete(T, id, beforeDeleteAction)
 
   let listPageUrl = fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/"
   resp redirect(listPageUrl)
 
 
-proc createBackendController*[T: Model](model: typedesc[T], urlPrefix: static string, beforeCreateEvent: EventProc[T], afterCreateEvent: EventProc[T], beforeUpdateEvent: EventProc[T], afterUpdateEvent: EventProc[T], beforeDeleteEvent: EventProc[T]): HandlerAsync =
+proc createBackendController*[T: Model](model: typedesc[T], urlPrefix: static string, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T], beforeUpdateAction: ActionProc[T], afterUpdateAction: ActionProc[T], beforeDeleteAction: ActionProc[T]): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let requestTypeStr: string = ctx.getFormParams("request-type")
     let requestType: RequestType = parseEnum[RequestType](requestTypeStr)
 
     case requestType:
-    of RequestType.POST: createHandler(ctx, T, urlPrefix, beforeCreateEvent, afterCreateEvent)
-    of RequestType.PUT: updateHandler(ctx, T, urlPrefix, beforeUpdateEvent, afterUpdateEvent)
-    of RequestType.DELETE: deleteHandler(ctx, T, urlPrefix, beforeDeleteEvent)
+    of RequestType.POST: createHandler(ctx, T, urlPrefix, beforeCreateAction, afterCreateAction)
+    of RequestType.PUT: updateHandler(ctx, T, urlPrefix, beforeUpdateAction, afterUpdateAction)
+    of RequestType.DELETE: deleteHandler(ctx, T, urlPrefix, beforeDeleteAction)
     else:
       resp("This endpoint only supports creation, deletion and update of models", code = Http405)

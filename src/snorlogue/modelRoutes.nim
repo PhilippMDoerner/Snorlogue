@@ -20,11 +20,11 @@ proc addCrudRoutes*[T: Model](
   urlPrefix: static string = "admin",
   sortFields: seq[string] = @["id"],
   sortDirection: SortDirection = SortDirection.ASC,
-  beforeCreateEvent: EventProc[T] = nil,
-  afterCreateEvent: EventProc[T] = nil,
-  beforeDeleteEvent: EventProc[T] = nil,
-  beforeUpdateEvent: EventProc[T] = nil,
-  afterUpdateEvent: EventProc[T] = nil
+  beforeCreateAction: ActionProc[T] = nil,
+  afterCreateAction: ActionProc[T] = nil,
+  beforeDeleteAction: ActionProc[T] = nil,
+  beforeUpdateAction: ActionProc[T] = nil,
+  afterUpdateAction: ActionProc[T] = nil
 ) =
   ## Adds create, read, update and delete routes with the specified middleware for the provided `modelType`.
   ## These routes will use URLs that match the following pattern: 
@@ -36,16 +36,16 @@ proc addCrudRoutes*[T: Model](
   ## 
   ## You can also provide event procs to execute before/after you create/update/delete
   ## an entry:
-  ## - `beforeCreateEvent` - Gets executed before creating a model. Note that the model will not have an id yet.
-  ## - `afterCreateEvent` - Gets executed after creating a model
-  ## - `beforeUpdateEvent` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
-  ## - `afterUpdateEvent` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
-  ## - `beforeCreateEvent` - Gets executed just before deleting a model
+  ## - `beforeCreateAction` - Gets executed before creating a model. Note that the model will not have an id yet.
+  ## - `afterCreateAction` - Gets executed after creating a model
+  ## - `beforeUpdateAction` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
+  ## - `afterUpdateAction` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
+  ## - `beforeCreateAction` - Gets executed just before deleting a model
 
   static: validateModel[T](T)
   const modelMetaData = extractMetaData(urlPrefix, T)
   REGISTERED_MODELS.add(modelMetaData)
-  
+
   const modelName = ($T).toLower()
 
   const detailUrl = fmt"/{urlPrefix}/{modelName}/{$Page.DETAIL}/{ID_PATTERN}/"
@@ -96,7 +96,7 @@ proc addCrudRoutes*[T: Model](
   const backendUrl = fmt"/{urlPrefix}/{modelName}/"
   app.addRoute(
     backendUrl,
-    handler = createBackendController(T, urlPrefix, beforeCreateEvent, afterCreateEvent, beforeUpdateEvent, afterUpdateEvent, beforeDeleteEvent),
+    handler = createBackendController(T, urlPrefix, beforeCreateAction, afterCreateAction, beforeUpdateAction, afterUpdateAction, beforeDeleteAction),
     httpMethod = HttpPost,
     middlewares = middlewares,
   )

@@ -22,5 +22,5 @@ const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)"
 type SortDirection* = enum
   ASC, DESC
 
-type EventProc*[T: Model] = proc(connection: DbConn, model: T): void
+type ActionProc*[T: Model] = proc(connection: DbConn, model: T): void
 

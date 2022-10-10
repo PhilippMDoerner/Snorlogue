@@ -56,7 +56,7 @@ func toFormField*[T](value: T, fieldName: string): FormField =
   toFormField[T](some value, fieldName)
 
 proc extractFields*[T: Model](model: T): seq[FormField] =
-  ## Extracts the metadata of all fields on a model and turns it into seq[FormFIeld] 
+  ## Extracts the metadata of all fields on a model and turns it into seq[FormField] 
   ## which are used to generate HTML form fields. 
   mixin toFormField
   

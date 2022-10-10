@@ -18,15 +18,15 @@ proc read*[T: Model](id: int64): T =
 
   result = targetEntry
 
-proc create*[T: Model](newModel: var T, beforeCreateEvent: EventProc[T], afterCreateEvent: EventProc[T]) {.gcsafe.}=
+proc create*[T: Model](newModel: var T, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T]) {.gcsafe.}=
   withDb:
-    if beforeCreateEvent != nil:
-      beforeCreateEvent(db, newModel)
+    if beforeCreateAction != nil:
+      beforeCreateAction(db, newModel)
 
     db.insert(newModel)
 
-    if afterCreateEvent != nil:
-      afterCreateEvent(db, newModel)
+    if afterCreateAction != nil:
+      afterCreateAction(db, newModel)
 
 proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sortDirection: SortDirection): seq[T] =
   var entryList: seq[T] = @[T()]
@@ -45,21 +45,21 @@ proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sor
 
   result = entryList
 
-proc update*[T: Model](updateModel: var T, beforeUpdateEvent: EventProc[T], afterUpdateEvent: EventProc[T]) {.gcsafe.}=
+proc update*[T: Model](updateModel: var T, beforeUpdateAction: ActionProc[T], afterUpdateAction: ActionProc[T]) {.gcsafe.}=
   withDb:
-    if beforeUpdateEvent != nil:
-      beforeUpdateEvent(db, updateModel)
+    if beforeUpdateAction != nil:
+      beforeUpdateAction(db, updateModel)
 
     db.update(updateModel)
 
-    if afterUpdateEvent != nil:
-      afterUpdateEvent(db, updateModel)
+    if afterUpdateAction != nil:
+      afterUpdateAction(db, updateModel)
 
-proc delete*[T: Model](modelType: typedesc[T], id: int64, beforeDeleteEvent: EventProc[T]) {.gcsafe.} =
+proc delete*[T: Model](modelType: typedesc[T], id: int64, beforeDeleteAction: ActionProc[T]) {.gcsafe.} =
   var modelToDelete = T(id: id)
   withDb:
-    if beforeDeleteEvent != nil:
-      beforeDeleteEvent(db, modelToDelete)
+    if beforeDeleteAction != nil:
+      beforeDeleteAction(db, modelToDelete)
 
     db.delete(modelToDelete)
 
