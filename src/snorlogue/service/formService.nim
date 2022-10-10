@@ -86,9 +86,12 @@ func toModelValue*(formValue: string, T: typedesc[bool]): T = parseBool(formValu
 
 func toModelValue*(formValue: string, T: typedesc[DateTime]): T = parse(formValue)
 
+func toModelValue*[T: enum](formValue: string, O: typedesc[T]): T = (parseInt(formValue)).T
+
 func toModelValue*[T](formValue: string, O: typedesc[Option[T]]): O = 
   let hasValue = formValue != ""
   result = if hasValue: some formValue.toModelValue(T) else: none(T)
+
 
 proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string, subdir: Option[string]): string =
   let file = ctx.getUploadFile(fileFieldName)
