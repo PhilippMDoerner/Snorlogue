@@ -37,3 +37,7 @@ task docs, "Write the package docs":
     "-o:docs/apidocs " &
     "src/snorlogue.nim"
 
+
+task nimidocs, "Compiles the nimibook docs":
+  exec "nim c -d:release nbook.nim"
+  exec "./nbook build"

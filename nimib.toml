@@ -1,0 +1,10 @@
+[nimib]
+srcDir = "docs/book"
+homeDir = "docs/bookCompiled"
+
+[nimibook]
+language = "English"
+title = "Snorlogue"
+description = "A Prologue extension for easy database administration"
+git_repository_url = "https://github.com/PhilippMDoerner/Snorlogue.git"
+
