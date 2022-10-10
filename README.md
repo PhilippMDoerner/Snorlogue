@@ -1,9 +1,20 @@
-NOT YET FINISHED
+NOT YET FINISHED, THE BELOW IS MERELY IN PREPARATION
+# Snorlogue 
+**Snorlogue** is a prologue extension, that provides a set of simple CRUD routes to administrate your database.
+It makes use of [norm models](https://github.com/moigagoo/norm) to figure out which columns a given table has and how to best represent them.
 
-# Snorlogue
-An plugin for the prologue web-framework of the nim-language. 
-Provides an admin interface that allows basic CRUD interactions with any registered model.
-Further enables directly interacting with the database via raw SQL.
+- [Documentation]() (built with [nimibook](https://github.com/pietroppeter/nimibook))
+- [API index]()
+
+## Installation
+Install Snorlogue with [Nimble](https://github.com/nim-lang/nimble):
+
+    $ nimble install -y snorlogue
+
+Add Snorlogue to your .nimble file:
+
+    requires "snorlogue"
+
 
 ## Example Screenshots
 ### Table Overview Page
