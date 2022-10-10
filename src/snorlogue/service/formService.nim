@@ -15,19 +15,24 @@ func toFormField*(value: Option[string], fieldName: string): FormField =
   ## Converts field data of string field on Model into FormField to generate HTML Form Fields 
   FormField(name: fieldName, kind: FormFieldKind.STRING, strVal: value)
 
+func toFormField*(value: Option[int64], fieldName: string): FormField = 
+  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
+  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: value)
+
 func toFormField*(value: Option[int], fieldName: string): FormField = 
   ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
   let mappedValue = value.map(val => val.int64)
-  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: mappedValue)
+  toFormField(mappedValue, fieldName)
 
 func toFormField*(value: Option[int32], fieldName: string): FormField = 
   ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
   let mappedValue = value.map(val => val.int64)
-  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: mappedValue)
-
-func toFormField*(value: Option[int64], fieldName: string): FormField = 
+  toFormField(mappedValue, fieldName)
+  
+func toFormField*(value: Option[Natural], fieldName: string): FormField = 
   ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: value)
+  let mappedValue = value.map(val => val.int64)
+  toFormField(mappedValue, fieldName)
 
 func toFormField*(value: Option[float] | Option[float32] | Option[float64], fieldName: string): FormField = 
   ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
