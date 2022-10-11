@@ -55,6 +55,13 @@ func toFormField*[T](value: T, fieldName: string): FormField =
   ## Helper proc to enable converting non-optional fields into FormField
   toFormField[T](some value, fieldName)
 
+func toFormField*(value: Option[SomeInteger], fieldName: string, options: seq[IntOption]): FormField =
+  let mappedValue = value.map(val => val.int64)
+  FormField(name: fieldName, kind: FormFieldKind.INTSELECT, intOptions: options, intSeqVal: mappedValue)
+
+func toFormField*(value: Option[string], fieldName: string, options: seq[StringOption]): FormField =
+  FormField(name: fieldName, kind: FormFieldKind.STRSELECT, strOptions: options, strSeqVal: value)
+
 proc extractFields*[T: Model](model: T): seq[FormField] =
   ## Extracts the metadata of all fields on a model and turns it into seq[FormField] 
   ## which are used to generate HTML form fields. 
