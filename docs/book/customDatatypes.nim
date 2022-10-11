@@ -19,6 +19,7 @@ By default, Snorlogue can deal with the following Nim types in Model fields:
   - ``FilePath``
   - ``DateTime``
   - ``fk*`` (type int64 annotated with norm's `fk` pragma)
+  - ``enum``
 
 Its main task in dealing with these types is:
   1) Map fields of certain types to certain pre-defined HTML input templates via `toFormField` procs
@@ -30,25 +31,35 @@ Available HTML templates are represented by the `FormField` type and include:
   - Number input (default for `int/float/Natural`)
   - Datetime input (default for `DateTime`)
   - File input (Default for `FilePath`)
-  - Select with number values (Default for `fk`)
+  - Select with number values (Default for `fk` and `enum`)
   - Select with string values
 
 If you want Snorlogue to be able to deal with fields with your own custom datatypes, all you need to do is define `toFormField` and `toModelValue` procs for them.
 
-Say for example we wanted to have an enum field on a model, that is represented by a select field with int values in our Model:
+Say for example we wanted to have a model field that can only contain a specific range of numbers, that is represented by a select field with int values.
+We can do this by defining our own `toFormField` proc that generates the options such a select field should have and feeds it into a pre-defined `toFormField` construction proc for a select formfield with int values:
 """
 
 nbCode:
-  # Required Code
-  type CreatureFamily = enum
-    BEAST
-    ANGEL
-    DEMON
-    HUMANOID 
+  import prologue
+  import snorlogue
+  import norm/[sqlite, model]
+  # Type Definitions
+  type Level = 0..9
 
   type Creature* = ref object of Model
       name*: string
-      family*: CreatureFamily
+      level*: Level
+  
+  # Defines which FormField a value of the Level type maps to
+  func toFormField*(value: Option[Level], fieldName: string): FormField =
+    let optionValues = Level.low..Level.high.toSeq()
+    let options: seq[IntOption] = optionValues.map(val => IntOption(value: val, name: "Level {val}"))
+    let value = value.map(val => val.int64)
+    result = toFormField(value, fieldName, options)
+
+  # Converts the received string value from the HTML form into a Level type
+  func toModelValue*(formValue: string, T: typedesc[Level]): T = parseInt(formValue).Level
 
   # Example Usage
   putEnv("DB_HOST", ":memory:")
@@ -56,7 +67,11 @@ nbCode:
     var human = Creature(name: "Karl", family: CreatureFamily.HUMANOID)
     db.createTables(human)
 
+  # Setup the server
+  var app: Prologue = newApp()
+  app.addCrudRoutes(Creature)
+  app.addAdminRoutes()
+  app.run()
 
-# TODO: Finish the example above for how to specify select stuff
 
 nbSave
