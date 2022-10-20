@@ -1,0 +1,32 @@
+{% extends resources/pages/root.nimja%}
+
+{% block title %}
+  About '{{context.projectName}}''
+{% endblock title%}
+
+{% block content %}
+  <h2 class="text-center"> About '{{context.projectName}}'</h2>
+
+    <div class="my-5">
+        <h3> Settings </h3>
+        <pre class="my-0"> Appname: '{{context.projectName}}' </pre>
+        <pre class="my-0"> Port:    '{{context.port}}' </pre>
+        <pre class="my-0"> Debug:   '{{context.debug}}' </pre>
+        <pre class="my-0"> Address: '{{context.address}}' </pre>
+    </div>
+
+    <div>
+        <h3> Routes </h3>
+
+        {% for key in context.routes.keys %}
+            <div class="mb-3">
+                <h4> {{key}} Routes </h4>
+                <ul class="font-monospace">
+                    {% for route in context.routes[key] %}
+                        <li> <pre class ="my-0"> {{route}} </pre> </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

@@ -20,6 +20,8 @@
                 {% let overviewUrl = context.overviewUrl %}
                 {% let sqlUrl = context.sqlUrl %}
                 {% let currentUrl = context.currentUrl %}
+                {% let aboutApplicationUrl = context.aboutApplicationUrl %}
+                {% let projectName = context.projectName %}
                 {% let models = context.modelTypes %}
                 {% importnimja "resources/components/sidebar.nimja" %}
             {%  endscope %}

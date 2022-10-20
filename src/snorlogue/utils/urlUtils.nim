@@ -9,11 +9,12 @@ type Page* = enum
   OVERVIEW = "overview"
   BACKEND
   SQL = "sql"
+  CONFIG = "config"
 
 proc generateUrlStub*(urlPrefix: static string, action: Page, modelName: string): string =
   result.add(fmt"/{urlPrefix}")
   case action:
-  of Page.OVERVIEW, Page.SQL:
+  of Page.OVERVIEW, Page.SQL, Page.CONFIG:
     result.add fmt"/{$action}"
   of Page.BACKEND:
     result.add fmt"/{modelName}"

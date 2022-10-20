@@ -141,3 +141,12 @@ proc addAdminRoutes*(
     middlewares = middlewares
   )
   debug(fmt"Added admin route GET    '{sqlNoQueryUrl}'")
+
+  const displayConfigUrl = fmt"/{urlPrefix}/{$Page.Config}/"
+  app.addRoute(
+    displayConfigUrl,
+    handler = createAboutApplicationFrontendController(urlPrefix),
+    httpMethod = HttpGet,
+    middlewares = middlewares
+  )
+  debug(fmt"Added admin route GET    '{displayConfigUrl}'")

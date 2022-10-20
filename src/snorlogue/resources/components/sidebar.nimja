@@ -19,8 +19,8 @@
 
     <li class="nav-item">
       <a href="{{sqlUrl}}" 
-      class="nav-link {% if currentUrl == sqlUrl %} active {% else %} link-dark {% endif %}" 
-      {% if currentUrl == sqlUrl %} aria-current="page" {% endif %} 
+      class="nav-link {% if currentUrl == sqlUrl %} active {% else %} link-dark {% endif %}"
+      {% if currentUrl == sqlUrl %} aria-current="page" {% endif %}
       title="SQL" 
       data-bs-toggle="tooltip" 
       data-bs-placement="right" 
@@ -29,6 +29,20 @@
         SQL
       </a>
     </li>
+
+    <li class="nav-item">
+      <a href="{{aboutApplicationUrl}}"
+      class="nav-link {% if currentUrl == aboutApplicationUrl %} active {% else %} link-dark {% endif %}"
+      {% if currentUrl == aboutApplicationUrl %} aria-current="page" {% endif %}
+      title="Routes and Configs"
+      data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      data-bs-original-title="Direct Database Access">
+        <span class="fas fa-gear mr-2"></span>
+        About {{projectName}}
+      </a>
+    </li>
+
     <li class="ml-2">
       <ul class="nav nav-pills flex-column mb-auto">
         {% for model in models %}

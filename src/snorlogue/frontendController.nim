@@ -1,6 +1,6 @@
 import norm/model
 import prologue
-import std/[strutils, options, sequtils, sugar]
+import std/[strutils, options, sequtils, critbits, sugar, strformat, tables]
 import ./utils/[controllerUtils]
 import ./pageContexts
 import ./constants
@@ -18,8 +18,8 @@ else:
 proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
     let dummyModel = T()
-
-    let context = initCreateContext(dummyModel, urlPrefix)
+    let settings = ctx.gScope.settings
+    let context = initCreateContext(dummyModel, urlPrefix, settings)
     let html = renderNimjaPage("modelCreate.nimja", context)
 
     resp htmlResponse(html)
@@ -29,7 +29,8 @@ proc createDetailController*[T: Model](modelType: typedesc[T], urlPrefix: static
     mixin toFormField
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
-    let context = initDetailContext(model, urlPrefix)
+    let settings = ctx.gScope.settings
+    let context = initDetailContext(model, urlPrefix, settings)
     let html = renderNimjaPage("modelDetail.nimja", context)
 
     resp htmlResponse(html)
@@ -46,7 +47,8 @@ proc createListController*[T: Model](
 
     let models: seq[T] = list[T](pageIndex, pageSize, sortFields, sortDirection)
     let count: int64 = count(T)
-    let context = initListContext[T](models, urlPrefix, count, pageIndex, pageSize)
+    let settings = ctx.gScope.settings
+    let context = initListContext[T](models, urlPrefix, settings, count, pageIndex, pageSize)
     let html = renderNimjaPage("modelList.nimja", context)
 
     resp htmlResponse(html)
@@ -55,14 +57,16 @@ proc createConfirmDeleteController*[T: Model](modelType: typedesc[T], urlPrefix:
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
     let model = read[T](id)
-    let context = initDeleteContext(model, urlPrefix)
+    let settings = ctx.gScope.settings
+    let context = initDeleteContext(model, urlPrefix, settings)
     let html = renderNimjaPage("modelDelete.nimja", context)
 
     resp htmlResponse(html)
 
 proc createOverviewController*(registeredModels: seq[ModelMetaData], urlPrefix: static string): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
-    let context = initOverviewContext(registeredModels, urlPrefix)   
+    let settings = ctx.gScope.settings
+    let context = initOverviewContext(registeredModels, urlPrefix, settings)
     let html = renderNimjaPage("overview.nimja", context) 
 
     resp htmlResponse(html)
@@ -86,8 +90,8 @@ proc createSqlController*(urlPrefix: static string): HandlerAsync =
 
     let rows = queryResult.map(res => res[0])
     let columns = queryResult.map(res => res[1])
-    
-    let context = initSqlContext(urlPrefix, query, rows, columns, errorMsg)
+    let settings = ctx.gScope.settings
+    let context = initSqlContext(urlPrefix, settings, query, rows, columns, errorMsg)
     let html = renderNimjaPage("sql.nimja", context)
 
     resp htmlResponse(html)
@@ -96,7 +100,36 @@ proc createSqlController*(urlPrefix: static string): HandlerAsync =
 
 proc createSqlFrontendController*(urlPrefix: static string): HandlerAsync =
   result = proc(ctx: Context) {.async, gcsafe.} =
-    let context = initSqlContext(urlPrefix, "", none(seq[Row]), none(seq[string]), none(string))
+    let settings = ctx.gScope.settings
+    let context = initSqlContext(urlPrefix, settings, "", none(seq[Row]), none(seq[string]), none(string))
     let html = renderNimjaPage("sql.nimja", context)
+
+    resp htmlResponse(html)
+
+
+func stringifyRoutingTree(node: PatternNode, prefix: string): seq[string] =
+  if node.isLeaf:
+    let routeString = fmt"{prefix}{node.value.strip()}"
+    result.add(routeString)
+  else:
+    for child in node.children:
+      result = result.concat stringifyRoutingTree(child, fmt"{prefix}{node.value}")
+
+
+func stringifyRoutingTree*(router: Router): Table[string, seq[string]] =
+  ## Generates string representation of all routes
+  for httpMethod, tree in pairs(router.data):
+    let httpMethodString = httpMethod.toUpper().align(6)
+    result[httpMethod] = stringifyRoutingTree(tree, fmt"{httpMethodString} ")
+
+
+proc createAboutApplicationFrontendController*(urlPrefix: static string): HandlerAsync =
+  result = proc(ctx: Context) {.async, gcsafe.} =
+    let routes = ctx.gScope.router.stringifyRoutingTree()
+    let settings = ctx.gScope.settings
+
+    let context = initAboutApplicationContext(urlPrefix, settings, routes)
+
+    let html = renderNimjaPage("aboutApplication.nimja", context)
 
     resp htmlResponse(html)
