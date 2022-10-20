@@ -21,7 +21,11 @@ Add Snorlogue to your .nimble file:
 ![Table overview of all tables in example](https://i.imgur.com/YiEumKz.png "Table overview of all tables in example")
 
 ### SQL Page
-![Page to enter directly interact with the database](https://i.imgur.com/ImWfufp.png "Page to enter directly interact with the database")
+![Page to directly interact with the database](https://i.imgur.com/ImWfufp.png "Page to directly interact with the database")
+
+### About Application Page
+![Main Settings of the application and all registered Routes](https://i.imgur.com/IeOPZwW.png "Main Settings of the application and all registered Routes")
+
 
 ### Model Table Overview Page
 ![List view of specific table in example](https://i.imgur.com/jSIDADh.png "List view of specific table in example")
