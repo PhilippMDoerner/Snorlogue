@@ -34,10 +34,14 @@ func toFormField*(value: Option[Natural], fieldName: string): FormField =
   let mappedValue = value.map(val => val.int64)
   toFormField(mappedValue, fieldName)
 
-func toFormField*(value: Option[float] | Option[float32] | Option[float64], fieldName: string): FormField = 
+func toFormField*(value: Option[float64], fieldName: string): FormField = 
+  ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
+  FormField(name: fieldName, kind: FormFieldKind.FLOAT, fVal: value)
+
+func toFormField*(value: Option[float32], fieldName: string): FormField = 
   ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
   let mappedValue = value.map(val => val.float64)
-  FormField(name: fieldName, kind: FormFieldKind.FLOAT, fVal: mappedValue)
+  toFormField(mappedValue, fieldName)
 
 func toFormField*(value: Option[bool], fieldName: string): FormField = 
   ## Converts field data of bool field on Model into FormField to generate HTML Form Fields 
@@ -54,6 +58,9 @@ func toFormField*(value: Option[FilePath], fieldName: string): FormField =
 func toFormField*[T](value: T, fieldName: string): FormField = 
   ## Helper proc to enable converting non-optional fields into FormField
   toFormField[T](some value, fieldName)
+
+
+## SELECT FIELDS
 
 func toFormField*(value: Option[SomeInteger], fieldName: string, options: seq[IntOption]): FormField =
   let mappedValue = value.map(val => val.int64)
