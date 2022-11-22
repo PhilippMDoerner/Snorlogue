@@ -19,14 +19,15 @@ proc read*[T: Model](id: int64): T =
   result = targetEntry
 
 proc create*[T: Model](newModel: var T, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T]) {.gcsafe.}=
-  withDb:
-    if beforeCreateAction != nil:
-      beforeCreateAction(db, newModel)
+  {.cast(gcsafe).}:
+    withDb:
+      if beforeCreateAction != nil:
+        beforeCreateAction(db, newModel)
 
-    db.insert(newModel)
+      db.insert(newModel)
 
-    if afterCreateAction != nil:
-      afterCreateAction(db, newModel)
+      if afterCreateAction != nil:
+        afterCreateAction(db, newModel)
 
 proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sortDirection: SortDirection): seq[T] =
   var entryList: seq[T] = @[T()]
@@ -46,22 +47,24 @@ proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sor
   result = entryList
 
 proc update*[T: Model](updateModel: var T, beforeUpdateAction: ActionProc[T], afterUpdateAction: ActionProc[T]) {.gcsafe.}=
-  withDb:
-    if beforeUpdateAction != nil:
-      beforeUpdateAction(db, updateModel)
+  {.cast(gcsafe).}:
+    withDb:
+      if beforeUpdateAction != nil:
+        beforeUpdateAction(db, updateModel)
 
-    db.update(updateModel)
+      db.update(updateModel)
 
-    if afterUpdateAction != nil:
-      afterUpdateAction(db, updateModel)
+      if afterUpdateAction != nil:
+        afterUpdateAction(db, updateModel)
 
 proc delete*[T: Model](modelType: typedesc[T], id: int64, beforeDeleteAction: ActionProc[T]) {.gcsafe.} =
-  var modelToDelete = T(id: id)
-  withDb:
-    if beforeDeleteAction != nil:
-      beforeDeleteAction(db, modelToDelete)
+  {.cast(gcsafe).}:
+    var modelToDelete = T(id: id)
+    withDb:
+      if beforeDeleteAction != nil:
+        beforeDeleteAction(db, modelToDelete)
 
-    db.delete(modelToDelete)
+      db.delete(modelToDelete)
 
 proc count*[T: Model](modelType: typedesc[T]): int64 =
   withDb:
@@ -76,20 +79,21 @@ proc executeQuery*(query: string): Option[QueryResult] =
 
   let isSelectQuery = query.toUpper().startsWith("SELECT")
 
-  withDb: 
-    if isSelectQuery:
-      var columns: DbColumns
-      for _ in db.instantRows(columns, sql query):
-        discard
+  {.cast(gcsafe).}:
+    withDb: 
+      if isSelectQuery:
+        var columns: DbColumns
+        for _ in db.instantRows(columns, sql query):
+          discard
 
-      let columnNames = columns.mapIt(it.name)
-      let rows: seq[Row] = db.getAllRows(sql query)
+        let columnNames = columns.mapIt(it.name)
+        let rows: seq[Row] = db.getAllRows(sql query)
 
-      result = some((rows, columnNames))
+        result = some((rows, columnNames))
 
-    else:
-      db.exec(sql query)
-      result = none(QueryResult)
+      else:
+        db.exec(sql query)
+        result = none(QueryResult)
 
 proc listAll*[T: Model](modelType: typedesc[T]): seq[T] =
   result = @[T()]
