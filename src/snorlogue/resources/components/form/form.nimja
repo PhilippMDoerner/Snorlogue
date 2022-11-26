@@ -24,11 +24,11 @@ method="POST"
 
     {% elif field.kind == FormFieldKind.FLOAT %}
       {% let value = field.fVal %}
-      {% importnimja "resources/components/form/inputFields/numberInputField.nimja" %}
+      {% importnimja "resources/components/form/inputFields/floatInputField.nimja" %}
     
     {% elif field.kind == FormFieldKind.INT %}
       {% let value = field.iVal %}
-      {% importnimja "resources/components/form/inputFields/numberInputField.nimja" %}
+      {% importnimja "resources/components/form/inputFields/intInputField.nimja" %}
     
     {% elif field.kind == FormFieldKind.BOOL %}
       {% let value = field.bVal %}
