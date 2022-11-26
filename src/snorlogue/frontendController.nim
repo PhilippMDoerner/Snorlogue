@@ -5,6 +5,7 @@ import ./utils/[controllerUtils]
 import ./pageContexts
 import ./constants
 import ./service/[formService, modelAnalysisService]
+import ./nimjaTemplateNames
 
 
 when defined(postgres):
