@@ -12,6 +12,7 @@ method="POST"
 
     {% let isIdField = fieldName == "id" %}
     {% let isCreateForm = requestType == "POST" %}
+    {% let isRequired = field.isRequired %}
     {% let skipField = isCreateForm and isIdField %}
     {% if skipField %}
       {% continue %}

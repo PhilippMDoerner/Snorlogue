@@ -9,6 +9,7 @@
       {% endif %}
     </label>
     <input 
+    {% if isRequired %} required {% endif %}
     type="file" 
     class="form-control" 
     id="{{fieldName}}" 

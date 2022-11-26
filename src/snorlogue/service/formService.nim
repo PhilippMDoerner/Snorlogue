@@ -11,63 +11,63 @@ export fileFieldUtils
 
 # Convert: Model value --> Form Field Data
 
-func toFormField*(value: Option[string], fieldName: string): FormField = 
+func toFormField*(value: Option[string], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of string field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.STRING, strVal: value)
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRING, strVal: value)
 
-func toFormField*(value: Option[int64], fieldName: string): FormField = 
+func toFormField*(value: Option[int64], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: value)
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INT, iVal: value)
 
-func toFormField*(value: Option[int], fieldName: string): FormField = 
-  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName)
-
-func toFormField*(value: Option[int32], fieldName: string): FormField = 
+func toFormField*(value: Option[int], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
   let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName)
+  toFormField(mappedValue, fieldName, isRequired)
+
+func toFormField*(value: Option[int32], fieldName: string, isRequired: bool): FormField = 
+  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
+  let mappedValue = value.map(val => val.int64)
+  toFormField(mappedValue, fieldName, isRequired)
   
-func toFormField*(value: Option[Natural], fieldName: string): FormField = 
+func toFormField*(value: Option[Natural], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
   let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName)
+  toFormField(mappedValue, fieldName, isRequired)
 
-func toFormField*(value: Option[float64], fieldName: string): FormField = 
+func toFormField*(value: Option[float64], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.FLOAT, fVal: value)
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.FLOAT, fVal: value)
 
-func toFormField*(value: Option[float32], fieldName: string): FormField = 
+func toFormField*(value: Option[float32], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
   let mappedValue = value.map(val => val.float64)
-  toFormField(mappedValue, fieldName)
+  toFormField(mappedValue, fieldName, isRequired)
 
-func toFormField*(value: Option[bool], fieldName: string): FormField = 
+func toFormField*(value: Option[bool], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of bool field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.BOOL, bVal: value)
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.BOOL, bVal: value)
 
-func toFormField*(value: Option[DateTime], fieldName: string): FormField = 
+func toFormField*(value: Option[DateTime], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of DateTime field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(UTC_TIME_FORMAT)))
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(UTC_TIME_FORMAT)))
 
-func toFormField*(value: Option[FilePath], fieldName: string): FormField =
+func toFormField*(value: Option[FilePath], fieldName: string, isRequired: bool): FormField =
   ## Converts field data of FilePath field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, kind: FormFieldKind.FILE, fileVal: value)
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.FILE, fileVal: value)
 
-func toFormField*[T](value: T, fieldName: string): FormField = 
+func toFormField*[T](value: T, fieldName: string, isRequired: bool): FormField = 
   ## Helper proc to enable converting non-optional fields into FormField
-  toFormField[T](some value, fieldName)
+  toFormField[T](some value, fieldName, isRequired)
 
 
 ## SELECT FIELDS
 
-func toFormField*(value: Option[SomeInteger], fieldName: string, options: seq[IntOption]): FormField =
+func toFormField*(value: Option[SomeInteger], fieldName: string, isRequired: bool, options: seq[IntOption]): FormField =
   let mappedValue = value.map(val => val.int64)
-  FormField(name: fieldName, kind: FormFieldKind.INTSELECT, intOptions: options, intSeqVal: mappedValue)
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INTSELECT, intOptions: options, intSeqVal: mappedValue)
 
-func toFormField*(value: Option[string], fieldName: string, options: seq[StringOption]): FormField =
-  FormField(name: fieldName, kind: FormFieldKind.STRSELECT, strOptions: options, strSeqVal: value)
+func toFormField*(value: Option[string], fieldName: string, isRequired: bool, options: seq[StringOption]): FormField =
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRSELECT, strOptions: options, strSeqVal: value)
 
 proc extractFields*[T: Model](model: T): seq[FormField] =
   ## Extracts the metadata of all fields on a model and turns it into seq[FormField] 
@@ -78,14 +78,16 @@ proc extractFields*[T: Model](model: T): seq[FormField] =
   for name, value in model[].fieldPairs:
     const isFkField = value.hasCustomPragma(fk)
     const isEnumField = value is enum
+    const isRequiredField = value is not Option
+
     when isFkField:
-      result.add(toSelectFormField(value, name, value.getCustomPragmaVal(fk))) # Last Param is a Model type
+      result.add(toSelectFormField(value, name, isRequiredField, value.getCustomPragmaVal(fk))) # Last Param is a Model type
 
     elif isEnumField:
-      result.add(toSelectFormField(value, name))
+      result.add(toSelectFormField(value, name, isRequiredField))
 
     else:
-      result.add(toFormField(value, name))
+      result.add(toFormField(value, name, isRequiredField))
 
 
 

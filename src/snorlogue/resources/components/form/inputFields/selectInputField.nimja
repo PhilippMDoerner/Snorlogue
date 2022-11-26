@@ -1,13 +1,17 @@
 <div class="mb-3">
-  <select class="form-select" aria-label="Selecting {{fieldName}}">
-      {% for option in options %}
-        <option 
-        value="{{option.value}}"
-        {% if option.selected %} selected {% endif %}
-        >
-          {{option.label}}
-        </option>
-      {% endfor %}
+  <select 
+  class="form-select" 
+  aria-label="Selecting {{fieldName}}"
+  {% if isRequired %} required {% endif %}
+  >
+    {% for option in options %}
+      <option 
+      value="{{option.value}}"
+      {% if option.selected %} selected {% endif %}
+      >
+        {{option.label}}
+      </option>
+    {% endfor %}
   </select>
 
   {% importnimja "resources/components/form/inputFields/fieldHelpText.nimja" %}

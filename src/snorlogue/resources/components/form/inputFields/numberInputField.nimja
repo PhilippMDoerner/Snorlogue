@@ -6,6 +6,7 @@
   id="{{fieldName}}" 
   form="form"
   name="{{fieldName}}"
+  {% if isRequired %} required {% endif %}
   {% if isUpdateForm and value.isSome() %} value="{{value.get()}}" {% endif %}>
  
 </div>

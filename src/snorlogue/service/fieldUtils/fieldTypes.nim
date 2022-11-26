@@ -22,6 +22,7 @@ type FormFieldKind* = enum
 
 type FormField* = object
   name*: string
+  isRequired*: bool
   case kind*: FormFieldKind
   of STRING: 
     strVal*: Option[string]
