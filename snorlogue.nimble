@@ -16,17 +16,13 @@ requires "nimja >= 0.8.4"
 
 skipDirs = @["example"]
 
-task run_example, "NOTE TO USER: ADJUST `--define:basePath` FLAG!!! - Compiles and runs the snorlogue example":
-  ## You will further have to modify nimja/sharedhelper.nim getScriptDir() to return "nimbleTaskFix"
-  ## const basePath {.strdefine.} = getProjectPath()
-  ## const nimbleTaskFix = basePath[4..basePath.high].strip(chars={' ', '"'})
+task run_example, "NOTE TO USER: Remember to copy the resources folder into your project from which you are compiling! - Compiles and runs the snorlogue example":
   --run
   --deepcopy:on
   --define:normDebug
   --define:ssl
   --styleCheck:usages
   --define:sqlite
-  --define:basePath:"<HOME_DIRECTORY>/.nimble/pkgs/snorlogue-0.1.0/snorlogue"
   --outdir:"src/example"
   setCommand "c", "src/example/example.nim"
 
@@ -37,6 +33,15 @@ task docs, "Write the package docs":
     "-o:docs/apidocs " &
     "src/snorlogue.nim"
 
+task cl, "Compiles the lib":
+  --deepcopy:on
+  --define:normDebug
+  --define:ssl
+  --styleCheck:usages
+  --define:sqlite
+  --path:"/home/philipp/dev/snorlogue"
+  --define:basePath:"/home/philipp/dev/snorlogue"
+  setCommand "c", "src/snorlogue.nim"
 
 task nimidocs, "Compiles the nimibook docs":
   exec "nim c -d:release nbook.nim"

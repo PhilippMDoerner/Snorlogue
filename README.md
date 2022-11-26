@@ -15,6 +15,9 @@ Add Snorlogue to your .nimble file:
 
     requires "snorlogue"
 
+Finally, copy the resources folder from the snorlogue package into your project directory. It contains the HTML templates for the various admin pages. This will likely not be necessary in future versions of Snorlogue.
+    
+    cp -r <NIMBLE_DIRECTORY>/pkgs/snorlogue-X.X.X/snorlogue/resources <YOUR_PROJECT_DIRECTORY>/src
 
 ## Example Screenshots
 ### Table Overview Page
