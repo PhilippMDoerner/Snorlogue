@@ -63,8 +63,7 @@ jobs:
 
       - name: Setup docs
         run: |
-          rm -rf docs/coreapi docs/plugin
-          mv api-docs/coreapi api-docs/plugin docs/
+          mv api-docs/plugin docs/
 
       - name: Deploy
         if: success()
@@ -73,4 +72,4 @@ jobs:
           target_branch: gh-pages
           build_dir: ./docs
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
