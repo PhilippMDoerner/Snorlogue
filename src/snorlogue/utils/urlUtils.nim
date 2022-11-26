@@ -12,10 +12,11 @@ type Page* = enum
   CONFIG = "config"
 
 proc generateUrlStub*(urlPrefix: static string, action: Page, modelName: string): string =
-  ## Generates a URL to the specified `Page`.
+  ## Generates a URL to the specified `Page<#Page>`_.
   ## These URLs are incomplete for `CREATE`, `DELETE` and `DETAIL` pages,
-  ## as they do not provide any URL parameters that may be necessary to select a specific model entry from the database.
-  ## This only generates the core URL and should only be used within snorlogue.
+  ## as they do not provide any URL parameters that may be necessary to select 
+  ## a specific model entry from the database.
+  ## This only generates the core URL and should only be used within this package.
   result.add(fmt"/{urlPrefix}")
   case action:
   of Page.OVERVIEW, Page.SQL, Page.CONFIG:
@@ -27,11 +28,14 @@ proc generateUrlStub*(urlPrefix: static string, action: Page, modelName: string)
 
 proc generateUrlStub*[T: Model](urlPrefix: static string, action: Page, model: typedesc[T]): string =
   ## Helper proc for `generateUrlStub`.
-  ## Generates a URL to a specified `Page` for a given model.
-  ## Pages to use this with are ONLY `BACKEND`, `CREATE`, `DELETE`, `DETAIL` and `LIST`.
+  ## Generates a URL to a specified `Page<#Page>`_ for a given model.
+  ## Pages to use this with are only model-specific ones such as `BACKEND`, 
+  ## `CREATE`, `DELETE`, `DETAIL` and `LIST`.
+  ## 
   ## These URLs are incomplete for CREATE, DELETE and DETAIL pages,
-  ## as they do not provide any URL parameters that may be necessary to select a specific model entry from the database.
-  ## This only generates the core URL and should only be used within snorlogue.
+  ## as they do not provide any URL parameters that may be necessary to select a 
+  ## specific model entry from the database.
+  ## This only generates the core URL and should only be used within this package.
 
   let modelName = ($model).toLower()
   result = generateUrlStub(urlPrefix, action, modelName)

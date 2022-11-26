@@ -27,7 +27,7 @@ func toStringSelectFormField(value: Option[string], stringOptions: seq[StringOpt
 
 
 func toSelectFormField*[T: enum](value: Option[T], fieldName: string, isRequired: bool): FormField =
-  ## Converts an Optional or Mandatory enum field on a Model into an Int-Select-field
+  ## Converts an optional or mandatory enum field on a Model into an Int-Select-field
   var enumOptions: seq[IntOption] = @[]
   for enumValue in T:
     enumOptions.add(IntOption(name: $enumValue, value: enumValue.int))
@@ -35,16 +35,16 @@ func toSelectFormField*[T: enum](value: Option[T], fieldName: string, isRequired
   toIntSelectFormField(value.map(val => val.int64), enumOptions, isRequired, fieldName)
 
 func toSelectFormField*[T: enum](value: T, fieldName: string, isRequired: bool): FormField =
-  ## Helper proc to convert Mandatory Enum fields on a Model into an Int-Select-Field
+  ## Helper proc to convert mandatory Enum fields on a Model into an Int-Select-Field
   toSelectFormField(some value, fieldName, isRequired)
 
 proc toSelectFormField*[T: Model](value: Option[int64], fieldName: static string, isRequired: bool, foreignKeyModelType: typedesc[T]): FormField =
-  ## Converts an Optional or Mandatory Foreign Key field on a Model into an Int-Select-Field
+  ## Converts an optional or mandatory Foreign Key field on a Model into an Int-Select-Field
   let fkEntries = listAll(T)
   let fkOptions = fkEntries.mapIt(IntOption(name: $it, value: it.id))
 
   toIntSelectFormField(value, fkOptions, isRequired, fieldName)
 
 proc toSelectFormField*[T: Model](value: int64, fieldName: static string, isRequired: bool, foreignKeyModelType: typedesc[T]): FormField =
-  ## Helper proc to convert Mandatory Foreign Key fields on a Model into an Int-Select-Field
+  ## Helper proc to convert mandatory Foreign Key fields on a Model into an Int-Select-Field
   toSelectFormField(some value, fieldName, isRequired, T)

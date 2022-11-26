@@ -4,7 +4,6 @@ import ../constants
 import ../pageContexts
 import nimja/parser
 
-
 proc getPageSize*(ctx: Context): int =
   ## Extracts the configured number of entries per page for pagination
   ## Defaults to 50 if nothing is set.

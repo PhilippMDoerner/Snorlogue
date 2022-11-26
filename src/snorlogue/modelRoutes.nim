@@ -26,13 +26,15 @@ proc addCrudRoutes*[T: Model](
   beforeUpdateAction: ActionProc[T] = nil,
   afterUpdateAction: ActionProc[T] = nil
 ) =
-  ## Adds create, read, update and delete pages with the specified middleware for the provided `modelType`.
-  ## These pages will use URLs that match the following pattern: 
-  ## `urlPrefix/modelName/[create|delete|detail|list]/`. 
+  ## Adds create, read, update and delete pages with `middlewares` for `modelType`.
+  ## These pages have the URL pattern: 
+  ## `<urlPrefix>/<modelType>/[create|delete|detail|list]/`. 
+  ## The url uses the modelType in all lowercase. 
   ## By specifying `urlPrefix` you can customize the start of these URLs.
   ## 
-  ## Model entries shown in the list page can be sorted according 
-  ## to the provided `sortFields`, you can sort them in ascending or descending order.
+  ## The list of Model entries on the list page can be sorted according 
+  ## to the provided `sortFields`, which is "id" by default.
+  ## You can sort them in ascending or descending order.
   ## 
   ## You can also provide event procs to execute before/after you create/update/delete
   ## an entry:
@@ -108,12 +110,14 @@ proc addAdminRoutes*(
   middlewares: seq[HandlerAsync] = @[],
   urlPrefix: static string = "admin"
 ) =
-  ## Adds an overview and an "sql" route.
+  ## Adds an overview, a config/about and an "sql" route.
   ## The overview route provides an overview over all registered models
   ## The sql route provides a page to execute raw SQL and look at the results.
   ## This view supports DML SQL only.
+  ## The config route provides an overview over some settings, as well as all 
+  ## registered routes of your prologue application.
   ## These routes will be available after the pattern 
-  ## `urlPrefix/[overview | sql]/`
+  ## `urlPrefix/[overview | sql | config]/`
   debug fmt"Add Admin Overview Pages with {REGISTERED_MODELS.len} models"
   const overviewUrl = fmt"/{urlPrefix}/{$Page.OVERVIEW}/"
   app.addRoute(

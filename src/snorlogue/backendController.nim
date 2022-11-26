@@ -58,9 +58,11 @@ proc createBackendController*[T: Model](
   afterUpdateAction: ActionProc[T], 
   beforeDeleteAction: ActionProc[T]
 ): HandlerAsync =
-  ## Generates a prologue controller proc for POST, PUT and DELETE HTTP requests. 
-  ## The controller enables creating, deleting and updating entries of type `model`.
-  ## After such an action, the controller forwards you to one of the GET controllers. 
+  ## Generates a prologue controller proc for `POST` HTTP requests to create/update/delete entries of type `model`. 
+  ## The POST request is interpreted as a POST, PUT or DELEte request depending on the form parameter "request-type".
+  ## This is a workaround over inherent HTTP form limitations, which allow only sending POST/GET requests.
+  ## 
+  ## After a create/update/delete, the controller forwards you to the appropriate `GET` controller. 
   ## Requires the `urlPrefix` to figure out the URL to forward to.
   ## 
   ## Executes the provided ActionProcs before or after a creating/deleting/updating an entry:
@@ -70,7 +72,7 @@ proc createBackendController*[T: Model](
   ## - `afterUpdateAction` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
   ## - `beforeDeleteAction` - Gets executed just before deleting a model
   ## 
-  ## Provides an HTTP405 response if this controller gets called for any request with a type is not POST, PUT or DELETE.
+  ## Responds with HTTP405 if this controller gets called with any unexpected HTTP request method..
 
   result = proc (ctx: Context) {.async, gcsafe.} =
     let requestTypeStr: string = ctx.getFormParams("request-type")

@@ -71,8 +71,7 @@ func toFormField*(value: Option[string], fieldName: string, isRequired: bool, op
 
 
 proc extractFields*[T: Model](model: T): seq[FormField] =
-  ## Extracts the metadata of all fields on a model and turns it into seq[FormField] 
-  ## which are used to generate HTML form fields. 
+  ## Extracts the metadata of all fields on a model and turns it into a sequence of FormFields. 
   mixin toFormField
   
   result = @[]
@@ -93,19 +92,34 @@ proc extractFields*[T: Model](model: T): seq[FormField] =
 
 
 # Convert: string from HTML form --> Model value
-func toModelValue*(formValue: string, T: typedesc[SomeInteger]): T = parseInt(formValue).T
+func toModelValue*(formValue: string, T: typedesc[SomeInteger]): T = 
+  ## Converts an HTML form value in string format to an integer 
+  parseInt(formValue).T
 
-func toModelValue*(formValue: string, T: typedesc[SomeFloat]): T = parseFloat(formValue).T
+func toModelValue*(formValue: string, T: typedesc[SomeFloat]): T = 
+  ## Converts an HTML form value in string format to a float 
+  parseFloat(formValue).T
 
-func toModelValue*(formValue: string, T: typedesc[string]): T = formValue
+func toModelValue*(formValue: string, T: typedesc[string]): T = 
+  ## Converts an HTML form value in string format to a string
+  ## This essentially does nothing and exists just to handle strings.
+  formValue
 
-func toModelValue*(formValue: string, T: typedesc[bool]): T = parseBool(formValue)
+func toModelValue*(formValue: string, T: typedesc[bool]): T = 
+  ## Converts an HTML form value in string format to a boolean
+  parseBool(formValue)
 
-proc toModelValue*(formValue: string, T: typedesc[DateTime]): T = parse(formValue, DATETIME_LOCAL_FORMAT)
+proc toModelValue*(formValue: string, T: typedesc[DateTime]): T = 
+  ## Converts an HTML form value in string format to a DateTime instance
+  parse(formValue, DATETIME_LOCAL_FORMAT)
 
-func toModelValue*[T: enum](formValue: string, O: typedesc[T]): T = (parseInt(formValue)).T
+func toModelValue*[T: enum](formValue: string, O: typedesc[T]): T = 
+  ## Converts an HTML form value in string format to an int value or a distinct int type
+  (parseInt(formValue)).T
 
 func toModelValue*[T](formValue: string, O: typedesc[Option[T]]): O = 
+  ## Converts an HTML form value in string format to an an optional value.
+  ## Empty strings get counted as non-existant values. 
   let hasValue = formValue != ""
   result = if hasValue: some formValue.toModelValue(T) else: none(T)
 
@@ -137,7 +151,8 @@ proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[stri
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
   ## Parses form data from an HTTP request body in `ctx` into a model instance of the 
   ## specified `model` type.
-  ## Allows skipping setting the id field when no id is present, e.g. when a model gets created for the first time.
+  ## Allows skipping setting the id field when no id is present, e.g. when a model 
+  ## gets created for the first time.
   result = T()
   for name, dummyValue in T()[].fieldPairs:
     let formValueStr: Option[string] = ctx.getFormParamsOption(name)
