@@ -4,7 +4,7 @@ NOT YET FINISHED, THE BELOW IS MERELY IN PREPARATION
 It makes use of [norm models](https://github.com/moigagoo/norm) to figure out which columns a given table has and how to best represent them.
 
 - [Documentation]() (built with [nimibook](https://github.com/pietroppeter/nimibook))
-- [API index]()
+- [API index](https://philippmdoerner.github.io/Snorlogue/)
 
 ## Installation
 Install Snorlogue with [Nimble](https://github.com/nim-lang/nimble):
