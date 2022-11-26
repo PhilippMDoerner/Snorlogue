@@ -5,37 +5,8 @@ on:
   push:
     branches:
       - devel
-      - main
 
 jobs:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
-
-      - name: Upgrade pip
-        run: |
-          # install pip=>20.1 to use "pip cache dir"
-          python -m pip install --upgrade pip
-      - name: Get pip cache dir
-        id: pip-cache
-        run: echo "::set-output name=dir::$(pip cache dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Install dependencies
-        run: python -m pip install -r ./requirements.txt
-
   api-docs:
     runs-on: windows-latest
     steps:
@@ -54,9 +25,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.nimble
-          key: ${{ runner.os }}-nimble-${{ hashFiles('snorlogue.nimble') }}
+          key: ${{ runner.os }}-nimble-${{ hashFiles('prologue.nimble') }}
           restore-keys: |
             ${{ runner.os }}-nimble-
+
       - name: Setup nim
         uses: jiro4989/setup-nim-action@v1
         with:
@@ -78,6 +50,7 @@ jobs:
           path: |
             docs/coreapi
             docs/plugin
+
   deploy-docs:
     needs:
       - api-docs
@@ -89,10 +62,12 @@ jobs:
       - name: Check files
         run: |
           find .
+
       - name: Setup docs
         run: |
           rm -rf docs/coreapi docs/plugin
           mv api-docs/coreapi api-docs/plugin docs/
+
       - name: Deploy
         if: success()
         uses: crazy-max/ghaction-github-pages@v3.1.0
@@ -100,4 +75,4 @@ jobs:
           target_branch: gh-pages
           build_dir: ./docs
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
