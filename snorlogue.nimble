@@ -46,3 +46,12 @@ task cl, "Compiles the lib":
 task nimidocs, "Compiles the nimibook docs":
   exec "nim c -d:release nbook.nim"
   exec "./nbook build"
+
+task apis, "docs only for api":
+  exec "nim doc --verbosity:0 --warnings:off --project --index:on " &
+    "--git.url:https://github.com/PhilippMDoerner/Snorlogue " &
+    "--git.commit:devel " &
+    "-o:docs/plugin " &
+    "src/snorlogue/snorlogue.nim"
+
+  exec "nim buildIndex -o:docs/plugin/theindex.html docs/plugin"
