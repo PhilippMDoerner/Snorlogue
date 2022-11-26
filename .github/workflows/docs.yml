@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.nimble
-          key: ${{ runner.os }}-nimble-${{ hashFiles('prologue.nimble') }}
+          key: ${{ runner.os }}-nimble-${{ hashFiles('snorlogue.nimble') }}
           restore-keys: |
             ${{ runner.os }}-nimble-
 
@@ -37,9 +37,6 @@ jobs:
 
       - name: Install Packages
         run: nimble install -y
-
-      - name: Install extension
-        run: logue extension all
 
       - name: Build API docs
         run: nimble apis
