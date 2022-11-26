@@ -48,10 +48,10 @@ task nimidocs, "Compiles the nimibook docs":
   exec "./nbook build"
 
 task apis, "docs only for api":
-  exec "nim doc --verbosity:0 --warnings:off --project --index:on " &
+  exec "nim doc --verbosity:0 --warnings:off --project --index:on -d:sqlite" &
     "--git.url:https://github.com/PhilippMDoerner/Snorlogue " &
-    "--git.commit:devel " &
+    "--git.commit:main " &
     "-o:docs/plugin " &
-    "src/snorlogue/snorlogue.nim"
+    "src/snorlogue.nim"
 
   exec "nim buildIndex -o:docs/plugin/theindex.html docs/plugin"
