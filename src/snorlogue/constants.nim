@@ -9,6 +9,7 @@ else:
   {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
 const UTC_TIME_FORMAT* = "yyyy-MM-dd'T'HH:mm:ss'.'ffffff'Z'"
+const DATETIME_LOCAL_FORMAT* = "yyyy-MM-dd'T'HH:mm"
 const DEFAULT_PAGE_SIZE* = 50
 const MEDIA_ROOT_SETTING* = "media-root"
 const PACKAGE_PATH* = currentSourcePath().parentDir()
