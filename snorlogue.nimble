@@ -54,4 +54,4 @@ task apis, "docs only for api":
     "-o:docs/plugin " &
     "src/snorlogue.nim"
 
-  exec "nim buildIndex -o:docs/plugin/theindex.html docs/plugin"
+  exec "nim buildIndex -o:docs/plugin/index.html docs/plugin"
