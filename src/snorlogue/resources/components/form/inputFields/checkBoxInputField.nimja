@@ -1,6 +1,5 @@
 <div class="mb-3 form-check">
   <input 
-  {% if isRequired %} required {% endif %}
   type="checkbox" 
   class="form-check-input" 
   id="{{fieldName}}"

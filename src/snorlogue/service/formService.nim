@@ -49,7 +49,7 @@ func toFormField*(value: Option[bool], fieldName: string, isRequired: bool): For
 
 func toFormField*(value: Option[DateTime], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of DateTime field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(UTC_TIME_FORMAT)))
+  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(DATETIME_LOCAL_FORMAT)))
 
 func toFormField*(value: Option[FilePath], fieldName: string, isRequired: bool): FormField =
   ## Converts field data of FilePath field on Model into FormField to generate HTML Form Fields 
@@ -100,7 +100,7 @@ func toModelValue*(formValue: string, T: typedesc[string]): T = formValue
 
 func toModelValue*(formValue: string, T: typedesc[bool]): T = parseBool(formValue)
 
-func toModelValue*(formValue: string, T: typedesc[DateTime]): T = parse(formValue)
+proc toModelValue*(formValue: string, T: typedesc[DateTime]): T = parse(formValue, DATETIME_LOCAL_FORMAT)
 
 func toModelValue*[T: enum](formValue: string, O: typedesc[T]): T = (parseInt(formValue)).T
 

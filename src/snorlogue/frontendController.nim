@@ -17,7 +17,7 @@ else:
 
 proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
   result = proc (ctx: Context) {.async, gcsafe.} =
-    let dummyModel = T()
+    let dummyModel = new(T)
     let settings = ctx.gScope.settings
     let context = initCreateContext(dummyModel, urlPrefix, settings)
     let html = renderNimjaPage("modelCreate.nimja", context)
