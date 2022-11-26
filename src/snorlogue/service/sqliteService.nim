@@ -6,6 +6,7 @@ import ../constants
 export sqlite
 
 proc read*[T: Model](id: int64): T =
+  ## Reads a model with the given id from the database
   var targetEntry: T = new(T)
 
   const modelTableName: string = T.table()
@@ -19,6 +20,8 @@ proc read*[T: Model](id: int64): T =
   result = targetEntry
 
 proc create*[T: Model](newModel: var T, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T]) {.gcsafe.}=
+  ## Inserts the `newModel` into the database. 
+  ## Executes the provided `ActionProc` before/after adding the model if they were provided.
   {.cast(gcsafe).}:
     withDb:
       if beforeCreateAction != nil:
@@ -30,6 +33,9 @@ proc create*[T: Model](newModel: var T, beforeCreateAction: ActionProc[T], after
         afterCreateAction(db, newModel)
 
 proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sortDirection: SortDirection): seq[T] =
+  ## Reads a paginated list of models from the database.
+  ## The number of models in a page is `pageSize`.
+  ## The list of models is sorted according to the provided `sortFields` in the order of `sortDirection`.
   var entryList: seq[T] = @[T()]
 
   let firstPageEntryIndex = pageIndex * pageSize
@@ -47,6 +53,8 @@ proc list*[T: Model](pageIndex: int, pageSize: int, sortFields: seq[string], sor
   result = entryList
 
 proc update*[T: Model](updateModel: var T, beforeUpdateAction: ActionProc[T], afterUpdateAction: ActionProc[T]) {.gcsafe.}=
+  ## Persists the `updateModel` into the database, overwriting any previous entry with the same id. 
+  ## Executes the provided `ActionProc` before/after updating the model if they were provided.
   {.cast(gcsafe).}:
     withDb:
       if beforeUpdateAction != nil:
@@ -58,6 +66,8 @@ proc update*[T: Model](updateModel: var T, beforeUpdateAction: ActionProc[T], af
         afterUpdateAction(db, updateModel)
 
 proc delete*[T: Model](modelType: typedesc[T], id: int64, beforeDeleteAction: ActionProc[T]) {.gcsafe.} =
+  ## Deletes the model of type `modelType` in the database with the given `id`. 
+  ## Executes the provided `ActionProc` before deleting the model if it was provided.
   {.cast(gcsafe).}:
     var modelToDelete = T(id: id)
     withDb:
@@ -67,15 +77,19 @@ proc delete*[T: Model](modelType: typedesc[T], id: int64, beforeDeleteAction: Ac
       db.delete(modelToDelete)
 
 proc count*[T: Model](modelType: typedesc[T]): int64 =
+  ## Counts the total number of entries in the database for the given `modelType`.
   withDb:
     result = db.count(T)
 
 type QueryResult* = (seq[Row], seq[string])
 
 proc executeQuery*(query: string): Option[QueryResult] =
+  ## Executes the given SQL query on the database.
+  ## Note that you may only use DML SQL statements.
+  ## Returns a QueryResult if the given query is a SELECT query.
   let isForbiddenQuery = query.toUpper().split(" ").any(word => word in ["ALTER", "CREATE", "DROP", "TRUNCATE"])
   if isForbiddenQuery:
-    raise newException(DbError, "DDL statements (those containing 'ALTER', 'CREATE', 'DROP' or 'TRUNCATE' are not allowed to prevent breaking your application. Please only use DML.") 
+    raise newException(DbError, "Data-Definition-Language (DDL) (SQL statements containing e.g. 'ALTER', 'CREATE', 'DROP' or 'TRUNCATE') are not allowed to prevent breaking your application. Please only use Data-Manipulation-Language (DML).") 
 
   let isSelectQuery = query.toUpper().startsWith("SELECT")
 
@@ -96,6 +110,7 @@ proc executeQuery*(query: string): Option[QueryResult] =
         result = none(QueryResult)
 
 proc listAll*[T: Model](modelType: typedesc[T]): seq[T] =
+  ## Reads an unpaginated, unsorted list of models of type `modelType` from the database.
   result = @[T()]
   withDb:
     db.selectAll(result)

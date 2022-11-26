@@ -11,6 +11,7 @@ func `$`*(x: FilePath): string {.borrow.}
 proc add*(x: var FilePath, s: string) = x.string.add(s)
 proc add*(x: var FilePath, s: FilePath) = x.string.add(s.string)
 
+# Implements norm support for `FilePath` type.
 func to*(dbVal: DbValue, T: typedesc[FilePath]): T = dbVal.s.FilePath
 func dbValue*(val: FilePath): DbValue = dbValue(val.string)
 func dbType*(T: typedesc[FilePath]): string = "TEXT"

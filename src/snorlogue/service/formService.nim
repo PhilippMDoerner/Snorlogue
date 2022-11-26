@@ -9,7 +9,7 @@ export fieldTypes
 export fileFieldUtils
 
 
-# Convert: Model value --> Form Field Data
+## Convert: Model value --> Form Field Data
 
 func toFormField*(value: Option[string], fieldName: string, isRequired: bool): FormField = 
   ## Converts field data of string field on Model into FormField to generate HTML Form Fields 
@@ -61,13 +61,14 @@ func toFormField*[T](value: T, fieldName: string, isRequired: bool): FormField =
 
 
 ## SELECT FIELDS
-
 func toFormField*(value: Option[SomeInteger], fieldName: string, isRequired: bool, options: seq[IntOption]): FormField =
   let mappedValue = value.map(val => val.int64)
   FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INTSELECT, intOptions: options, intSeqVal: mappedValue)
 
 func toFormField*(value: Option[string], fieldName: string, isRequired: bool, options: seq[StringOption]): FormField =
   FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRSELECT, strOptions: options, strSeqVal: value)
+
+
 
 proc extractFields*[T: Model](model: T): seq[FormField] =
   ## Extracts the metadata of all fields on a model and turns it into seq[FormField] 
@@ -134,7 +135,9 @@ proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[stri
   result = fullFilePath.FilePath
 
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
-  ## Parses the form data into a model instance
+  ## Parses form data from an HTTP request body in `ctx` into a model instance of the 
+  ## specified `model` type.
+  ## Allows skipping setting the id field when no id is present, e.g. when a model gets created for the first time.
   result = T()
   for name, dummyValue in T()[].fieldPairs:
     let formValueStr: Option[string] = ctx.getFormParamsOption(name)

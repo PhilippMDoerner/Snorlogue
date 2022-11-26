@@ -26,8 +26,8 @@ proc addCrudRoutes*[T: Model](
   beforeUpdateAction: ActionProc[T] = nil,
   afterUpdateAction: ActionProc[T] = nil
 ) =
-  ## Adds create, read, update and delete routes with the specified middleware for the provided `modelType`.
-  ## These routes will use URLs that match the following pattern: 
+  ## Adds create, read, update and delete pages with the specified middleware for the provided `modelType`.
+  ## These pages will use URLs that match the following pattern: 
   ## `urlPrefix/modelName/[create|delete|detail|list]/`. 
   ## By specifying `urlPrefix` you can customize the start of these URLs.
   ## 
@@ -40,7 +40,7 @@ proc addCrudRoutes*[T: Model](
   ## - `afterCreateAction` - Gets executed after creating a model
   ## - `beforeUpdateAction` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
   ## - `afterUpdateAction` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
-  ## - `beforeCreateAction` - Gets executed just before deleting a model
+  ## - `beforeDeleteAction` - Gets executed just before deleting a model
 
   static: validateModel[T](T)
   const modelMetaData = extractMetaData(urlPrefix, T)

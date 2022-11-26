@@ -49,7 +49,29 @@ proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static
   resp redirect(listPageUrl)
 
 
-proc createBackendController*[T: Model](model: typedesc[T], urlPrefix: static string, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T], beforeUpdateAction: ActionProc[T], afterUpdateAction: ActionProc[T], beforeDeleteAction: ActionProc[T]): HandlerAsync =
+proc createBackendController*[T: Model](
+  model: typedesc[T], 
+  urlPrefix: static string, 
+  beforeCreateAction: ActionProc[T], 
+  afterCreateAction: ActionProc[T], 
+  beforeUpdateAction: ActionProc[T], 
+  afterUpdateAction: ActionProc[T], 
+  beforeDeleteAction: ActionProc[T]
+): HandlerAsync =
+  ## Generates a prologue controller proc for POST, PUT and DELETE HTTP requests. 
+  ## The controller enables creating, deleting and updating entries of type `model`.
+  ## After such an action, the controller forwards you to one of the GET controllers. 
+  ## Requires the `urlPrefix` to figure out the URL to forward to.
+  ## 
+  ## Executes the provided ActionProcs before or after a creating/deleting/updating an entry:
+  ## - `beforeCreateAction` - Gets executed before creating a model. Note that the model will not have an id yet.
+  ## - `afterCreateAction` - Gets executed after creating a model
+  ## - `beforeUpdateAction` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
+  ## - `afterUpdateAction` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
+  ## - `beforeDeleteAction` - Gets executed just before deleting a model
+  ## 
+  ## Provides an HTTP405 response if this controller gets called for any request with a type is not POST, PUT or DELETE.
+
   result = proc (ctx: Context) {.async, gcsafe.} =
     let requestTypeStr: string = ctx.getFormParams("request-type")
     let requestType: RequestType = parseEnum[RequestType](requestTypeStr)
@@ -59,4 +81,4 @@ proc createBackendController*[T: Model](model: typedesc[T], urlPrefix: static st
     of RequestType.PUT: updateHandler(ctx, T, urlPrefix, beforeUpdateAction, afterUpdateAction)
     of RequestType.DELETE: deleteHandler(ctx, T, urlPrefix, beforeDeleteAction)
     else:
-      resp("This endpoint only supports creation, deletion and update of models", code = Http405)
+      resp("This endpoint only supports POST, PUT and DELETE methods", code = Http405)

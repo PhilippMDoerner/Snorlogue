@@ -20,6 +20,8 @@ proc hasFileField*(fields: seq[FormField]): bool =
 
 
 type PageContext* = object of RootObj
+  ## Base amount of data needed in a context for any snorlogue page. 
+  ## Defines all fields required by the root template of all pages.
   currentPage*: Page
   currentUrl*: string
   overviewUrl*: string
@@ -29,6 +31,7 @@ type PageContext* = object of RootObj
   modelTypes*: seq[ModelMetaData]
 
 type ModelListContext*[T] = object of PageContext
+  ## Context for the LIST page
   modelName*: string
   models*: seq[T]
   totalModelCount*: int64
@@ -54,6 +57,7 @@ proc getPaginationIndices(pageIndex: int, maxPageIndex: int): seq[int] =
   if(isBeforeSecondLastPage): result.add(pageIndex + 2)
 
 proc initListContext*[T](models: seq[T], urlPrefix: static string, settings: Settings, totalModelCount: int64, pageIndex: int, pageSize: int): ModelListContext[T] =
+  ## Generates the context for a `LIST` page
   let maxPageIndex: int = floor(totalModelCount.int / pageSize).int
   let isLastPage = pageIndex == maxPageIndex
   let isFirstPage = pageIndex == 0
@@ -83,6 +87,7 @@ proc initListContext*[T](models: seq[T], urlPrefix: static string, settings: Set
 
 
 type ModelDetailContext*[T] = object of PageContext
+  ## Context for the `DETAIL` page
   modelName*: string
   model*: T
   fields*: seq[FormField]
@@ -93,6 +98,7 @@ type ModelDetailContext*[T] = object of PageContext
   listUrl*: string
 
 proc initDetailContext*[T: Model](model: T, urlPrefix: static string, settings: Settings): ModelDetailContext[T] =
+  ## Generates the context for a `DETAIL` page
   let fields: seq[FormField] = extractFields[T](model)
 
   {.cast(gcsafe).}:
@@ -116,12 +122,14 @@ proc initDetailContext*[T: Model](model: T, urlPrefix: static string, settings: 
 
 
 type ModelDeleteContext*[T] = object of PageContext
+  ## Context for the `DELETE` page
   deleteUrl*: string
   detailUrl*: string
   model*: T
   modelName*: string
 
 proc initDeleteContext*[T: Model](model: T, urlPrefix: static string, settings: Settings): ModelDeleteContext[T] =
+  ## Generates the context for a `DELETE` page
   {.cast(gcsafe).}:
     ModelDeleteContext[T](
       overviewUrl: fmt"{generateUrlStub(urlPrefix, Page.OVERVIEW, T)}/",
@@ -140,6 +148,7 @@ proc initDeleteContext*[T: Model](model: T, urlPrefix: static string, settings: 
 
 
 type ModelCreateContext*[T] = object of PageContext
+  ## Context for the `CREATE` page
   modelName*: string
   listUrl*: string
   createUrl*: string
@@ -147,6 +156,7 @@ type ModelCreateContext*[T] = object of PageContext
   hasFileField*: bool
 
 proc initCreateContext*[T: Model](model: T, urlPrefix: static string, settings: Settings): ModelCreateContext[T] =
+  ## Generates the context for a `CREATE` page
   let fields: seq[FormField] = extractFields(model)
   {.cast(gcsafe).}:
     ModelCreateContext[T](
@@ -167,6 +177,7 @@ proc initCreateContext*[T: Model](model: T, urlPrefix: static string, settings: 
 
 
 type OverviewContext* = object of PageContext
+  ## Context for the `OVERVIEW` page
   modelLinks*: OrderedTable[ModelMetaData, string]
 
 proc sort(entry1, entry2: (ModelMetaData, string)): int =
@@ -176,6 +187,7 @@ proc sort(entry1, entry2: (ModelMetaData, string)): int =
     -1
 
 proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static string, settings: Settings): OverviewContext =
+  ## Generates the context for a `OVERVIEW` page
   var modelLinks = initOrderedTable[ModelMetaData, string]()
   for metaData in metaDataEntries:
     modelLinks[metaData] = fmt"{generateUrlStub(urlPrefix, Page.LIST, metaData.name.toLower())}/"
@@ -196,12 +208,14 @@ proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static
     )
 
 type SqlContext* = object of PageContext
+  ## Context for the `SQL` page
   query*: string
   rows*: Option[seq[Row]]
   columns*: Option[seq[string]]
   queryErrorMsg*: Option[string]
 
 proc initSqlContext*(urlPrefix: static string, settings: Settings, query: string, rows: Option[seq[Row]], columnNames: Option[seq[string]], errorMsg: Option[string]): SqlContext =
+  ## Generates the context for the `SQL` page
   let columns: seq[string] = @[]
 
   {.cast(gcsafe).}:
@@ -221,12 +235,14 @@ proc initSqlContext*(urlPrefix: static string, settings: Settings, query: string
     )
 
 type ConfigurationContext* = object of PageContext
+  ## Context for the `CONFIG` page
   port*: int
   debug*: bool
   address*: string
   routes*: Table[string, seq[string]]
 
 proc initAboutApplicationContext*(urlPrefix: static string, settings: Settings, routes: Table[string, seq[string]]): ConfigurationContext =
+  ## Generates the context for the `CONFIG` page
   {.cast(gcsafe).}:
     ConfigurationContext(
       overviewUrl: fmt"""{generateUrlStub(urlPrefix, Page.OVERVIEW, "")}/""",
