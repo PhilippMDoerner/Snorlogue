@@ -11,7 +11,7 @@ export pageContexts
 export frontendController
 
 proc addCrudRoutes*[T: Model](
-  app: var Prologue, 
+  app: Prologue, 
   modelType: typedesc[T], 
   middlewares: seq[HandlerAsync] = @[], 
   urlPrefix: static string = "admin",
