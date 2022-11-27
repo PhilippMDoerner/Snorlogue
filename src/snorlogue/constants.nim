@@ -1,14 +1,6 @@
 import std/[os, strformat]
 import norm/model
-
-when defined(postgres):
-  import norm/postgres
-elif defined(sqlite):
-  import norm/sqlite
-else:
-  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
-
-const UTC_TIME_FORMAT* = "yyyy-MM-dd'T'HH:mm:ss'.'ffffff'Z'"
+import genericRepository
 
 const DATETIME_LOCAL_FORMAT* = "yyyy-MM-dd'T'HH:mm" ## 
 ## The expected DateTime Format of any string value representing a DateTime field of a model
@@ -28,7 +20,9 @@ const PACKAGE_PATH* = currentSourcePath().parentDir() ##
 ## The filepath to root project folder being compiled.
 
 let DEFAULT_MEDIA_ROOT* = fmt"{getCurrentDir()}/media" ## 
-## Default MEDIA_ROOT directory
+## Default MEDIA_ROOT directory. Is determined at runtime on startup to be 
+## a "/media" folder in the current working directory i.e. the directory from
+## which the binary of the compiled program is run.
 
 const ID_PARAM* = "id" ## 
 ## Name of the url parameter for the value of a unique identifier for a model
