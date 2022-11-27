@@ -1,6 +1,12 @@
 import std/[os, strformat]
 import norm/model
-import genericRepository
+
+when defined(postgres):
+  import norm/postgres
+elif defined(sqlite):
+  import norm/sqlite
+else:
+  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
 const DATETIME_LOCAL_FORMAT* = "yyyy-MM-dd'T'HH:mm" ## 
 ## The expected DateTime Format of any string value representing a DateTime field of a model
