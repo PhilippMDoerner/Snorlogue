@@ -9,6 +9,8 @@ import ./modelAnalysisService
 import ./nimjaTemplateNames
 import ../genericRepository
 
+export formCreateService # To enable the call-site to parse forms
+export strutils # To enable strutils procs in templates
 
 proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
   ## Generates a prologue controller proc for GET HTTP requests. 

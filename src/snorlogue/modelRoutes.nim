@@ -8,6 +8,7 @@ import ./constants
 
 export constants
 export pageContexts
+export frontendController
 
 proc addCrudRoutes*[T: Model](
   app: var Prologue, 
