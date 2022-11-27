@@ -1,8 +1,8 @@
-import snorlogue/modelRoutes
-import snorlogue/service/fieldUtils/[fieldTypes, fileFieldUtils]
+import snorlogue/[filePathType, modelRoutes]
+import snorlogue/frontend/fieldUtils/[fieldTypes]
 import std/strutils
 
-export fileFieldUtils
+export filePathType
 export fieldTypes
 export strutils.capitalizeAscii
 export strutils.endsWith
