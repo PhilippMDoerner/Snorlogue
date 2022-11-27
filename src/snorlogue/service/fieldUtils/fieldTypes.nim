@@ -10,17 +10,17 @@ type FilePath* = distinct string ##
 ## This field can use the `subdir<fileFieldUtils.html#subdir.t%2Cstring>`_ pragma to store files in a sub directory within `MEDIA_ROOT` instead.
 
 type IntOption* = object
-  ## A single option of a select field with int values
+  ## A single option of a select `FormField<#FormField>`_ with int values
   name*: string
   value*: int64
 
 type StringOption* = object
-  ## A single option of a select field with string values
+  ## A single option of a select `FormField<#FormField>`_ with string values
   name*: string
   value*: string
 
 type FormFieldKind* = enum
-  ## The types of various HTML Form Fields that can be generated from a norm model.
+  ## The types of various HTML Form fields that can be generated to represent the fields on a norm model.
   STRING
   INT
   FLOAT
