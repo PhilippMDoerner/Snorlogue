@@ -1,13 +1,5 @@
 import std/[options]
-
-type FilePath* = distinct string ##
-## A convenience type for norm models.
-## To be used as type for model fields storing any sort of file.
-## When a model with such a field is created, its file will automatically be stored in the 
-## in the configured `MEDIA_ROOT<../../constants.html#MEDIA_ROOT_SETTING>`_ directory. Any attempts to fetch that file will also assume
-## that it is being stored in the `MEDIA_ROOT` directory.
-## 
-## This field can use the `subdir<fileFieldUtils.html#subdir.t%2Cstring>`_ pragma to store files in a sub directory within `MEDIA_ROOT` instead.
+import ../../filePathType
 
 type IntOption* = object
   ## A single option of a select `FormField<#FormField>`_ with int values

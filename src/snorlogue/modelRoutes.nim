@@ -2,16 +2,12 @@ import std/[tables, strformat, strutils, logging]
 import norm/model
 import prologue
 import nimja/parser
-import ./backendController
-import ./frontendController
+import ./backend/backendController
+import ./frontend/[pageContexts, frontendController, modelAnalysisService]
 import ./constants
-import ./pageContexts
-import ./service/modelAnalysisService
 
 export constants
 export pageContexts
-
-
 
 proc addCrudRoutes*[T: Model](
   app: var Prologue, 

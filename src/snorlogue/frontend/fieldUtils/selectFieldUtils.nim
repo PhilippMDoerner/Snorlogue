@@ -1,14 +1,7 @@
 import std/[options, algorithm, sugar, sequtils]
-import ./fieldTypes
 import norm/model
-
-when defined(postgres):
-  import ../postgresService
-elif defined(sqlite):
-  import ../sqliteService
-else:
-  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
-
+import ./fieldTypes
+import ../../genericRepository
 
 func toIntSelectFormField(value: Option[int64], intOptions: seq[IntOption], isRequired: bool, fieldName: string): FormField =
   ## Converts a model field with value and all its options into a select `FormField<fieldTypes.html#FormField>`_ with int value.

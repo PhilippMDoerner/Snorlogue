@@ -1,17 +1,12 @@
+import prologue
 import norm/model
 import std/[strformat, sequtils, tables, math, options, sugar]
-import ./service/[modelAnalysisService, formService]
-import ./utils/urlUtils
-import prologue
+import ./modelAnalysisService
+import ./formCreateService
+import ./urlUtils
+import ../genericRepository
 
 export urlUtils
-
-when defined(postgres):
-  import service/postgresService
-elif defined(sqlite):
-  import service/sqliteService
-else:
-  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
 var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
   

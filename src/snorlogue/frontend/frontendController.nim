@@ -1,19 +1,13 @@
 import norm/model
 import prologue
 import std/[strutils, options, sequtils, critbits, sugar, strformat, tables]
-import ./utils/[controllerUtils]
+import ./controllerUtils
 import ./pageContexts
-import ./constants
-import ./service/[formService, modelAnalysisService]
+import ../constants
+import ./formCreateService
+import ./modelAnalysisService
 import ./nimjaTemplateNames
-
-
-when defined(postgres):
-  import service/postgresService
-elif defined(sqlite):
-  import service/sqliteService
-else:
-  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
+import ../genericRepository
 
 
 proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =

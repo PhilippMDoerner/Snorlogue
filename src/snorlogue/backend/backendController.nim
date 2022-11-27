@@ -1,15 +1,9 @@
 import norm/model
 import prologue
 import std/[strutils, json, strformat, options, sequtils]
-import ./constants
-import ./service/formService
-
-when defined(postgres):
-  import service/postgresService
-elif defined(sqlite):
-  import service/sqliteService
-else:
-  {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
+import ../constants
+import ../genericRepository
+import ./formParseService
 
 type RequestType = enum
   POST = "post"
@@ -17,7 +11,6 @@ type RequestType = enum
   PUT = "put"
   PATCH = "patch"
   GET = "get"
-
 
 proc createHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T]) {.gcsafe.} =
   {.cast(gcsafe).}:

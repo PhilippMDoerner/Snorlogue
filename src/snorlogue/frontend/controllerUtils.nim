@@ -1,8 +1,8 @@
-import prologue
 import std/[strformat, json, os]
-import ../constants
-import ../pageContexts
+import prologue
 import nimja/parser
+import ../constants
+import ./pageContexts
 
 proc getPageSize*(ctx: Context): int =
   ## Extracts the configured number of entries per page for pagination

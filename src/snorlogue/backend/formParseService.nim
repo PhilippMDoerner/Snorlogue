@@ -1,33 +1,44 @@
-import std/[times, strutils, sugar, json, os, options, strformat, logging, typetraits]
-import norm/[pragmas, pragmasutils, model]
+import std/[times, strutils, json, os, options, strformat, logging, typetraits]
+import norm/[pragmasutils, model]
 import prologue
-import ../utils/macroUtils
-import ./fieldUtils/[fieldTypes, selectFieldUtils, fileFieldUtils, fieldConversions]
+import ../macroUtils
+import ../filePathType
 import ../constants
 
-export fieldTypes
-export fileFieldUtils
+export filePathType
 
+## Parses form data from HTTP requests to model data via the overloadable `toModelValue` proc.
 
-proc extractFields*[T: Model](model: T): seq[FormField] =
-  ## Converts the fields on a model into a sequence of `FormField<fieldUtils/fieldTypes.html#FormField>`_. 
-  mixin toFormField
-  
-  result = @[]
-  for name, value in model[].fieldPairs:
-    const isFkField = value.hasCustomPragma(fk)
-    const isEnumField = value is enum
-    const isRequiredField = value is not Option
+func toModelValue*(formValue: string, T: typedesc[SomeInteger]): T = 
+  ## Converts an HTML form value in string format to an integer 
+  parseInt(formValue).T
 
-    when isFkField:
-      result.add(toSelectFormField(value, name, isRequiredField, value.getCustomPragmaVal(fk))) # Last Param is a Model type
+func toModelValue*(formValue: string, T: typedesc[SomeFloat]): T = 
+  ## Converts an HTML form value in string format to a float 
+  parseFloat(formValue).T
 
-    elif isEnumField:
-      result.add(toSelectFormField(value, name, isRequiredField))
+func toModelValue*(formValue: string, T: typedesc[string]): T = 
+  ## Converts an HTML form value in string format to a string
+  ## This essentially does nothing and exists just to handle strings.
+  formValue
 
-    else:
-      result.add(toFormField(value, name, isRequiredField))
+func toModelValue*(formValue: string, T: typedesc[bool]): T = 
+  ## Converts an HTML form value in string format to a boolean
+  parseBool(formValue)
 
+proc toModelValue*(formValue: string, T: typedesc[DateTime]): T = 
+  ## Converts an HTML form value in string format to a DateTime instance
+  parse(formValue, DATETIME_LOCAL_FORMAT)
+
+func toModelValue*[T: enum](formValue: string, O: typedesc[T]): T = 
+  ## Converts an HTML form value in string format to an int value or a distinct int type
+  (parseInt(formValue)).T
+
+func toModelValue*[T](formValue: string, O: typedesc[Option[T]]): O = 
+  ## Converts an HTML form value in string format to an an optional value.
+  ## Empty strings get counted as non-existant values. 
+  let hasValue = formValue != ""
+  result = if hasValue: some formValue.toModelValue(T) else: none(T)
 
 
 proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string, subdir: Option[string]): string =
