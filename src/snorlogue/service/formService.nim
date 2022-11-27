@@ -2,76 +2,15 @@ import std/[times, strutils, sugar, json, os, options, strformat, logging, typet
 import norm/[pragmas, pragmasutils, model]
 import prologue
 import ../utils/macroUtils
-import ./fieldUtils/[fieldTypes, selectFieldUtils, fileFieldUtils]
+import ./fieldUtils/[fieldTypes, selectFieldUtils, fileFieldUtils, fieldConversions]
 import ../constants
 
 export fieldTypes
 export fileFieldUtils
 
 
-## Convert: Model value --> Form Field Data
-
-func toFormField*(value: Option[string], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of string field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRING, strVal: value)
-
-func toFormField*(value: Option[int64], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INT, iVal: value)
-
-func toFormField*(value: Option[int], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName, isRequired)
-
-func toFormField*(value: Option[int32], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName, isRequired)
-  
-func toFormField*(value: Option[Natural], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of int field on Model into FormField to generate HTML Form Fields 
-  let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName, isRequired)
-
-func toFormField*(value: Option[float64], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.FLOAT, fVal: value)
-
-func toFormField*(value: Option[float32], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of float field on Model into FormField to generate HTML Form Fields 
-  let mappedValue = value.map(val => val.float64)
-  toFormField(mappedValue, fieldName, isRequired)
-
-func toFormField*(value: Option[bool], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of bool field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.BOOL, bVal: value)
-
-func toFormField*(value: Option[DateTime], fieldName: string, isRequired: bool): FormField = 
-  ## Converts field data of DateTime field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(DATETIME_LOCAL_FORMAT)))
-
-func toFormField*(value: Option[FilePath], fieldName: string, isRequired: bool): FormField =
-  ## Converts field data of FilePath field on Model into FormField to generate HTML Form Fields 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.FILE, fileVal: value)
-
-func toFormField*[T](value: T, fieldName: string, isRequired: bool): FormField = 
-  ## Helper proc to enable converting non-optional fields into FormField
-  toFormField[T](some value, fieldName, isRequired)
-
-
-## SELECT FIELDS
-func toFormField*(value: Option[SomeInteger], fieldName: string, isRequired: bool, options: seq[IntOption]): FormField =
-  let mappedValue = value.map(val => val.int64)
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INTSELECT, intOptions: options, intSeqVal: mappedValue)
-
-func toFormField*(value: Option[string], fieldName: string, isRequired: bool, options: seq[StringOption]): FormField =
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRSELECT, strOptions: options, strSeqVal: value)
-
-
-
 proc extractFields*[T: Model](model: T): seq[FormField] =
-  ## Extracts the metadata of all fields on a model and turns it into a sequence of FormFields. 
+  ## Converts the fields on a model into a sequence of `FormField<fieldUtils/fieldTypes.html#FormField>`_. 
   mixin toFormField
   
   result = @[]
@@ -91,39 +30,6 @@ proc extractFields*[T: Model](model: T): seq[FormField] =
 
 
 
-# Convert: string from HTML form --> Model value
-func toModelValue*(formValue: string, T: typedesc[SomeInteger]): T = 
-  ## Converts an HTML form value in string format to an integer 
-  parseInt(formValue).T
-
-func toModelValue*(formValue: string, T: typedesc[SomeFloat]): T = 
-  ## Converts an HTML form value in string format to a float 
-  parseFloat(formValue).T
-
-func toModelValue*(formValue: string, T: typedesc[string]): T = 
-  ## Converts an HTML form value in string format to a string
-  ## This essentially does nothing and exists just to handle strings.
-  formValue
-
-func toModelValue*(formValue: string, T: typedesc[bool]): T = 
-  ## Converts an HTML form value in string format to a boolean
-  parseBool(formValue)
-
-proc toModelValue*(formValue: string, T: typedesc[DateTime]): T = 
-  ## Converts an HTML form value in string format to a DateTime instance
-  parse(formValue, DATETIME_LOCAL_FORMAT)
-
-func toModelValue*[T: enum](formValue: string, O: typedesc[T]): T = 
-  ## Converts an HTML form value in string format to an int value or a distinct int type
-  (parseInt(formValue)).T
-
-func toModelValue*[T](formValue: string, O: typedesc[Option[T]]): O = 
-  ## Converts an HTML form value in string format to an an optional value.
-  ## Empty strings get counted as non-existant values. 
-  let hasValue = formValue != ""
-  result = if hasValue: some formValue.toModelValue(T) else: none(T)
-
-
 proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string, subdir: Option[string]): string =
   let file = ctx.getUploadFile(fileFieldName)
   if not dirExists(mediaDirectory):
@@ -138,11 +44,9 @@ proc saveFile(ctx: Context, fileFieldName: string, mediaDirectory: string, subdi
   file.save(storageDirectory)
   let fullFilepath = fmt"{storageDirectory}/{file.fileName}"
   result = fullFilepath
-  
-
 
 proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[string]): FilePath =
-  ## Handles files sent via HTTP requests. Stores the file and returns the filepath.
+  ## Stores a file from an HTTP request in the MEDIA_ROOT directory and returns the filepath.
   let mediaDirectory = ctx.getSettings(MEDIA_ROOT_SETTING).getStr(DEFAULT_MEDIA_ROOT)
 
   let fullFilePath = ctx.saveFile(fileFieldName, mediaDirectory, subdir)
@@ -151,22 +55,22 @@ proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[stri
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
   ## Parses form data from an HTTP request body in `ctx` into a model instance of the 
   ## specified `model` type.
-  ## Allows skipping setting the id field when no id is present, e.g. when a model 
-  ## gets created for the first time.
+  ## Allows skipping setting the id field when the formData can not contain an id, e.g. when a model 
+  ## gets created.
   result = T()
   for name, dummyValue in T()[].fieldPairs:
     let formValueStr: Option[string] = ctx.getFormParamsOption(name)
     
     if formValueStr.isNone():
       when dummyValue is Option:
-        # Model Field is Optional File Field and Form has no value --> set to none
+        # Model Field can be nil (is Optional) and Form value is nil --> set to none
         result.setField(name, none(genericParams(dummyValue.type()).get(0)))
       
       else: 
-        # Model Field is not Optional File Field and Form has no value --> Error
+        # Model Field must not be nil (is not Optional) and Form value is nil --> Error
         const modelName = $T
         const fieldName = name
-        debug(fmt"Sent request is missing '{fieldName}' field of type '{modelName}'")
+        debug(fmt"Sent request is missing the '{fieldName}' field from the model type '{modelName}'")
     
     else:
       # Model Field is id Field and id field shall not be filled (e.g. because there is no id during creation)
@@ -174,13 +78,14 @@ proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: sta
       when isIdField and skipIdField:
         discard #Do nothing
 
-      # Model Field is Normal Field and Form has value --> Parse into field
+      # Model Field is any other Field and must not be nil (is not Optional) and Form value is not nil --> Parse form value into field
       else:
         const isFileField = typeOf(dummyValue) is FilePath
+        # Model Field is FileField: Handle File first
         when isFileField:
           const hasSubDirectory = hasCustomPragma(dummyValue, subdir)
-          const fileSubdir = when hasSubDirectory: some(getCustomPragmaVal(dummyValue, subdir)) else: none(string)
-          let formValue = handleFileFormData(ctx, name, fileSubdir)
+          const fileSubdir: Option[string] = when hasSubDirectory: some(getCustomPragmaVal(dummyValue, subdir)) else: none(string)
+          let formValue: string = handleFileFormData(ctx, name, fileSubdir)
           result.setField(name, formValue)
 
         else:
