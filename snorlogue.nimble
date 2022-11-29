@@ -8,14 +8,13 @@ srcDir        = "src"
 
 
 # Dependencies
-
 requires "nim >= 1.6.8"
 requires "norm >= 2.5.0"
 requires "prologue >= 0.6.0"
 requires "nimja >= 0.8.4"
 
 # Doc Dependency
-requires "nimibook"
+requires "nimibook >= 0.2.1"
 
 skipDirs = @["example"]
 
@@ -48,6 +47,7 @@ task cl, "Compiles the lib":
 
 task nimidocs, "Compiles the nimibook docs":
   rmDir "docs/bookCompiled"
+  exec "ln -s ./src/snorlogue/resources ./docs/book"
   exec "nimble install -y nimib@#head nimibook@#head"
   exec "nim c -d:release -d:sqlite nbook.nim"
   exec "./nbook -d:sqlite update"
