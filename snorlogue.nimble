@@ -44,8 +44,10 @@ task cl, "Compiles the lib":
   setCommand "c", "src/snorlogue.nim"
 
 task nimidocs, "Compiles the nimibook docs":
+  rmDir "docs/bookCompiled"
   exec "nim c -d:release -d:sqlite nbook.nim"
-  exec "./nbook build -d:sqlite"
+  exec "./nbook -d:sqlite update"
+  exec "./nbook -d:sqlite build"
 
 task apis, "docs only for api":
   exec "nim doc --verbosity:0 --warnings:off --project --index:on -d:sqlite " &

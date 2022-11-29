@@ -39,7 +39,10 @@ jobs:
         run: nimble install -y
 
       - name: Build API docs
-        run: nimble apis
+        run: nimble --verbose apis
+
+      - name: Build nimibook docs
+        run: nimble --verbose nimidocs
 
       - name: Archive API docs
         uses: actions/upload-artifact@v3
@@ -48,6 +51,7 @@ jobs:
           path: |
             docs/coreapi
             docs/plugin
+            docs/bookCompiled
 
   deploy-docs:
     needs:
@@ -64,6 +68,7 @@ jobs:
       - name: Setup docs
         run: |
           mv api-docs/plugin docs/
+          mv api-docs/bookCompiled docs/
 
       - name: Deploy
         if: success()

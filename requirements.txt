@@ -1,4 +1,0 @@
-# MKDOCS Documentation
-mkdocs
-mkdocs-material
-mkautodoc
