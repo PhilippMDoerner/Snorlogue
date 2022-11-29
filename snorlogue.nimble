@@ -48,7 +48,6 @@ task cl, "Compiles the lib":
 task nimidocs, "Compiles the nimibook docs":
   rmDir "docs/bookCompiled"
   exec "cp -r ./src/snorlogue/resources ./docs/book"
-  exec "nimble install -y nimib@#head nimibook@#head"
   exec "nim c -d:release -d:sqlite nbook.nim"
   exec "./nbook -d:sqlite update"
   exec "./nbook -d:sqlite build"
