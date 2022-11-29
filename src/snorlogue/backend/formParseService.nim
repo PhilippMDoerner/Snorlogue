@@ -96,7 +96,7 @@ proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: sta
         when isFileField:
           const hasSubDirectory = hasCustomPragma(dummyValue, subdir)
           const fileSubdir: Option[string] = when hasSubDirectory: some(getCustomPragmaVal(dummyValue, subdir)) else: none(string)
-          let formValue: string = handleFileFormData(ctx, name, fileSubdir)
+          let formValue: FilePath = handleFileFormData(ctx, name, fileSubdir)
           result.setField(name, formValue)
 
         else:
