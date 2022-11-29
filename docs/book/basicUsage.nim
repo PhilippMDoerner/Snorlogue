@@ -49,13 +49,14 @@ nbCode:
   var app: Prologue = newApp()
   app.addCrudRoutes(Creature)
   app.addAdminRoutes()
-  app.run()
+  #app.run() ## Can't compile a running HTTP server into docs ;-)
 
 
 nbText: """
   And you're done! Your Prologue application now has access to the following GET routes:
     - /admin/overview/
     - /admin/sql/
+    - /admin/config
     - /admin/creature/list/
     - /admin/creature/list/<Page index>/
     - /admin/creature/detail/<ID>/

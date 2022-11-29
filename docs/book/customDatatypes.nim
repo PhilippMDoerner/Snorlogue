@@ -1,6 +1,4 @@
 import nimib, nimibook
-
-import tutorial/tables
 import norm/[sqlite, model]
 import std/[os, strutils]
 
@@ -44,6 +42,7 @@ nbCode:
   import prologue
   import snorlogue
   import norm/[sqlite, model]
+  import std/[options, sequtils]
   # Type Definitions
   type Level = 0..9
 
@@ -52,26 +51,28 @@ nbCode:
       level*: Level
   
   # Defines which FormField a value of the Level type maps to
-  func toFormField*(value: Option[Level], fieldName: string): FormField =
-    let optionValues = Level.low..Level.high.toSeq()
+  func toFormField*(value: Option[Level], fieldName: string, isRequired: bool): FormField =
+    let optionValues = toSeq(Level.low..Level.high)
     let options: seq[IntOption] = optionValues.map(val => IntOption(value: val, name: "Level {val}"))
     let value = value.map(val => val.int64)
-    result = toFormField(value, fieldName, options)
+    result = toFormField(value, fieldName, isRequired, options)
 
   # Converts the received string value from the HTML form into a Level type
   func toModelValue*(formValue: string, T: typedesc[Level]): T = parseInt(formValue).Level
 
+  func `$`*(model: Creature): string = model.name
+
   # Example Usage
   putEnv("DB_HOST", ":memory:")
   withDb:
-    var human = Creature(name: "Karl", family: CreatureFamily.HUMANOID)
+    var human = Creature(name: "Karl", level: 5)
     db.createTables(human)
 
   # Setup the server
   var app: Prologue = newApp()
   app.addCrudRoutes(Creature)
   app.addAdminRoutes()
-  app.run()
+  # app.run()
 
 
 nbSave

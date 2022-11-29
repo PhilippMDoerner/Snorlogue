@@ -15,12 +15,13 @@ nbCode:
   import norm/[sqlite, model]
   import std/[strformat, options]
   import snorlogue
+  import prologue
 
   # Define the type
   type Image* = ref object of Model
     imageFile*: FilePath
 
-  proc `$`*(entry: Image): string = fmt"Image #{entry.creature_id}"
+  proc `$`*(entry: Image): string = fmt"Image #{entry.id}"
 
   # Create the table
   withDb:
@@ -28,13 +29,13 @@ nbCode:
     db.createTables(image)
 
   # Setup the server
-  let action: ActionProc = proc(connection: DbConn, entry: Image) = 
-    entry.imageFile = entry.imageFile.string.split('/')[^1].FilePath
+  let action: ActionProc[Image] = proc(connection: DbConn, entry: Image) = 
+    echo fmt"New Image File under path {entry.imageFile}"
 
   var app: Prologue = newApp()
   app.addCrudRoutes(Image, beforeCreateAction = action, beforeUpdateAction = action)
   app.addAdminRoutes()
-  app.run()
+  #app.run()
 
 nbText: """
 This will fire up a server with CRUD routes for an Image filetype.
