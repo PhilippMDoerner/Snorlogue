@@ -14,6 +14,9 @@ requires "norm >= 2.5.0"
 requires "prologue >= 0.6.0"
 requires "nimja >= 0.8.4"
 
+# Doc Dependency
+requires "nimibook"
+
 skipDirs = @["example"]
 
 task run_example, "NOTE TO USER: Remember to copy the resources folder into your project from which you are compiling! - Compiles and runs the snorlogue example":
@@ -45,6 +48,7 @@ task cl, "Compiles the lib":
 
 task nimidocs, "Compiles the nimibook docs":
   rmDir "docs/bookCompiled"
+  exec "nimble install -y nimib@#head nimibook@#head"
   exec "nim c -d:release -d:sqlite nbook.nim"
   exec "./nbook -d:sqlite update"
   exec "./nbook -d:sqlite build"
