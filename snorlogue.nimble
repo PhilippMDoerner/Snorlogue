@@ -46,9 +46,9 @@ task nimidocs, "Compiles the nimibook docs":
   rmDir "docs/bookCompiled"
   exec "cp -r ./src/snorlogue/resources ./docs/book"
   exec "nimble install -y nimib@#head nimibook@#head"
-  exec "nim c -d:release -d:sqlite nbook.nim"
-  exec "./nbook -d:sqlite update"
-  exec "./nbook -d:sqlite build"
+  exec "nim c -d:release --mm:refc -d:sqlite nbook.nim"
+  exec "./nbook -d:sqlite --mm:refc update"
+  exec "./nbook -d:sqlite --mm:refc build"
 
 task apis, "docs only for api":
   exec "nim doc --verbosity:0 --warnings:off --project --index:on -d:sqlite " &
