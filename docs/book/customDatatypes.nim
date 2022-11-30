@@ -11,13 +11,15 @@ nbText: """
 By default, Snorlogue can deal with the following Nim types in Model fields:
   - ``bool``
   - ``int/int8/16/32/64``
+  - ``float/float8/16/32/64``
   - ``Natural``
   - ``uint/uint8/16/32/64``
   - ``string``
   - ``FilePath``
   - ``DateTime``
-  - ``fk*`` (type int64 annotated with norm's `fk` pragma)
+  - ``foreignKey fields*`` (type int64 annotated with norm's `fk` pragma)
   - ``enum``
+  - ``range``
 
 Its main task in dealing with these types is:
   1) Map fields of certain types to certain pre-defined HTML input templates via `toFormField` procs
@@ -49,13 +51,6 @@ nbCode:
   type Creature* = ref object of Model
       name*: string
       level*: Level
-  
-  # Defines which FormField a value of the Level type maps to
-  func toFormField*(value: Option[Level], fieldName: string, isRequired: bool): FormField =
-    let optionValues = toSeq(Level.low..Level.high)
-    let options: seq[IntOption] = optionValues.map(val => IntOption(value: val, name: "Level {val}"))
-    let value = value.map(val => val.int64)
-    result = toFormField(value, fieldName, isRequired, options)
 
   # Converts the received string value from the HTML form into a Level type
   func toModelValue*(formValue: string, T: typedesc[Level]): T = parseInt(formValue).Level
