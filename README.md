@@ -3,7 +3,7 @@ NOT YET FINISHED, THE BELOW IS MERELY IN PREPARATION
 **Snorlogue** is a prologue extension, that provides a set of simple CRUD routes to administrate your database.
 It makes use of [norm models](https://github.com/moigagoo/norm) to figure out which columns a given table has and how to best represent them.
 
-- [Documentation]() (built with [nimibook](https://github.com/pietroppeter/nimibook))
+- [Documentation](https://philippmdoerner.github.io/Snorlogue/bookCompiled/) (built with [nimibook](https://github.com/pietroppeter/nimibook))
 - [API index](https://philippmdoerner.github.io/Snorlogue/)
 
 ## Installation
