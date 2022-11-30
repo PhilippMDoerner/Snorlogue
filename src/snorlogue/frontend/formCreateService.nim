@@ -112,7 +112,7 @@ proc extractFields*[T: Model](model: T): seq[FormField] =
   
   result = @[]
   for name, value in model[].fieldPairs:
-    const isFkField = value.hasCustomPragma(fk)
+    const isFkField = pragmasutils.hasCustomPragma(value, fk) # Required due to ambiguiity between pragmasutils.hasCustomPragma and macros.hasCustomPragma
 
     var formField: FormField
     when isFkField:
