@@ -6,7 +6,6 @@ on:
     branches:
       - devel
       - main
-  pull_request:
 
 jobs:
   api-docs:
