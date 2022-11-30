@@ -55,6 +55,13 @@ nbCode:
   # Converts the received string value from the HTML form into a Level type
   func toModelValue*(formValue: string, T: typedesc[Level]): T = parseInt(formValue).Level
 
+  # Defines which FormField a value of the Level type maps to
+  func toFormField*(value: Option[Level], fieldName: string): FormField =
+    let optionValues: seq[Level] = toSeq(Level.low..Level.high)
+    let options: seq[IntOption] = optionValues.map(val => IntOption(value: val, name: "Creature Level {val}"))
+    let value = value.map(val => val.int64)
+    result = FormField(kind: FormFieldKind.INTSELECT, name: fieldName, intSeqVal: value, intOptions: options)
+
   func `$`*(model: Creature): string = model.name
 
   # Example Usage
