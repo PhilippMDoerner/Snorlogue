@@ -1,74 +1,110 @@
-import std/[times, sugar, json, options]
+import std/[times, sugar, options, strformat, sequtils, algorithm, typetraits]
 import norm/[pragmas, pragmasutils, model]
 import prologue
 import ./fieldUtils/[fieldTypes, selectFieldUtils]
 import ../filePathType
 import ../constants
+import ../genericRepository
 
 export fieldTypes
 export filePathType
 
 
-func toFormField*(value: Option[string], fieldName: string, isRequired: bool): FormField = 
+func toFormField*(value: Option[string], fieldName: string): FormField = 
   ## Converts a string field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRING, strVal: value)
+  FormField(name: fieldName, kind: FormFieldKind.STRING, strVal: value)
 
-func toFormField*(value: Option[int64], fieldName: string, isRequired: bool): FormField = 
-  ## Converts a int field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INT, iVal: value)
+func toFormField*(value: Option[int64], fieldName: string): FormField = 
+  ## Converts a int64 field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
+  FormField(name: fieldName, kind: FormFieldKind.INT, iVal: value)
 
-func toFormField*(value: Option[int], fieldName: string, isRequired: bool): FormField = 
-  ## Converts a int field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName, isRequired)
-
-func toFormField*(value: Option[int32], fieldName: string, isRequired: bool): FormField = 
+func toFormField*(value: Option[int], fieldName: string): FormField = 
   ## Converts a int field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
   let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName, isRequired)
+  toFormField(mappedValue, fieldName)
+
+func toFormField*(value: Option[int32], fieldName: string): FormField = 
+  ## Converts a int32 field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
+  let mappedValue = value.map(val => val.int64)
+  toFormField(mappedValue, fieldName)
   
-func toFormField*(value: Option[Natural], fieldName: string, isRequired: bool): FormField = 
+func toFormField*(value: Option[Natural], fieldName: string): FormField = 
   ## Converts a int field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
   let mappedValue = value.map(val => val.int64)
-  toFormField(mappedValue, fieldName, isRequired)
+  toFormField(mappedValue, fieldName)
 
-func toFormField*(value: Option[float64], fieldName: string, isRequired: bool): FormField = 
-  ## Converts a float field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.FLOAT, fVal: value)
+func toFormField*(value: Option[float64], fieldName: string): FormField = 
+  ## Converts a float64 field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
+  FormField(name: fieldName, kind: FormFieldKind.FLOAT, fVal: value)
 
-func toFormField*(value: Option[float32], fieldName: string, isRequired: bool): FormField = 
-  ## Converts a float field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
+func toFormField*(value: Option[float32], fieldName: string): FormField = 
+  ## Converts a float32 field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
   let mappedValue = value.map(val => val.float64)
-  toFormField(mappedValue, fieldName, isRequired)
+  toFormField(mappedValue, fieldName)
 
-func toFormField*(value: Option[bool], fieldName: string, isRequired: bool): FormField = 
+func toFormField*(value: Option[bool], fieldName: string): FormField = 
   ## Converts a bool field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.BOOL, bVal: value)
+  FormField(name: fieldName, kind: FormFieldKind.BOOL, bVal: value)
 
-func toFormField*(value: Option[DateTime], fieldName: string, isRequired: bool): FormField = 
+func toFormField*(value: Option[DateTime], fieldName: string): FormField = 
   ## Converts a DateTime field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.DATE, dtVal: value.map(val => val.format(DATETIME_LOCAL_FORMAT)))
+  let mappedValue: Option[string] = value.map(val => val.format(DATETIME_LOCAL_FORMAT))
+  FormField(name: fieldName, kind: FormFieldKind.DATE, dtVal: mappedValue)
 
-func toFormField*(value: Option[FilePath], fieldName: string, isRequired: bool): FormField =
+func toFormField*(value: Option[FilePath], fieldName: string): FormField =
   ## Converts a FilePath field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.FILE, fileVal: value)
+  FormField(name: fieldName, kind: FormFieldKind.FILE, fileVal: value)
 
-func toFormField*[T](value: T, fieldName: string, isRequired: bool): FormField = 
-  ## Helper proc to enable converting non-optional fields into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata
-  toFormField[T](some value, fieldName, isRequired)
+func toIntSelectField(value: Option[int64], fieldName: string, options: var seq[IntOption]): FormField =
+  options.sort((opt1, opt2: IntOption) => cmp(opt1.name, opt2.name))
+  
+  result.name = fieldName
+  result.kind = FormFieldKind.INTSELECT
+  result.intSeqVal = value
+  result.intOptions = options
 
+func toFormField*[T: enum or range](value: Option[T], fieldName: string): FormField =
+  ## Converts an enum or range field on Model into a select 
+  ## `FormField<fieldTypes.html#FormField>`_ with int values.
+  ## 
+  ## Note: This can not be split into 2 separate procs, as the compiler will
+  ## immediately complain about ambiguity issues for the `TaintedString` type.
+  var options: seq[IntOption] = @[]
+  var formFieldValue: Option[int64] = none(int64)
+  when T is enum:
+    for enumValue in T:
+      options.add(IntOption(name: $enumValue, value: enumValue.int))
+    
+    # This must be within when statement as otherwise it throws:
+    # `type mismatch: got 'TaintedString' for 'val' but expected 'int64'`
+    formFieldValue = value.map(val => val.int64)
 
-## SELECT FIELDS
-func toFormField*(value: Option[SomeInteger], fieldName: string, isRequired: bool, options: seq[IntOption]): FormField =
-  ## Converts an integer field into select `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata with int values
-  let mappedValue = value.map(val => val.int64)
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.INTSELECT, intOptions: options, intSeqVal: mappedValue)
+  elif T is range:
+    const rangeName = T.name
+    for rangeVal in T.low..T.high:
+      options.add(IntOption(name: fmt"{rangeName} {rangeVal}", value: rangeVal.int))
 
-func toFormField*(value: Option[string], fieldName: string, isRequired: bool, options: seq[StringOption]): FormField =
-  ## Converts a string field into select `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata with string values
-  FormField(name: fieldName, isRequired: isRequired, kind: FormFieldKind.STRSELECT, strOptions: options, strSeqVal: value)
+    formFieldValue = value.map(val => val.int64)
 
+  toIntSelectField(formFieldValue, fieldName, options)
 
+func toFormField*[T](value: T, fieldName: string): FormField = 
+  ## Helper proc to enable converting non-optional fields into 
+  ## `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata
+  toFormField[T](some value, fieldName)
+
+proc toForeignKeyField*[T: Model](value: Option[int64], fieldName: static string, foreignKeyModelType: typedesc[T]): FormField =
+  ## Helper proc to convert a foreign key field on a Model into a select 
+  ## `FormField<fieldTypes.html#FormField>`_ with int value.
+  let fkEntries = listAll(T)
+  let fkOptions = fkEntries.mapIt(IntOption(name: $it, value: it.id))
+
+  toIntSelectField(value, fieldName, fkOptions)
+
+proc toForeignKeyField*[T: Model](value: int64, fieldName: static string, foreignKeyModelType: typedesc[T]): FormField =
+  ## Helper proc to convert a non-optional foreign key field on a Model into a 
+  ## select `FormField<fieldTypes.html#FormField>`_ with int value.
+  toForeignKeyField(some value, fieldName, T)
 
 proc extractFields*[T: Model](model: T): seq[FormField] =
   ## Converts the fields on a model into a sequence of `FormField<fieldUtils/fieldTypes.html#FormField>`_. 
@@ -77,14 +113,14 @@ proc extractFields*[T: Model](model: T): seq[FormField] =
   result = @[]
   for name, value in model[].fieldPairs:
     const isFkField = value.hasCustomPragma(fk)
-    const isEnumField = value is enum
-    const isRequiredField = value is not Option
 
+    var formField: FormField
     when isFkField:
-      result.add(toSelectFormField(value, name, isRequiredField, value.getCustomPragmaVal(fk))) # Last Param is a Model type
-
-    elif isEnumField:
-      result.add(toSelectFormField(value, name, isRequiredField))
+      formField = toSelectFormField(value, name, value.getCustomPragmaVal(fk)) # Last Param is a Model type
 
     else:
-      result.add(toFormField(value, name, isRequiredField))
+      formField = toFormField(value, name)
+    
+    const isRequiredField = value isnot Option
+    formField.isRequired = isRequiredField
+    result.add(formField)
