@@ -12,7 +12,7 @@ By knowing the model type, it can generate code to interact with the database, f
 To register a model, just use the `addCrudRoute` proc provided by Snorlogue.
 Once you registered your models, call `addAdminRoutes` to add the pages providing an overview over the registered models and an SQL route.
 
-Lets set up a database with a simple norm model called `Creature`:
+Lets set up an Sqlite database with a simple norm model called `Creature`:
 """
 
 nbCode:
@@ -26,7 +26,7 @@ nbCode:
 
   proc `$`*(entry: Creature): string = entry.name
 
-  putEnv("DB_HOST", ":memory:")
+  putEnv("DB_HOST", ":memory:") # For norm to find the database, see: https://norm.nim.town/config.html
 
   # Create the table.
   withDb:
@@ -54,17 +54,19 @@ nbCode:
 
 nbText: """
   And you're done! Your Prologue application now has access to the following GET routes:
-    - /admin/overview/
-    - /admin/sql/
-    - /admin/config
-    - /admin/creature/list/
-    - /admin/creature/list/<Page index>/
-    - /admin/creature/detail/<ID>/
-    - /admin/creature/delete/<ID>/
-    - /admin/creature/create/
+  
+    /admin/overview/
+    /admin/sql/
+    /admin/config
+    /admin/creature/list/
+    /admin/creature/list/<Page index>/
+    /admin/creature/detail/<ID>/
+    /admin/creature/delete/<ID>/
+    /admin/creature/create/
   
   And the following POST route (which handles all form requests):
-    - /admin/creature/
+  
+    /admin/creature/
 
   Click around and try them out!
 """
