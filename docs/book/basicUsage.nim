@@ -39,6 +39,7 @@ nbText: """
 The Creature model has 3 fields in total: name, description and id, which is inherited from `Model`.
 
 Note how we also provide a `$` proc to tell snorlogue how to represent an instance of `Creature` as a string!
+This is mandatory, as Snorlogue does not provide a default way to represent a model as a string, but needs this functionality to generate all the HTML.
 
 Now you can add them to a prologue server:
 """
