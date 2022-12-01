@@ -6,38 +6,36 @@ nbInit(theme = useNimibook)
 
 
 nbText: """
+# Default Supported Datatypes
+Out of the box, Snorlogue has support for the majority of "normal" data-types in nim.
+For every datatype, the following 2 steps need to be defined:
+  1) How to map norm model-fields to FormField instances via `toFormField` procs.
+  2) How to map form-field values (which are always strings) to norm model-field types via `toModelValue` procs
+
+FormFields define the type of HTML form-fields that are available in Snorlogue to represent a nim-type of a model-field in an HTML form.
+These are the fields Snorlogue provides:
+
+FormFieldKind | HTML field | nim-types | FormField-fields
+---------|-------|-------|-------------
+STRING | [Text input](https://www.w3schools.com/jsref/dom_obj_text.asp) | string | kind, name, strVal
+INT | [Number input](https://www.w3schools.com/jsref/dom_obj_number.asp) | int, int32, int64, uint, uint32, uint64, Natural | kind, name, iVal
+FLOAT | [Number input](https://www.w3schools.com/jsref/dom_obj_number.asp) | float, float32, float64 | kind, name, fVal
+BOOL | [Checkbox input](https://www.w3schools.com/jsref/dom_obj_checkbox.asp) | bool | kind, name, bVal
+DATE | [Datetime-local input](https://www.w3schools.com/jsref/dom_obj_datetime-local.asp) | DateTime | kind, name, dtVal
+FILE | [File input](https://www.w3schools.com/jsref/dom_obj_fileupload.asp) | FilePath | kind, name, fileVal
+INTSELECT | [Select](https://www.w3schools.com/tags/tag_select.asp) | range, enum, foreignKey* | kind, name, intSeqVal, intOptions
+STRSELECT | [Select](https://www.w3schools.com/tags/tag_select.asp) | -** | kind, name, strSeqVal, strOptions
+  *type int64 annotated with norm's `fk` pragma. The Model in the pragma must also be registered to Snorlogue <br>
+  **exists for users that want select fields with string values 
+
+
 # Custom Datatypes
 
-By default, Snorlogue can deal with the following Nim types in Model fields:
-  - ``bool``
-  - ``int/int8/16/32/64``
-  - ``float/float8/16/32/64``
-  - ``Natural``
-  - ``uint/uint8/16/32/64``
-  - ``string``
-  - ``FilePath``
-  - ``DateTime``
-  - ``foreignKey fields*`` (type int64 annotated with norm's `fk` pragma)
-  - ``enum``
-  - ``range``
 
-Its main task in dealing with these types is:
-  1) Map fields of certain types to certain pre-defined HTML input templates via `toFormField` procs
-  2) Parse strings from incoming form data into the given type via `toModelValue` procs
+To extend that list with your own datatypes, just define `toFormField` and `toModelValue` procs for them!
+This takes care of only the frontend though, you will still need to define `dbType`, `dbValue` and `to` [procs for norm](https://norm.nim.town/customDatatypes.html).
 
-Available HTML templates are represented by the `FormField` type and include:
-  - Checkbox (default for `bool`)
-  - Text input (default for `string`)
-  - Number input (default for `int/float/Natural`)
-  - Datetime input (default for `DateTime`)
-  - File input (Default for `FilePath`)
-  - Select with number values (Default for `fk` and `enum`)
-  - Select with string values
-
-If you want Snorlogue to be able to deal with fields with your own custom datatypes, all you need to do is define `toFormField` and `toModelValue` procs for them.
-
-Say for example we wanted to have a model field that can only contain a specific range of numbers, that is represented by a select field with int values.
-We can do this by defining our own `toFormField` proc that generates the options such a select field should have and feeds it into a pre-defined `toFormField` construction proc for a select formfield with int values:
+For example if we had a distinct string type of `UID` and wanted to support this in snorlogue:
 """
 
 nbCode:
@@ -45,29 +43,40 @@ nbCode:
   import snorlogue
   import norm/[sqlite, model]
   import std/[options, sequtils]
+
   # Type Definitions
   type Level = 0..9
+  type UID = distinct string
 
   type Creature* = ref object of Model
+      uid*: UID
       name*: string
       level*: Level
 
-  # Converts the received string value from the HTML form into a Level type
-  func toModelValue*(formValue: string, T: typedesc[Level]): T = parseInt(formValue).Level
+  # Converts a `string` value to `UID`
+  func toModelValue*(formValue: string, T: typedesc[UID]): T = formValue.UID
 
-  # Defines which FormField a value of the Level type maps to
-  func toFormField*(value: Option[Level], fieldName: string): FormField =
-    let optionValues: seq[Level] = toSeq(Level.low..Level.high)
-    let options: seq[IntOption] = optionValues.map(val => IntOption(value: val, name: "Creature Level {val}"))
-    let value = value.map(val => val.int64)
-    result = FormField(kind: FormFieldKind.INTSELECT, name: fieldName, intSeqVal: value, intOptions: options)
+  # Maps `UID` to the `String` `FormField` and any value such a field might have is to be converted to `string` as well.
+  func toFormField*(value: Option[UID], fieldName: string): FormField =
+    let compatibilityValue: Option[string] = value.map(val => val.string)
+    result = FormField(
+      kind: FormFieldKind.STRING,
+      name: fieldName,
+      strVal: compatibilityValue
+    )
+
+  # Procs for norm DB interaction
+  func dbType*(T: typedesc[UID]): string = "TEXT"
+  func dbValue*(val: UID): DbValue = dbValue(val.string)
+  proc to*(dbVal: DbValue, T: typedesc[UID]): T = dbVal.s.UID
+
 
   func `$`*(model: Creature): string = model.name
 
   # Example Usage
   putEnv("DB_HOST", ":memory:")
   withDb:
-    var human = Creature(name: "Karl", level: 5)
+    var human = Creature(name: "Karl", level: 5, uid: "12345abcde".UID)
     db.createTables(human)
 
   # Setup the server
