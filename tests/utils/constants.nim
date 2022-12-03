@@ -14,3 +14,5 @@ const SQLITE_HOST* = "test.db"
 const TEST_DIR* = "tests"
 const TEST_SERVER_DIR* = "tests/utils/servers"
 const RESOURCES_DIR* = "src/snorlogue/resources"
+
+const TEST_SERVER_DOMAIN* = "http://localhost:8080"

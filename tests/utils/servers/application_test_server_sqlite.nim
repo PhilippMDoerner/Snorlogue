@@ -5,8 +5,9 @@ import std/[strutils, options, strformat, logging, times]
 from os import `putEnv`
 import ../testModels/creature
 
-putEnv(dbHostEnv, "example.sqlite3")
-addHandler(newConsoleLogger(levelThreshold = lvlDebug))
+let logFile = open("testServerSqlite.log", fmWrite)
+addHandler(newFileLogger(logFile, levelThreshold = lvlDebug))
+addHandler(newConsoleLogger())
 
 proc main() =
   withDb:
