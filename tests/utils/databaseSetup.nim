@@ -1,4 +1,4 @@
-import std/[os, strformat]
+import std/[os]
 import ./constants
 
 when defined(postgres):

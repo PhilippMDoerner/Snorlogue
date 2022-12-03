@@ -29,9 +29,6 @@ type Creature* = ref object of Model
   count3*: int64
   isCool*: bool
 
-proc new(x: typedesc[Creature]): Creature =
-  result = Creature(birthDate: now())
-
 func dbType*(T: typedesc[CreatureFamily]): string = "INTEGER"
 func dbValue*(val: CreatureFamily): DbValue = dbValue(val.int)
 proc to*(dbVal: DbValue, T: typedesc[CreatureFamily]): CreatureFamily = dbVal.i.CreatureFamily

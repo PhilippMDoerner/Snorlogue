@@ -119,6 +119,28 @@ suite "Testing GET Endpoints":
 
     #Then
     response.expectHttpCode(200)
+    response.expectHttpCode(200)
+
+  test """
+    Given a server with snorlogue and a registered Model and a model in the database
+    When requesting model's 'detail' frontend Page for the existing model instance
+    Then it should return model data and stringified model
+  """:
+    #Given
+    var client = newHttpClient()
+
+    let conn = getServerDbConn()
+    var model = getDummyCreature()
+    conn.createTables(model)
+    conn.insert(model)
+    conn.close()
+
+    #When
+    let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/detail/{model.id}/"
+    let response = client.get(url)
+
+    #Then
+    response.expectBodyContent(model)
 
   test """
     Given a server with snorlogue and a registered Model
