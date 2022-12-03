@@ -9,7 +9,7 @@ const POSTGRES_USER* = "postgres"
 const POSTGRES_PASSWORD* = "postgres"
 const POSTGRES_NAME* = "postgres"
 
-const SQLITE_HOST* = "test.db"
+const SQLITE_HOST* = "/home/philipp/dev/snorlogue/tests/test.db"
 
 const TEST_DIR* = "tests"
 const TEST_SERVER_DIR* = "tests/utils/servers"

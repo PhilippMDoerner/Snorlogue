@@ -1,17 +1,14 @@
 import std/[httpclient, strformat, os, osproc, logging]
 import ./constants
+import ./databaseSetup
 
 var serverProcess: Process
 var binaryPath: string
 
-type DatabaseType* = enum
-  dtSqlite = "sqlite"
-  dtPostgres = "postgres"
-
 proc copyResourcesDir() =
   copyDir(RESOURCES_DIR, fmt"{TEST_SERVER_DIR}/resources")
 
-proc compileServer*(dbType: DatabaseType): string =
+proc compileServer(dbType: string): string =
   copyResourcesDir()
   let serverFilePath = fmt"tests/utils/servers/application_test_server_{dbType}.nim"
 
@@ -40,10 +37,15 @@ proc waitForServerToFinishBooting() =
     hasServerStarted = client.get(url).code == 200.HttpCode
     debug fmt"Server is online: {hasServerStarted}"
 
-proc startServer*(serverFilePath: string) =
-  serverProcess = startProcess(expandFilename(serverFilePath))
+proc startServer*() =
+  setupDatabase()
+
+  binaryPath = compileServer(TESTED_DB_TYPE)
+  serverProcess = startProcess(expandFilename(binaryPath))
   debug fmt"Server process is starting with PID '{serverProcess.processID}'"
   waitForServerToFinishBooting()
+
+
 
 proc deleteFile(absoluteFilePath: string) =
   if fileExists(absoluteFilePath):

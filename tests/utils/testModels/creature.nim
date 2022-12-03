@@ -39,3 +39,18 @@ proc `$`*(model: Creature): string = model.name
 
 proc afterCreateAction*(connection: DbConn, model: Creature): void =
   echo fmt"Just created Creature '{model.name}'!"
+
+proc getDummyCreature*(): Creature =
+  result = Creature(
+    name: "TestCreature",
+    description: some "TestDescription",
+    family: CreatureFamily.HUMANOID,
+    birthDate: now(),
+    evilness: 0.0,
+    evilness2: 0.1,
+    evilness3: 0.2,
+    count: 0,
+    count2: 2,
+    count3: 5,
+    isCool: true
+  )
