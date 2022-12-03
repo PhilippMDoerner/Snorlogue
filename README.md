@@ -1,4 +1,8 @@
-NOT YET FINISHED, THE BELOW IS MERELY IN PREPARATION
+<h1> 
+    SNORLOGUE IS NOT YET FINISHED AND THUS NOT YET AVAILABLE <br>
+    THE TEXT BELOW IS MERELY IN PREPARATION
+</h1>
+
 [![github pages](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/docs.yml/badge.svg)](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/docs.yml)
 
 # Snorlogue 
