@@ -1,5 +1,5 @@
-import std/[unittest, os, strformat, httpclient, logging, times]
-import ./utils/[constants, serverSetup, databaseSetup]
+import std/[unittest, strformat, httpclient, logging, options]
+import ./utils/[constants, serverSetup, databaseSetup, responseValidators]
 import ./utils/testModels/[creature]
 
 addHandler(newConsoleLogger(levelThreshold = lvlDebug))
@@ -25,7 +25,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue
@@ -40,7 +40,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue
@@ -55,7 +55,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue and a registered Model
@@ -70,7 +70,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue and a registered Model
@@ -85,7 +85,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue and a registered Model
@@ -97,7 +97,7 @@ suite "Testing GET Endpoints":
 
     let response = client.get(url)
 
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue and a registered Model and a model in the database
@@ -118,7 +118,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue and a registered Model
@@ -139,7 +139,7 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    check response.code == 200.HttpCode
+    response.expectHttpCode(200)
 
 
 stopServer()
