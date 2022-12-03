@@ -3,6 +3,7 @@ import prologue
 import std/[strutils, json, strformat, options, sequtils]
 import ../constants
 import ../genericRepository
+import ../urlUtils
 import ./formParseService
 
 type RequestType = enum

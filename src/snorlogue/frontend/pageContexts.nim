@@ -3,7 +3,7 @@ import norm/model
 import std/[strformat, sequtils, tables, math, options, sugar]
 import ./modelAnalysisService
 import ./formCreateService
-import ./urlUtils
+import ../urlUtils
 import ../genericRepository
 
 export urlUtils
