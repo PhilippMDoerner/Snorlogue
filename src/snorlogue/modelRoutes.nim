@@ -40,7 +40,7 @@ proc addCrudRoutes*[T: Model](
   ## - `beforeUpdateAction` - Gets executed just before updating a model. Note that the model provided is the new model that will replace the old one.
   ## - `afterUpdateAction` - Gets executed just after updating a model. Note that the model provided is the new model that has replaced the old one.
   ## - `beforeDeleteAction` - Gets executed just before deleting a model
-
+  debug "We got { middlewares.len()} middlewares"
   static: validateModel[T](T)
   const modelMetaData = extractMetaData(urlPrefix, T)
   REGISTERED_MODELS.add(modelMetaData)

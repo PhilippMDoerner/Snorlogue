@@ -32,10 +32,11 @@ elif defined(sqlite):
   const TESTED_DB_TYPE* = "sqlite"
 
   proc setupDatabase*() =
+    removeFile SQLITE_HOST
     putEnv(DB_HOST_ENV, SQLITE_HOST)
 
   proc resetDatabase*() =
-    # removeFile SQLITE_HOST
+    removeFile SQLITE_HOST
     delEnv(DB_HOST_ENV)
 
 else :

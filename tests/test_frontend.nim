@@ -1,8 +1,16 @@
-import std/[unittest, strformat, httpclient, logging, options]
+import std/[unittest, strformat, httpclient, times, logging, options]
 import ./utils/[constants, serverSetup, databaseSetup, responseValidators]
 import ./utils/testModels/[creature]
 
 addHandler(newConsoleLogger(levelThreshold = lvlDebug))
+
+proc toContentStrings*[T: ref object](expectedContent: T): seq[string] =
+  for fieldName, fieldValue in expectedContent[].fieldPairs:
+    result.add fieldName
+    when fieldValue isnot Option and fieldValue isnot DateTime and fieldValue isnot SomeFloat:
+      result.add $fieldValue
+
+
 
 startServer()
 
@@ -65,6 +73,10 @@ suite "Testing GET Endpoints":
     #Given
     var client = newHttpClient()
 
+    let conn = getServerDbConn()
+    conn.createTables(getDummyCreature())
+    conn.close()
+
     #When
     const url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/list/"
     let response = client.get(url)
@@ -80,6 +92,10 @@ suite "Testing GET Endpoints":
     #Given
     var client = newHttpClient()
 
+    let conn = getServerDbConn()
+    conn.createTables(getDummyCreature())
+    conn.close()
+    
     #When
     const url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/list/0/"
     let response = client.get(url)
@@ -92,11 +108,14 @@ suite "Testing GET Endpoints":
     When requesting model's 'create' frontend Page
     Then it should return HTTP Code 200
   """:
-    const url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/create/"
+    #Given
     var client = newHttpClient()
 
+    #When
+    const url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/create/"
     let response = client.get(url)
 
+    #Then
     response.expectHttpCode(200)
 
   test """
@@ -119,7 +138,6 @@ suite "Testing GET Endpoints":
 
     #Then
     response.expectHttpCode(200)
-    response.expectHttpCode(200)
 
   test """
     Given a server with snorlogue and a registered Model and a model in the database
@@ -140,7 +158,8 @@ suite "Testing GET Endpoints":
     let response = client.get(url)
 
     #Then
-    response.expectBodyContent(model)
+    let content = model.toContentStrings()
+    response.expectBodyContent(content)
 
   test """
     Given a server with snorlogue and a registered Model
