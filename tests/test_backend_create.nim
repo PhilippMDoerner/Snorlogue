@@ -16,7 +16,7 @@ suite "Testing POST Endpoint":
 
 
   test """
-    Given a server with snorlogue and a registered Model
+    Given a server with snorlogue and a registered Model without database entries
     When creating a Model via POST request
     Then it should put model into database
   """:
@@ -26,6 +26,10 @@ suite "Testing POST Endpoint":
     let model = getDummyCreature()
     let conn = getServerDbConn()
     conn.createTables(model)
+
+    var allOldCreatures = @[model]
+    conn.selectAll(allOldCreatures)
+    check allOldCreatures.len() == 0
 
     #When
     var data: MultipartData = newMultipartData({
@@ -60,7 +64,7 @@ suite "Testing POST Endpoint":
 
 
   test """
-    Given a server with snorlogue and a registered Model
+    Given a server with snorlogue and a registered Model without database entries
     When creating a Model via POST request with optional model-field "description" being empty strings in FormData
     Then it should store models with optional fields being 'none'
   """:
@@ -70,6 +74,10 @@ suite "Testing POST Endpoint":
     let model = getDummyCreature()
     let conn = getServerDbConn()
     conn.createTables(model)
+
+    var allOldCreatures = @[model]
+    conn.selectAll(allOldCreatures)
+    check allOldCreatures.len() == 0
 
     #When
     var data: MultipartData = newMultipartData({
@@ -140,7 +148,7 @@ suite "Testing POST Endpoint":
 
 
   test """
-    Given a server with snorlogue and a registered Model
+    Given a server with snorlogue and a registered Model without database entries
     When creating a Model via POST request with non-optional model-field "name" being empty strings in FormData
     Then it should create the model with empty string as the value for that field.
   """:
@@ -150,6 +158,10 @@ suite "Testing POST Endpoint":
     let model = getDummyCreature()
     let conn = getServerDbConn()
     conn.createTables(model)
+
+    var allOldCreatures = @[model]
+    conn.selectAll(allOldCreatures)
+    check allOldCreatures.len() == 0
 
     #When
     var data: MultipartData = newMultipartData({
@@ -290,7 +302,7 @@ suite "Testing POST Endpoint":
 
 
   test """
-    Given a server with snorlogue and a registered Model
+    Given a server with snorlogue and a registered Model without database entries
     When creating a Model via POST request and FormData contains a superfluous additional field like "superfluous-field"
     Then it should store model in the database and ignore superfluous field
   """:
@@ -300,6 +312,10 @@ suite "Testing POST Endpoint":
     let model = getDummyCreature()
     let conn = getServerDbConn()
     conn.createTables(model)
+
+    var allOldCreatures = @[model]
+    conn.selectAll(allOldCreatures)
+    check allOldCreatures.len() == 0
 
     #When
     const superfluousValue =  "I will not show up anywhere"
