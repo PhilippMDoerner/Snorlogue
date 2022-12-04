@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  tests-postgres:
+    build: .
+    image: snorlogue
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/app
+    command: nimble test -d:postgres --mm:orc --deepcopy:on --threads:on
+
+  tests-sqlite:
+    build: .
+    image: snorlogue
+    volumes:
+      - .:/usr/src/app
+    command: nimble test -d:sqlite --mm:orc --deepcopy:on --threads:on
+
+  docs:
+    build: .
+    image: snorlogue
+    volumes:
+      - .:/usr/src/app
+    command: nimble docs
+
+  book:
+    build: .
+    image: snorlogue
+    volumes:
+      - .:/usr/src/app
+    command: nimble nimidocs
