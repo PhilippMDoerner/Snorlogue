@@ -134,6 +134,32 @@ suite "Testing POST Endpoint":
     Creature.expectModelCount(1)
 
   test """
+    Given a server with snorlogue and a registered Model
+    When delete a Model via POST request by using "request-type" "delete" in FormData and not allowing redirects
+    Then it should make it visible that after model deletion you get redirected by returning HTTP301
+  """:
+    #Given
+    var client = newHttpClient(maxRedirects = 0)
+
+    var model = getDummyCreature()
+    let conn = getServerDbConn()
+    conn.createTables(model)
+    conn.insert(model)
+
+    #When
+    var data: MultipartData = newMultipartData({
+      "request-type": "delete",
+      "id": $model.id
+    })
+
+    let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
+    let response = client.post(url, multipart=data)
+
+    #Then
+    response.expectHttpCode(301)
+
+
+  test """
     Given a server with snorlogue and a registered Model with 1 database entry
     When deleting a Model via POST request by using "request-type" "delete" in FormData and superfluous fields
     Then it should return HTTP200 and delete entry as normal, ignoring superfluous field
