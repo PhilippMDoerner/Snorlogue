@@ -1,4 +1,4 @@
-import std/[os]
+import std/[os, strformat]
 import ./constants
 
 when defined(postgres):
@@ -8,9 +8,9 @@ when defined(postgres):
   const TESTED_DB_TYPE* = "postgres"
 
   proc resetDatabase*() =
-    let dbConn = open(dbHost, dbUser, dbPassword, "template1")
-    dbConn.exec(sql "DROP DATABASE IF EXISTS $#" % dbDatabase)
-    dbConn.exec(sql "CREATE DATABASE $#" % dbDatabase)
+    let dbConn = open(POSTGRES_HOST, POSTGRES_USER, POSTGRES_PASSWORD, "template1")
+    dbConn.exec(sql fmt"DROP DATABASE IF EXISTS {POSTGRES_NAME}")
+    dbConn.exec(sql fmt"CREATE DATABASE {POSTGRES_NAME}")
     close dbConn
 
     delEnv(DB_HOST_ENV)

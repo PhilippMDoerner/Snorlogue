@@ -1,5 +1,6 @@
 import norm/[model, postgres]
-import std/[strformat, options, strutils, sequtils]
+import std/[strformat, options, strutils, sequtils, sugar, tables]
+import std/macros except getCustomPragmaVal
 import ../constants
 
 export postgres
