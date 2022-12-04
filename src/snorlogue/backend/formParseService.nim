@@ -63,11 +63,31 @@ proc handleFileFormData(ctx: Context, fileFieldName: string, subdir: Option[stri
   let fullFilePath = ctx.saveFile(fileFieldName, mediaDirectory, subdir)
   result = fullFilePath.FilePath
 
+
+proc assertFormDataCompleteness[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false) =
+  ## Assert that each model-field that is not optional is present in the form-data.
+  ## Raises AssertionError if that is not the case.
+  for fieldName, dummyValue in T()[].fieldPairs:
+    const isIdField = fieldName == "id"
+    const skipField = isIdField and skipIdField
+
+    when not skipField:
+      let hasModelFieldInFormData: bool = ctx.getFormParamsOption(fieldName).isSome()
+      const isModelFieldMandatory = dummyValue isnot Option
+
+      if not hasModelFieldInFormData and isModelFieldMandatory:
+        const modelName: string = $model
+        const fieldName2: string = fieldName # For some reason I can not explain, the fmt proc below can not find the `fieldName` symbol, but it does find this symbol!
+        let errorMsg = fmt"The provided FormData is incomplete. Field '{fieldName2}' of Model '{modelName}' is not optional and must be provided"
+        raise newException(AssertionError, errorMsg)
+
 proc parseFormData*[T: Model](ctx: Context, model: typedesc[T], skipIdField: static bool = false): T =
   ## Parses form data from an HTTP request body in `ctx` into a model instance of the 
   ## specified `model` type.
   ## Allows skipping setting the id field when the formData can not contain an id, e.g. when a model 
   ## gets created.
+  assertFormDataCompleteness[T](ctx, model, skipIdField)
+
   result = T()
   for name, dummyValue in T()[].fieldPairs:
     let formValueStr: Option[string] = ctx.getFormParamsOption(name)

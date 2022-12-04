@@ -15,7 +15,7 @@ type RequestType = enum
 
 proc createHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeCreateAction: ActionProc[T], afterCreateAction: ActionProc[T]) {.gcsafe.} =
   {.cast(gcsafe).}:
-    var newModel = parseFormData(ctx, T)
+    var newModel = parseFormData(ctx, T, skipIdField = true)
     create(newModel, beforeCreateAction, afterCreateAction)
   
   let detailPageUrl = fmt"{generateUrlStub(urlPrefix, Page.DETAIL, T)}/{newModel.id}/"
