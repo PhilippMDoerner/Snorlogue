@@ -32,8 +32,7 @@ proc updateHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static
 proc deleteHandler[T: Model](ctx: Context, model: typedesc[T], urlPrefix: static string, beforeDeleteAction: ActionProc[T]) {.gcsafe.}=
   let idStr: Option[string] = ctx.getFormParamsOption(ID_PARAM)
   if idStr.isNone():
-    resp("", code = Http400)
-    return
+    raise newException(AssertionError, "Missing 'id' field for deleting Model '{$model}'")
 
   let id = parseInt(idStr.get()).int64
   {.cast(gcsafe).}:
