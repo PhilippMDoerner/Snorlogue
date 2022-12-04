@@ -105,7 +105,7 @@ suite "Testing POST Endpoint":
   test """
     Given a server with snorlogue and a registered Model
     When creating a Model via POST request and not allowing redirects
-    Then it should state that it is trying to redirect by returning HTTP301
+    Then it should make it visible that after model creation you get redirected by returning HTTP301
   """:
     #Given
     var client = newHttpClient(maxRedirects = 0)
