@@ -16,6 +16,11 @@ proc expectBodyContent*(response: Response, expectedContent: openArray[string]) 
 
     assert passesCheck
 
+template expectModelCount*(modelType: typed, expectedModelCount: int) =
+  let con = getServerDbConn()
+  check con.count(modelType) == expectedModelCount
+  con.close()
+
 
 
 
