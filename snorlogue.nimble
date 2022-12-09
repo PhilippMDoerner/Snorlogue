@@ -1,8 +1,8 @@
 # Package
 
-version       = "0.1.0"
+version       = "1.0.0"
 author        = "Philipp Doerner"
-description   = "A Prologue extension. Provides an admin environment"
+description   = "A Prologue extension. Provides an admin environment for your prologue server making use of norm."
 license       = "MIT"
 srcDir        = "src"
 

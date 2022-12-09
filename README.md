@@ -1,12 +1,8 @@
-<h1> 
-    SNORLOGUE IS NOT YET FINISHED AND THUS NOT YET AVAILABLE <br>
-    THE TEXT BELOW IS MERELY IN PREPARATION
-</h1>
-
 [![github pages](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/docs.yml/badge.svg)](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/docs.yml)
 [![Run Tests](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/tests.yml/badge.svg)](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/tests.yml)
 
 # Snorlogue 
+#### _Easy to use, allows you to snooze_
 **Snorlogue** is a prologue extension, that provides a set of simple CRUD routes to administrate your database.
 It makes use of [norm models](https://github.com/moigagoo/norm) to figure out which columns a given table has and how to best represent them.
 
