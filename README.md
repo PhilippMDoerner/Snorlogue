@@ -4,6 +4,7 @@
 </h1>
 
 [![github pages](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/docs.yml/badge.svg)](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/docs.yml)
+[![Run Tests](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/tests.yml/badge.svg)](https://github.com/PhilippMDoerner/Snorlogue/actions/workflows/tests.yml)
 
 # Snorlogue 
 **Snorlogue** is a prologue extension, that provides a set of simple CRUD routes to administrate your database.
