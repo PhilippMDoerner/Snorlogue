@@ -15,7 +15,7 @@ proc compileServer(dbType: string): string =
   if not fileExists(serverFilePath):
     raise newException(IOError, fmt"Could not run testsuite. The file with the test-server code '{serverFilePath}' does not exist")
 
-  let testServerCompileCommand = fmt"nim c --define:{dbType} --mm:orc --deepcopy:on --threads:on --warnings:off --hints:off --verbosity=0 {serverFilePath}"
+  let testServerCompileCommand = fmt"nim c --define:{dbType} --mm:orc --deepcopy:on --threads:on --warnings:off --hints:off --verbosity=0 {ADDITIONAL_COMPILER_PARAMS} {serverFilePath}"
   let compilationResult: int = execCmd(testServerCompileCommand)
 
   let compilationFailed: bool = compilationResult != 0

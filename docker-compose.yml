@@ -13,14 +13,14 @@ services:
       - postgres
     volumes:
       - .:/usr/src/app
-    command: nimble test -d:postgres --mm:orc --deepcopy:on --threads:on
+    command: nimble test --mm:orc --deepcopy:on --threads:on --define:postgres --define:ndbPostgresOld
 
   tests-sqlite:
     build: .
     image: snorlogue
     volumes:
       - .:/usr/src/app
-    command: nimble test -d:sqlite --mm:orc --deepcopy:on --threads:on
+    command: nimble test --mm:orc --deepcopy:on --threads:on --define:sqlite
 
   docs:
     build: .

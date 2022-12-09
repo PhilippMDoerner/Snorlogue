@@ -1,4 +1,6 @@
-import norm/[model, postgres]
+import norm/[model]
+import norm/postgres as norm_postgres
+from ndb/postgres import instantRows
 import std/[strformat, options, strutils, sequtils, sugar, tables]
 import std/macros except getCustomPragmaVal
 import ../constants
@@ -81,7 +83,19 @@ proc count*[T: Model](modelType: typedesc[T]): int64 =
   withDb:
     result = db.count(T)
 
-type QueryResult = (seq[Row], seq[string])
+
+proc getColumnNames(db: DbConn, query: SqlQuery): seq[string] =
+  ## TODO: Get this to work. It currently doesn't because somehow snorlogue does not have access to `instantRows` defined by ndb/postgres
+  ## I don't have an explanation as to why that is, as the iterator IS DEFINED at https://github.com/xzfc/ndb.nim/blob/f9c85711ffc2ba350fb3c64e5ce38ada47380742/ndb/postgres.nim#L604 as are others
+  ## But nim keeps claiming the symbol doesn't exist
+  var columns: DbColumns
+  for _ in instantRows(db, columns, query):
+    discard
+
+  result = columns.mapIt(it.name)
+
+
+type QueryResult* = (seq[Row], seq[string])
 
 proc executeQuery*(query: string): Option[QueryResult] =
   ## Executes the given SQL query on the database.
@@ -96,11 +110,7 @@ proc executeQuery*(query: string): Option[QueryResult] =
   {.cast(gcsafe).}:
     withDb: 
       if isSelectQuery:
-        var columns: DbColumns
-        for _ in db.instantRows(columns, sql query):
-          discard
-
-        let columnNames = columns.mapIt(it.name)
+        let columnNames = db.getColumnNames(sql query)
         let rows: seq[Row] = db.getAllRows(sql query)
 
         result = some((rows, columnNames))

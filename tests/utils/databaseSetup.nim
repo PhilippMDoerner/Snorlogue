@@ -1,4 +1,4 @@
-import std/[os, strformat]
+import std/[os, strformat, logging]
 import ./constants
 
 when defined(postgres):
@@ -6,8 +6,10 @@ when defined(postgres):
   export postgres
 
   const TESTED_DB_TYPE* = "postgres"
+  const ADDITIONAL_COMPILER_PARAMS* = "--define:ndbPostgresOld"
 
   proc resetDatabase*() =
+    debug "Resetting DB"
     let dbConn = open(POSTGRES_HOST, POSTGRES_USER, POSTGRES_PASSWORD, "template1")
     dbConn.exec(sql fmt"DROP DATABASE IF EXISTS {POSTGRES_NAME}")
     dbConn.exec(sql fmt"CREATE DATABASE {POSTGRES_NAME}")
@@ -19,6 +21,7 @@ when defined(postgres):
     delEnv(DB_NAME_ENV)
 
   proc setupDatabase*() =
+    debug "Setting up DB"
     resetDatabase()
     putEnv(DB_HOST_ENV, POSTGRES_HOST)
     putEnv(DB_USER_ENV, POSTGRES_USER)
@@ -30,6 +33,7 @@ elif defined(sqlite):
   export sqlite
 
   const TESTED_DB_TYPE* = "sqlite"
+  const ADDITIONAL_COMPILER_PARAMS* = ""
 
   proc setupDatabase*() =
     removeFile SQLITE_HOST

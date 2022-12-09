@@ -145,6 +145,7 @@ suite "Testing POST Endpoint":
     let conn = getServerDbConn()
     conn.createTables(model)
     conn.insert(model)
+    conn.close()
 
     #When
     var data: MultipartData = newMultipartData({

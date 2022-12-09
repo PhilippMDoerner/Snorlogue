@@ -1,20 +1,29 @@
 import prologue
 import norm/[postgres, model]
 import snorlogue
-import std/[strutils, options, strformat, logging, times]
-from os import `putEnv`
+import std/[strutils, options, strformat, sugar, logging, times]
 import ../testModels/creature
 
-putEnv(dbHostEnv, "example.sqlite3")
-addHandler(newConsoleLogger(levelThreshold = lvlDebug))
+proc addLogger*() =
+  addHandler(newConsoleLogger(levelThreshold = lvlDebug))
 
+  let logFile = open("testServerSqlite.log", fmWrite)
+  addHandler(newFileLogger(file = logFile))
+
+  logging.setLogFilter(lvlDebug)
+
+proc getStartUpEvents*(): seq[Event] =
+    result.add(initEvent(() => addLogger()))
 
 proc main() =
   withDb:
     db.createTables(Creature())
 
-  var app: Prologue = newApp()
+  var app: Prologue = newApp(
+    startUp = getStartUpEvents()
+  )
   app.addCrudRoutes(Creature, afterCreateAction = afterCreateAction)
   app.addAdminRoutes()
+  app.run()
 
 main()
