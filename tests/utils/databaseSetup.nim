@@ -36,10 +36,12 @@ elif defined(sqlite):
   const ADDITIONAL_COMPILER_PARAMS* = ""
 
   proc setupDatabase*() =
+    debug "Setting up DB"
     removeFile SQLITE_HOST
     putEnv(DB_HOST_ENV, SQLITE_HOST)
 
   proc resetDatabase*() =
+    debug "Resetting DB"
     removeFile SQLITE_HOST
     delEnv(DB_HOST_ENV)
 

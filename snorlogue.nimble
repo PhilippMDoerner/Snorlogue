@@ -59,3 +59,11 @@ task apis, "docs only for api":
     "src/snorlogue.nim"
 
   exec "nim buildIndex -o:docs/plugin/index.html docs/plugin"
+
+task postgresTests, "Run containerized postgres tests":
+  echo staticExec "sudo docker image rm snorlogue"
+  exec "sudo docker-compose run --rm tests-postgres"
+
+task sqliteTests, "Run containerized sqlite tests":
+    echo staticExec "sudo docker image rm snorlogue"
+    exec "sudo docker-compose run --rm tests-sqlite"
