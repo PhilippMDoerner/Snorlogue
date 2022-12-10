@@ -1,7 +1,7 @@
 import std/[times, sugar, options, strformat, sequtils, algorithm, typetraits]
 import norm/[pragmas, pragmasutils, model]
 import prologue
-import ./fieldUtils/[fieldTypes, selectFieldUtils]
+import ./fieldUtils/[fieldTypes]
 import ../filePathType
 import ../constants
 import ../genericRepository
