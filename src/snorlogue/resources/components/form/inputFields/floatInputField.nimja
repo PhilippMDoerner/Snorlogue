@@ -8,6 +8,6 @@
   step="any"
   name="{{fieldName}}"
   {% if isRequired %} required {% endif %}
-  {% if isUpdateForm and value.isSome() %} value="{{value.get()}}" {% endif %}>
+  {% if isUpdateForm and value.isSome() %} value="{{value.get()}}" {% endif %} />
  
 </div>

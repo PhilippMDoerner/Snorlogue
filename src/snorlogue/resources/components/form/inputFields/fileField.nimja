@@ -14,7 +14,7 @@
     class="form-control" 
     id="{{fieldName}}" 
     form="form"
-    name="{{fieldName}}">
+    name="{{fieldName}}" />
   </div>
   {% if value.isSome() %}
     {% let mediaUrl = value.get().string %}
