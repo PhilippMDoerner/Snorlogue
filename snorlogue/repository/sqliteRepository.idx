@@ -1,0 +1,9 @@
+read	snorlogue/repository/sqliteRepository.html#read,int64	sqliteRepository: read[T: Model](id: int64): T	
+create	snorlogue/repository/sqliteRepository.html#create,T,ActionProc[T: Model],ActionProc[T: Model]	sqliteRepository: create[T: Model](newModel: var T; beforeCreateAction: ActionProc[T];\n                 afterCreateAction: ActionProc[T])	
+list	snorlogue/repository/sqliteRepository.html#list,int,int,seq[string],SortDirection	sqliteRepository: list[T: Model](pageIndex: int; pageSize: int; sortFields: seq[string];\n               sortDirection: SortDirection): seq[T]	
+update	snorlogue/repository/sqliteRepository.html#update,T,ActionProc[T: Model],ActionProc[T: Model]	sqliteRepository: update[T: Model](updateModel: var T; beforeUpdateAction: ActionProc[T];\n                 afterUpdateAction: ActionProc[T])	
+delete	snorlogue/repository/sqliteRepository.html#delete,typedesc[T],int64,ActionProc[T: Model]	sqliteRepository: delete[T: Model](modelType: typedesc[T]; id: int64;\n                 beforeDeleteAction: ActionProc[T])	
+count	snorlogue/repository/sqliteRepository.html#count,typedesc[T]	sqliteRepository: count[T: Model](modelType: typedesc[T]): int64	
+QueryResult	snorlogue/repository/sqliteRepository.html#QueryResult	sqliteRepository: QueryResult	
+executeQuery	snorlogue/repository/sqliteRepository.html#executeQuery,string	sqliteRepository: executeQuery(query: string): Option[QueryResult]	
+listAll	snorlogue/repository/sqliteRepository.html#listAll,typedesc[T]	sqliteRepository: listAll[T: Model](modelType: typedesc[T]): seq[T]	

@@ -1,0 +1,17 @@
+REGISTERED_MODELS	snorlogue/frontend/pageContexts.html#REGISTERED_MODELS	pageContexts: REGISTERED_MODELS	
+hasFileField	snorlogue/frontend/pageContexts.html#hasFileField,seq[FormField]	pageContexts: hasFileField(fields: seq[FormField]): bool	
+PageContext	snorlogue/frontend/pageContexts.html#PageContext	pageContexts: PageContext	
+ModelListContext	snorlogue/frontend/pageContexts.html#ModelListContext	pageContexts: ModelListContext	
+initListContext	snorlogue/frontend/pageContexts.html#initListContext,seq[T],staticstring,Settings,int64,int,int	pageContexts: initListContext[T](models: seq[T]; urlPrefix: static string; settings: Settings;\n                   totalModelCount: int64; pageIndex: int; pageSize: int): ModelListContext[\n    T]	
+ModelDetailContext	snorlogue/frontend/pageContexts.html#ModelDetailContext	pageContexts: ModelDetailContext	
+initDetailContext	snorlogue/frontend/pageContexts.html#initDetailContext,T,staticstring,Settings	pageContexts: initDetailContext[T: Model](model: T; urlPrefix: static string;\n                            settings: Settings): ModelDetailContext[T]	
+ModelDeleteContext	snorlogue/frontend/pageContexts.html#ModelDeleteContext	pageContexts: ModelDeleteContext	
+initDeleteContext	snorlogue/frontend/pageContexts.html#initDeleteContext,T,staticstring,Settings	pageContexts: initDeleteContext[T: Model](model: T; urlPrefix: static string;\n                            settings: Settings): ModelDeleteContext[T]	
+ModelCreateContext	snorlogue/frontend/pageContexts.html#ModelCreateContext	pageContexts: ModelCreateContext	
+initCreateContext	snorlogue/frontend/pageContexts.html#initCreateContext,T,staticstring,Settings	pageContexts: initCreateContext[T: Model](model: T; urlPrefix: static string;\n                            settings: Settings): ModelCreateContext[T]	
+OverviewContext	snorlogue/frontend/pageContexts.html#OverviewContext	pageContexts: OverviewContext	
+initOverviewContext	snorlogue/frontend/pageContexts.html#initOverviewContext,seq[ModelMetaData],staticstring,Settings	pageContexts: initOverviewContext(metaDataEntries: seq[ModelMetaData];\n                    urlPrefix: static string; settings: Settings): OverviewContext	
+SqlContext	snorlogue/frontend/pageContexts.html#SqlContext	pageContexts: SqlContext	
+initSqlContext	snorlogue/frontend/pageContexts.html#initSqlContext,staticstring,Settings,string,Option[seq[Row]],Option[seq[string]],Option[string]	pageContexts: initSqlContext(urlPrefix: static string; settings: Settings; query: string;\n               rows: Option[seq[Row]]; columnNames: Option[seq[string]];\n               errorMsg: Option[string]): SqlContext	
+ConfigurationContext	snorlogue/frontend/pageContexts.html#ConfigurationContext	pageContexts: ConfigurationContext	
+initAboutApplicationContext	snorlogue/frontend/pageContexts.html#initAboutApplicationContext,staticstring,Settings,Table[string,seq[string]]	pageContexts: initAboutApplicationContext(urlPrefix: static string; settings: Settings;\n                            routes: Table[string, seq[string]]): ConfigurationContext	

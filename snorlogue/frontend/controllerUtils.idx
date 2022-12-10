@@ -1,0 +1,2 @@
+getPageSize	snorlogue/frontend/controllerUtils.html#getPageSize,Context	controllerUtils: getPageSize(ctx: Context): int	
+renderNimjaPage	snorlogue/frontend/controllerUtils.html#renderNimjaPage,staticstring,T	controllerUtils: renderNimjaPage[T: PageContext](pageName: static string; context: T): string	

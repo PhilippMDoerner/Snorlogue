@@ -1,0 +1,5 @@
+ModelMetaData	snorlogue/frontend/modelAnalysisService.html#ModelMetaData	modelAnalysisService: ModelMetaData	
+getForeignKeyFields	snorlogue/frontend/modelAnalysisService.html#getForeignKeyFields,typedesc[T]	modelAnalysisService: getForeignKeyFields[T: Model](modelType: typedesc[T]): seq[string]	
+extractMetaData	snorlogue/frontend/modelAnalysisService.html#extractMetaData,staticstring,typedesc[T]	modelAnalysisService: extractMetaData[T: Model](urlPrefix: static string; modelType: typedesc[T]): ModelMetaData	
+checkForModelFields	snorlogue/frontend/modelAnalysisService.html#checkForModelFields,typedesc[T]	modelAnalysisService: checkForModelFields[T: Model](modelType: typedesc[T])	
+validateModel	snorlogue/frontend/modelAnalysisService.html#validateModel,typedesc[T]	modelAnalysisService: validateModel[T: Model](model: typedesc[T])	

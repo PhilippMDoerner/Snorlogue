@@ -1,0 +1,14 @@
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[string],string	formCreateService: toFormField(value: Option[string]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[int64],string	formCreateService: toFormField(value: Option[int64]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[int],string	formCreateService: toFormField(value: Option[int]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[int32],string	formCreateService: toFormField(value: Option[int32]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[Natural],string	formCreateService: toFormField(value: Option[Natural]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[float64],string	formCreateService: toFormField(value: Option[float64]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[float32],string	formCreateService: toFormField(value: Option[float32]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[bool],string	formCreateService: toFormField(value: Option[bool]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[DateTime],string	formCreateService: toFormField(value: Option[DateTime]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[FilePath],string	formCreateService: toFormField(value: Option[FilePath]; fieldName: string): FormField	
+toFormField	snorlogue/frontend/formCreateService.html#toFormField,T,string	formCreateService: toFormField[T](value: T; fieldName: string): FormField	
+toForeignKeyField	snorlogue/frontend/formCreateService.html#toForeignKeyField,Option[int64],staticstring,typedesc[T]	formCreateService: toForeignKeyField[T: Model](value: Option[int64]; fieldName: static string;\n                            foreignKeyModelType: typedesc[T]): FormField	
+toForeignKeyField	snorlogue/frontend/formCreateService.html#toForeignKeyField,int64,staticstring,typedesc[T]	formCreateService: toForeignKeyField[T: Model](value: int64; fieldName: static string;\n                            foreignKeyModelType: typedesc[T]): FormField	
+extractFields	snorlogue/frontend/formCreateService.html#extractFields,T	formCreateService: extractFields[T: Model](model: T): seq[FormField]	

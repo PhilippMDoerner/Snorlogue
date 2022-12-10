@@ -1,0 +1,8 @@
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[SomeInteger]	formParseService: toModelValue(formValue: string; T: typedesc[SomeInteger]): T:type	
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[SomeFloat]	formParseService: toModelValue(formValue: string; T: typedesc[SomeFloat]): T:type	
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[string]	formParseService: toModelValue(formValue: string; T: typedesc[string]): T:type	
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[bool]	formParseService: toModelValue(formValue: string; T: typedesc[bool]): T:type	
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[DateTime]	formParseService: toModelValue(formValue: string; T: typedesc[DateTime]): T:type	
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[T]	formParseService: toModelValue[T: enum](formValue: string; O: typedesc[T]): T	
+toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[Option[T]]	formParseService: toModelValue[T](formValue: string; O: typedesc[Option[T]]): O:type	
+parseFormData	snorlogue/backend/formParseService.html#parseFormData,Context,typedesc[T],staticbool	formParseService: parseFormData[T: Model](ctx: Context; model: typedesc[T];\n                        skipIdField: static bool = false): T	

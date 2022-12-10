@@ -1,0 +1,5 @@
+getField	snorlogue/macroUtils.html#getField.m,T,staticstring	macroUtils: getField[T: object | ref object](obj: T; fieldName: static string): untyped	
+getField	snorlogue/macroUtils.html#getField.m,typedesc[T],staticstring	macroUtils: getField[T: object | ref object](someType: typedesc[T]; fieldName: static string): untyped	
+setField	snorlogue/macroUtils.html#setField.t,T,staticstring,untyped	macroUtils: setField[T: object | ref object](obj: var T; fieldName: static string;\n                                 value: untyped)	
+hasField	snorlogue/macroUtils.html#hasField,T,staticstring	macroUtils: hasField[T: object | ref object](obj: T; fieldName: static string): bool	
+hasField	snorlogue/macroUtils.html#hasField,typedesc[T],staticstring	macroUtils: hasField[T: object | ref object](t: typedesc[T]; fieldName: static string): bool	

@@ -1,0 +1,8 @@
+FilePath	snorlogue/filePathType.html#FilePath	filePathType: FilePath	
+`$`	snorlogue/filePathType.html#$,FilePath	filePathType: `$`(x: FilePath): string	
+add	snorlogue/filePathType.html#add,FilePath,string	filePathType: add(x: var FilePath; s: string)	
+add	snorlogue/filePathType.html#add,FilePath,FilePath	filePathType: add(x: var FilePath; s: FilePath)	
+to	snorlogue/filePathType.html#to,DbValue,typedesc[FilePath]	filePathType: to(dbVal: DbValue; T: typedesc[FilePath]): T:type	
+dbValue	snorlogue/filePathType.html#dbValue,FilePath	filePathType: dbValue(val: FilePath): DbValue	
+dbType	snorlogue/filePathType.html#dbType,typedesc[FilePath]	filePathType: dbType(T: typedesc[FilePath]): string	
+subdir	snorlogue/filePathType.html#subdir.t,string	filePathType: subdir(directory: string)	
