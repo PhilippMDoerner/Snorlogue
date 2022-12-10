@@ -63,35 +63,42 @@ func toIntSelectField(value: Option[int64], fieldName: string, options: var seq[
   result.intSeqVal = value
   result.intOptions = options
 
-func toFormField*[T: enum or range](value: Option[T], fieldName: string): FormField =
-  ## Converts an enum or range field on Model into a select 
-  ## `FormField<fieldTypes.html#FormField>`_ with int values.
-  ## 
-  ## Note: This can not be split into 2 separate procs, as the compiler will
-  ## immediately complain about ambiguity issues for the `TaintedString` type.
-  var options: seq[IntOption] = @[]
-  var formFieldValue: Option[int64] = none(int64)
-  when T is enum:
-    for enumValue in T:
-      options.add(IntOption(name: $enumValue, value: enumValue.int))
+# Disabled as a compiler bug causes this proc to be chosen also for string and int types instead of their appropriate overloads
+# func toFormField*[T: enum or range](value: Option[T], fieldName: string): FormField =
+#   ## Converts an enum or range field on Model into a select 
+#   ## `FormField<fieldTypes.html#FormField>`_ with int values.
+#   ## 
+#   ## Note: This can not be split into 2 separate procs, as the compiler will
+#   ## immediately complain about ambiguity issues for the `TaintedString` type.
+#   var options: seq[IntOption] = @[]
+#   var formFieldValue: Option[int64] = none(int64)
+#   when T is enum:
+#     for enumValue in T:
+#       options.add(IntOption(name: $enumValue, value: enumValue.int))
     
-    # This must be within when statement as otherwise it throws:
-    # `type mismatch: got 'TaintedString' for 'val' but expected 'int64'`
-    formFieldValue = value.map(val => val.int64)
+#     # This must be within when statement as otherwise it throws:
+#     # `type mismatch: got 'TaintedString' for 'val' but expected 'int64'`
+#     formFieldValue = value.map(val => val.int64)
 
-  elif T is range:
-    const rangeName = T.name
-    for rangeVal in T.low..T.high:
-      options.add(IntOption(name: fmt"{rangeName} {rangeVal}", value: rangeVal.int))
+#   elif T is range:
+#     const rangeName = T.name
+#     for rangeVal in T.low..T.high:
+#       options.add(IntOption(name: fmt"{rangeName} {rangeVal}", value: rangeVal.int))
 
-    formFieldValue = value.map(val => val.int64)
+#     formFieldValue = value.map(val => val.int64)
 
-  toIntSelectField(formFieldValue, fieldName, options)
+#   toIntSelectField(formFieldValue, fieldName, options)
 
 func toFormField*[T](value: T, fieldName: string): FormField = 
   ## Helper proc to enable converting non-optional fields into 
   ## `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata
-  toFormField[T](some value, fieldName)
+  when T is DateTime:
+    if value.isInitialized():
+      toFormField(some value, fieldName)
+    else:
+      toFormField(none DateTime, fieldName)
+  else:
+    toFormField[T](some value, fieldName)
 
 proc toForeignKeyField*[T: Model](value: Option[int64], fieldName: static string, foreignKeyModelType: typedesc[T]): FormField =
   ## Helper proc to convert a foreign key field on a Model into a select 

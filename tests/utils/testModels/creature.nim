@@ -1,5 +1,6 @@
 import norm/model
-import std/[options, times, strformat]
+import std/[options, times, sugar, strformat]
+import snorlogue
 
 when defined(postgres):
   import norm/postgres
@@ -33,6 +34,18 @@ func dbType*(T: typedesc[CreatureFamily]): string = "INTEGER"
 func dbValue*(val: CreatureFamily): DbValue = dbValue(val.int)
 proc to*(dbVal: DbValue, T: typedesc[CreatureFamily]): CreatureFamily = dbVal.i.CreatureFamily
 proc `$`*(model: Creature): string = model.name
+
+func toFormField*(value: Option[CreatureFamily], fieldName: string): FormField =
+  var options: seq[IntOption] = @[]
+  for enumValue in CreatureFamily:
+    options.add(IntOption(name: $enumValue, value: enumValue.int))
+  
+  let formFieldValue: Option[int64] = value.map(val => val.int64)
+
+  result.name = fieldName
+  result.kind = FormFieldKind.INTSELECT
+  result.intSeqVal = formFieldValue
+  result.intOptions = options
 
 proc afterCreateAction*(connection: DbConn, model: Creature): void =
   echo fmt"Just created Creature '{model.name}'!"

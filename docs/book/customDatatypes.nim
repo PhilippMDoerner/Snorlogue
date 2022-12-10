@@ -23,7 +23,7 @@ FLOAT | [Number input](https://www.w3schools.com/jsref/dom_obj_number.asp) | flo
 BOOL | [Checkbox input](https://www.w3schools.com/jsref/dom_obj_checkbox.asp) | bool | kind, name, bVal
 DATE | [Datetime-local input](https://www.w3schools.com/jsref/dom_obj_datetime-local.asp) | DateTime | kind, name, dtVal
 FILE | [File input](https://www.w3schools.com/jsref/dom_obj_fileupload.asp) | FilePath | kind, name, fileVal
-INTSELECT | [Select](https://www.w3schools.com/tags/tag_select.asp) | range, enum, foreignKey* | kind, name, intSeqVal, intOptions
+INTSELECT | [Select](https://www.w3schools.com/tags/tag_select.asp) | foreignKey* | kind, name, intSeqVal, intOptions
 STRSELECT | [Select](https://www.w3schools.com/tags/tag_select.asp) | -** | kind, name, strSeqVal, strOptions
   *type int64 annotated with norm's `fk` pragma. The Model in the pragma must also be registered to Snorlogue <br>
   **exists for users that want select fields with string values 
@@ -42,16 +42,21 @@ nbCode:
   import prologue
   import snorlogue
   import norm/[sqlite, model]
-  import std/[options, sequtils]
+  import std/[options, sequtils, algorithm, strformat, sugar]
 
   # Type Definitions
   type Level = 0..9
   type UID = distinct string
+  type CreatureType = enum
+    A, B, C
 
   type Creature* = ref object of Model
       uid*: UID
       name*: string
       level*: Level
+      kind*: CreatureType
+
+  func `$`*(model: Creature): string = model.name
 
   # Converts a `string` value to `UID`
   func toModelValue*(formValue: string, T: typedesc[UID]): T = formValue.UID
@@ -65,13 +70,52 @@ nbCode:
       strVal: compatibilityValue
     )
 
-  # Procs for norm DB interaction
+  ## Procs for norm DB interaction
+  # UID
   func dbType*(T: typedesc[UID]): string = "TEXT"
   func dbValue*(val: UID): DbValue = dbValue(val.string)
   proc to*(dbVal: DbValue, T: typedesc[UID]): T = dbVal.s.UID
+  # CreatureType
+  func dbType*(T: typedesc[CreatureType]): string = "TEXT"
+  func dbValue*(val: CreatureType): DbValue = dbValue($val)
+  proc to*(dbVal: DbValue, T: typedesc[CreatureType]): T = parseEnum[CreatureType](dbVal.s)
+  # Level
+  func dbType*(T: typedesc[Level]): string = "INT"
+  func dbValue*(val: Level): DbValue = dbValue(val.int)
+  proc to*(dbVal: DbValue, T: typedesc[Level]): T = dbVal.i.Level
 
 
-  func `$`*(model: Creature): string = model.name
+  ## Procs for Snorlogue Form interaction
+  # Maps `CreatureType` to the `IntSelect` `FormField` and any value such a field might have is to be converted to an int on the form.
+  func toFormField*(value: Option[CreatureType], fieldName: string): FormField =
+    var options: seq[IntOption] = @[]
+    for enumValue in CreatureType:
+      options.add(IntOption(name: $enumValue, value: enumValue.int))
+    
+    let formFieldValue: Option[int64] = value.map(val => val.int64)
+
+    result.name = fieldName
+    result.kind = FormFieldKind.INTSELECT
+    result.intSeqVal = formFieldValue
+    result.intOptions = options
+
+  # Maps `Level` to the `IntSelect` `FormField` and any value such a field might have is to be converted to an int on the form.
+  func toFormField*(value: Option[Level], fieldName: string): FormField =
+    var options: seq[IntOption] = @[]
+    const rangeName = $Level
+    for rangeVal in Level.low..Level.high:
+      let optionLabel = fmt"{rangeName} {rangeVal}"
+      let optionValue = rangeVal.int
+      options.add(IntOption(name: optionLabel, value: optionValue))
+
+    let formFieldValue: Option[int64] = value.map(val => val.int64)
+
+    options.sort((opt1, opt2: IntOption) => cmp(opt1.name, opt2.name))
+    
+    result.name = fieldName
+    result.kind = FormFieldKind.INTSELECT
+    result.intSeqVal = formFieldValue
+    result.intOptions = options
 
   # Example Usage
   putEnv("DB_HOST", ":memory:")
@@ -85,5 +129,10 @@ nbCode:
   app.addAdminRoutes()
   # app.run()
 
+nbText: """
+Note that no `toModelValue` had to be defined for `CreatureType` or `Level`.
+Enums and range are somwhat special in that they do have default `toModelValue` procs defined for them, but can not have a default `toFormField` proc.
+It is heavily discouraged to try and supply a generic `toFormField` for either of those types, as the nim compiler appears to not act consistently when those procs are defined, leaving to various runtime bugs.
+"""
 
 nbSave
