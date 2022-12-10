@@ -132,7 +132,7 @@ nbCode:
 nbText: """
 Note that no `toModelValue` had to be defined for `CreatureType` or `Level`.
 Enums and range are somwhat special in that they do have default `toModelValue` procs defined for them, but can not have a default `toFormField` proc.
-It is heavily discouraged to try and supply a generic `toFormField` for either of those types, as the nim compiler appears to not act consistently when those procs are defined, leaving to various runtime bugs.
+It is heavily discouraged to try and supply a generic `toFormField` for either of those types, as the nim compiler appears to not act consistently when those procs are defined, leading to various runtime bugs.
 """
 
 nbSave

@@ -7,7 +7,7 @@ nbText: """
 # File Fields
 In order to deal with fields representing Files, Snorlogue provides a `FilePath` type. They do *not* contain the actual
 file itself, but a path to the file itself.
-This path is relative to the media directory, that can be configured via the `media-root` setting.
+This path is relative to the media directory, which can be configured via a custom `media-root` setting in the [prologue settings](https://planety.github.io/prologue/configure/).
 If no such setting is provided, snorlogue will default to the path in `MEDIA_ROOT_DEFAULT`.
 
 A simple example could look like this:
@@ -45,10 +45,8 @@ Should you try to create a Creature, you will be greeted by a Form consisting on
 The file in this scenario will be stored in a directory relative to where the binary is, so `{getCurrentDir()}/media/{fileName}`.
 
 If you want to store files for this particular field in a subdirectory instead, you can use Snorlogue's `subdir` pragma.
-Using it will cause your files to be stured under `{getCurrentDir()}/media/{subdirPragmaValue}/{fileName}`
+Using it will cause your files to be stored under `{getCurrentDir()}/media/{subdirPragmaValue}/{fileName}`
 """
-# TODO: Finish this example
-# Do not forget to note caveats about large files
 
 nbCode:
   # Define the type
