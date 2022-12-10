@@ -1,3 +1,6 @@
+## The module to import for database interaction. 
+## Basically chooses which of the repository modules to use at compile-time based on a given flag.
+
 when defined(postgres):
   import repository/postgresRepository
   export postgresRepository

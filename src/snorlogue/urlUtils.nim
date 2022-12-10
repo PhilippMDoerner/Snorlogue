@@ -1,6 +1,8 @@
 import std/[strformat, strutils]
 import norm/model
 
+## Utility procs related to generating URLs to the various pages that Snorlogue provides.
+
 type Page* = enum
   CREATE = "create"
   DELETE = "delete"

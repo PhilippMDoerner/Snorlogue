@@ -1,6 +1,10 @@
 import norm/[pragmas, model]
 import std/[macros, tables, typetraits, strutils, strformat]
 
+## A collection of procs related to analysing Model-types at compile time or extracting Metadata from them.
+## Mostly necessary because you can't story a list of types or the like anywhere. This all data needed
+## later must be extracted immediately when the Model is provided.
+
 type ModelMetaData* = object
   name*: string
   table*: string

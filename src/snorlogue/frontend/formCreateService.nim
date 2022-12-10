@@ -1,7 +1,7 @@
 import std/[times, sugar, options, strformat, sequtils, algorithm, typetraits]
 import norm/[pragmas, pragmasutils, model]
 import prologue
-import ./fieldUtils/[fieldTypes, selectFieldUtils]
+import ./fieldUtils/[fieldTypes]
 import ../filePathType
 import ../constants
 import ../genericRepository
@@ -9,6 +9,7 @@ import ../genericRepository
 export fieldTypes
 export filePathType
 
+## Transforms `Model` instances into `seq[FormField]` at runtime, which can be rendered into HTML forms in nimja templates. 
 
 func toFormField*(value: Option[string], fieldName: string): FormField = 
   ## Converts a string field on Model into `FormField<fieldUtils/fieldTypes.html#FormField>`_ metadata 
