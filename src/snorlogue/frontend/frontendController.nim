@@ -12,6 +12,8 @@ import ../genericRepository
 export formCreateService # To enable the call-site to parse forms
 export strutils # To enable strutils procs in templates
 
+## Provides any and all controller procs for any HTTP request of type GET.
+
 proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
   ## Generates a prologue controller proc for GET HTTP requests. 
   ## The controller provides a `CREATE` page for creating an entry of `modelType`. 

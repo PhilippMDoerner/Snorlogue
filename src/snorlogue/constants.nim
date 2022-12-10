@@ -8,6 +8,8 @@ elif defined(sqlite):
 else:
   {.error: "Snorlogue requires you to specify which database type you use via a defined flag. Please specify either '-d:sqlite' or '-d:postgres'".}
 
+## This module is the place to define any application-wide constants
+
 const DATETIME_LOCAL_FORMAT* = "yyyy-MM-dd'T'HH:mm" ## 
 ## The expected DateTime Format of any string value representing a DateTime field of a model
 

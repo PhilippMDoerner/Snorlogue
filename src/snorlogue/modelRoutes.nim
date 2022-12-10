@@ -10,6 +10,8 @@ export constants
 export pageContexts
 export frontendController
 
+## Snorlogues main module. Provides all procs that add Snorlogue routes to a given `Prologue` instance.
+
 proc addCrudRoutes*[T: Model](
   app: Prologue, 
   modelType: typedesc[T], 

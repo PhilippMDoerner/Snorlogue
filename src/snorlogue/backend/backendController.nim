@@ -6,6 +6,8 @@ import ../genericRepository
 import ../urlUtils
 import ./formParseService
 
+## Provides any and all controller procs for any HTTP request that is not of type GET.
+
 type RequestType = enum
   POST = "post"
   DELETE = "delete"
@@ -52,7 +54,7 @@ proc createBackendController*[T: Model](
   beforeDeleteAction: ActionProc[T]
 ): HandlerAsync =
   ## Generates a prologue controller proc for `POST` HTTP requests to create/update/delete entries of type `model`. 
-  ## The POST request is interpreted as a POST, PUT or DELEte request depending on the form parameter "request-type".
+  ## The POST request is interpreted as a POST, PUT or DELETE request depending on the form parameter "request-type".
   ## This is a workaround over inherent HTTP form limitations, which allow only sending POST/GET requests.
   ## 
   ## After a create/update/delete, the controller forwards you to the appropriate `GET` controller. 

@@ -1,6 +1,8 @@
 import std/[options]
 import ../../filePathType
 
+## Provides all types related to `FormField`
+
 type IntOption* = object
   ## A single option of a select `FormField<#FormField>`_ with int values
   name*: string

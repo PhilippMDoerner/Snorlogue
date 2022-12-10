@@ -8,6 +8,9 @@ import ../genericRepository
 
 export urlUtils
 
+## Provides `PageContext` objects necessary and procs to construct them.
+## Each nimja template has its own type of `PageContext`, as such a context provides the data that gets rendered into the nimja template to create a snorlogue page.
+
 var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
   
 proc hasFileField*(fields: seq[FormField]): bool =

@@ -4,6 +4,8 @@ import nimja/parser
 import ../constants
 import ./pageContexts
 
+## Small utility procs for frontend controllers. Anything that takes over small tasks of a frontendController proc
+
 proc getPageSize*(ctx: Context): int =
   ## Extracts the configured number of entries per page for pagination
   ## Defaults to 50 if nothing is set.

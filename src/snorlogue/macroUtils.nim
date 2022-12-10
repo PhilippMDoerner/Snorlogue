@@ -1,5 +1,7 @@
 import std/macros
 
+## General utility macros/templates for interacting with types and instances
+
 macro getField*[T: object | ref object](obj: T, fieldName: static string): untyped =
   ## Accesses the field on an object instance by generating the code `obj.fieldName`
   nnkDotExpr.newTree(obj, ident(fieldName))

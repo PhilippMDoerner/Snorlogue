@@ -7,6 +7,11 @@ import ../constants
 
 export postgres
 
+## A repository implementing database interaction procs for postgres
+## Do NOT use this module directly ! Use `genericRepository` instead !
+## Any repository module must provide the procs `read`, `create`, `list`, `update`, `delete`, `count`, `executeQuery` and `listAll`.
+
+
 proc read*[T: Model](id: int64): T =
   ## Reads a model with the given id from the database
   var targetEntry: T = new(T)

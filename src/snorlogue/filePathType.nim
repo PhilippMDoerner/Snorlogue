@@ -1,5 +1,7 @@
 import ./genericRepository
 
+## Implements the `FilePath` datatype to provide some way of dealing with Files
+
 type FilePath* = distinct string ##
 ## A convenience type for norm models.
 ## To be used as type for model fields storing any sort of file.

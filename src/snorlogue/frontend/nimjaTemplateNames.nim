@@ -1,3 +1,5 @@
+## Provides the list of all nimja template files that are used to render an HTML page.
+
 const MODEL_DELETE_PAGE* = "modelDelete.nimja" ##
 ## Nimja template-filename of the Page enabling deletion of a model
  
