@@ -10,39 +10,39 @@ else:
 
 ## This module is the place to define any application-wide constants
 
-const DATETIME_LOCAL_FORMAT* = "yyyy-MM-dd'T'HH:mm" ## 
-## The expected DateTime Format of any string value representing a DateTime field of a model
+const DATETIME_LOCAL_FORMAT* = "yyyy-MM-dd'T'HH:mm" ##
+                                                  ## The expected DateTime Format of any string value representing a DateTime field of a model
 
-const DEFAULT_PAGE_SIZE* = 50 ## 
-## Default size for pagination
+const DEFAULT_PAGE_SIZE* = 50 ##
+                              ## Default size for pagination
 
-const MEDIA_ROOT_SETTING* = "media-root" ## 
-## The name of the prologue setting that is used to configure the root media directory.
-## All files from fields of type `FilePath` are to be stored in that directory.
-## Sub-directories within the root directory can be specified with the 
-## `subdir<service/fieldUtils/fileFieldUtils.html#subdir.t%2Cstring>`_ pragma.
-##
-## If no such setting is provided `DEFAULT_MEDIA_ROOT<#DEFAULT_MEDIA_ROOT>`_ is used.
- 
-const PACKAGE_PATH* = currentSourcePath().parentDir() ## 
-## The filepath to root project folder being compiled.
+const MEDIA_ROOT_SETTING* = "media-root" ##
+                                         ## The name of the prologue setting that is used to configure the root media directory.
+                                         ## All files from fields of type `FilePath` are to be stored in that directory.
+                                         ## Sub-directories within the root directory can be specified with the
+                                         ## `subdir<service/fieldUtils/fileFieldUtils.html#subdir.t%2Cstring>`_ pragma.
+                                         ##
+                                         ## If no such setting is provided `DEFAULT_MEDIA_ROOT<#DEFAULT_MEDIA_ROOT>`_ is used.
 
-let DEFAULT_MEDIA_ROOT* = fmt"{getCurrentDir()}/media" ## 
-## Default MEDIA_ROOT directory. Is determined at runtime on startup to be 
-## a "/media" folder in the current working directory i.e. the directory from
-## which the binary of the compiled program is run.
+const PACKAGE_PATH* = currentSourcePath().parentDir()     ##
+                                                          ## The filepath to root project folder being compiled.
 
-const ID_PARAM* = "id" ## 
-## Name of the url parameter for the value of a unique identifier for a model
+let DEFAULT_MEDIA_ROOT* = fmt"{getCurrentDir()}/media" ##
+                                                       ## Default MEDIA_ROOT directory. Is determined at runtime on startup to be
+                                                       ## a "/media" folder in the current working directory i.e. the directory from
+                                                       ## which the binary of the compiled program is run.
 
-const PAGE_PARAM* = "page" ## 
-## Name of the url parameter for a pagination index
+const ID_PARAM* = "id" ##
+                       ## Name of the url parameter for the value of a unique identifier for a model
 
-const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)" ## 
-## Regular expression for use in routes, representing the ID url parameter
+const PAGE_PARAM* = "page" ##
+                           ## Name of the url parameter for a pagination index
 
-const PAGE_PATTERN* =  fmt r"(?P<{PAGE_PARAM}>[\d]+)" ## 
-## Regular expression for use in routes, representing the PAGE url parameter 
+const ID_PATTERN* = fmt r"(?P<{ID_PARAM}>[\d]+)" ##
+                                                 ## Regular expression for use in routes, representing the ID url parameter
+
+const PAGE_PATTERN* = fmt r"(?P<{PAGE_PARAM}>[\d]+)" ##
+                                                     ## Regular expression for use in routes, representing the PAGE url parameter
 
 type SortDirection* = enum
   ## Defines the possible ways to sort a list

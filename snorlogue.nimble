@@ -67,3 +67,6 @@ task postgresTests, "Run containerized postgres tests":
 task sqliteTests, "Run containerized sqlite tests":
     echo staticExec "sudo docker image rm snorlogue"
     exec "sudo docker-compose run --rm tests-sqlite"
+
+task pretty, "Runs nimpretty to format the code in the project":
+  exec """find . -name "*.nim" -exec nimpretty --maxLineLen:100 --indent:2 {} +"""

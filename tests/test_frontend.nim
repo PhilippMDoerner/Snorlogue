@@ -95,7 +95,7 @@ suite "Testing GET Endpoints":
     let conn = getServerDbConn()
     conn.createTables(getDummyCreature())
     conn.close()
-    
+
     #When
     const url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/list/0/"
     let response = client.get(url)

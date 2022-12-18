@@ -51,10 +51,10 @@ nbCode:
     A, B, C
 
   type Creature* = ref object of Model
-      uid*: UID
-      name*: string
-      level*: Level
-      kind*: CreatureType
+    uid*: UID
+    name*: string
+    level*: Level
+    kind*: CreatureType
 
   func `$`*(model: Creature): string = model.name
 
@@ -91,7 +91,7 @@ nbCode:
     var options: seq[IntOption] = @[]
     for enumValue in CreatureType:
       options.add(IntOption(name: $enumValue, value: enumValue.int))
-    
+
     let formFieldValue: Option[int64] = value.map(val => val.int64)
 
     result.name = fieldName
@@ -111,7 +111,7 @@ nbCode:
     let formFieldValue: Option[int64] = value.map(val => val.int64)
 
     options.sort((opt1, opt2: IntOption) => cmp(opt1.name, opt2.name))
-    
+
     result.name = fieldName
     result.kind = FormFieldKind.INTSELECT
     result.intSeqVal = formFieldValue

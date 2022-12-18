@@ -13,23 +13,23 @@ type FilePath* = distinct string ##
 
 func `$`*(x: FilePath): string {.borrow.}
 
-proc add*(x: var FilePath, s: string) = 
+proc add*(x: var FilePath, s: string) =
   ## Appends the `string` `s` to the `FilePath<#FilePath>`_ `x`
   x.string.add(s)
 
-proc add*(x: var FilePath, s: FilePath) = 
+proc add*(x: var FilePath, s: FilePath) =
   ## Appends the `FilePath<#FilePath>`_ `s` to the `FilePath<#FilePath>`_ `x`
   x.string.add(s.string)
 
-func to*(dbVal: DbValue, T: typedesc[FilePath]): T = 
+func to*(dbVal: DbValue, T: typedesc[FilePath]): T =
   ## Helper proc for norm to convert `DbValue` to `FilePath<#FilePath>`_.
   dbVal.s.FilePath
 
-func dbValue*(val: FilePath): DbValue = 
+func dbValue*(val: FilePath): DbValue =
   ## Helper proc for norm to convert `FilePath<#FilePath>`_ to `DbValue`.
   dbValue(val.string)
 
-func dbType*(T: typedesc[FilePath]): string = 
+func dbType*(T: typedesc[FilePath]): string =
   ## Helper proc for norm to define which column-type to use for storing `FilePath` values.
   "TEXT"
 

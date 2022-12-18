@@ -12,13 +12,13 @@ export urlUtils
 ## Each nimja template has its own type of `PageContext`, as such a context provides the data that gets rendered into the nimja template to create a snorlogue page.
 
 var REGISTERED_MODELS*: seq[ModelMetaData] = @[]
-  
+
 proc hasFileField*(fields: seq[FormField]): bool =
   fields.any(field => field.kind == FormFieldKind.FILE)
 
 
 type PageContext* = object of RootObj
-  ## Base amount of data needed in a context for any snorlogue page. 
+  ## Base amount of data needed in a context for any snorlogue page.
   ## Defines all fields required by the root template of all pages.
   currentPage*: Page
   currentUrl*: string
@@ -54,7 +54,14 @@ proc getPaginationIndices(pageIndex: int, maxPageIndex: int): seq[int] =
   if(isBeforeLastPage): result.add(pageIndex + 1)
   if(isBeforeSecondLastPage): result.add(pageIndex + 2)
 
-proc initListContext*[T](models: seq[T], urlPrefix: static string, settings: Settings, totalModelCount: int64, pageIndex: int, pageSize: int): ModelListContext[T] =
+proc initListContext*[T](
+  models: seq[T],
+  urlPrefix: static string,
+  settings: Settings,
+  totalModelCount: int64,
+  pageIndex: int,
+  pageSize: int
+): ModelListContext[T] =
   ## Generates the context for a `LIST` page
   let maxPageIndex: int = floor(totalModelCount.int / pageSize).int
   let isLastPage = pageIndex == maxPageIndex
@@ -95,7 +102,11 @@ type ModelDetailContext*[T] = object of PageContext
   updateUrl*: string
   listUrl*: string
 
-proc initDetailContext*[T: Model](model: T, urlPrefix: static string, settings: Settings): ModelDetailContext[T] =
+proc initDetailContext*[T: Model](
+  model: T,
+  urlPrefix: static string,
+  settings: Settings
+): ModelDetailContext[T] =
   ## Generates the context for a `DETAIL` page
   let fields: seq[FormField] = extractFields[T](model)
 
@@ -126,7 +137,11 @@ type ModelDeleteContext*[T] = object of PageContext
   model*: T
   modelName*: string
 
-proc initDeleteContext*[T: Model](model: T, urlPrefix: static string, settings: Settings): ModelDeleteContext[T] =
+proc initDeleteContext*[T: Model](
+  model: T,
+  urlPrefix: static string,
+  settings: Settings
+): ModelDeleteContext[T] =
   ## Generates the context for a `DELETE` page
   {.cast(gcsafe).}:
     ModelDeleteContext[T](
@@ -153,7 +168,11 @@ type ModelCreateContext*[T] = object of PageContext
   fields*: seq[FormField]
   hasFileField*: bool
 
-proc initCreateContext*[T: Model](model: T, urlPrefix: static string, settings: Settings): ModelCreateContext[T] =
+proc initCreateContext*[T: Model](
+  model: T,
+  urlPrefix: static string,
+  settings: Settings
+): ModelCreateContext[T] =
   ## Generates the context for a `CREATE` page
   let fields: seq[FormField] = extractFields(model)
   {.cast(gcsafe).}:
@@ -179,12 +198,13 @@ type OverviewContext* = object of PageContext
   modelLinks*: OrderedTable[ModelMetaData, string]
 
 proc sort(entry1, entry2: (ModelMetaData, string)): int =
-  if entry1[0].name > entry2[0].name: 
-    1 
-  else: 
+  if entry1[0].name > entry2[0].name:
+    1
+  else:
     -1
 
-proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static string, settings: Settings): OverviewContext =
+proc initOverviewContext*(metaDataEntries: seq[ModelMetaData], urlPrefix: static string,
+    settings: Settings): OverviewContext =
   ## Generates the context for a `OVERVIEW` page
   var modelLinks = initOrderedTable[ModelMetaData, string]()
   for metaData in metaDataEntries:
@@ -212,7 +232,14 @@ type SqlContext* = object of PageContext
   columns*: Option[seq[string]]
   queryErrorMsg*: Option[string]
 
-proc initSqlContext*(urlPrefix: static string, settings: Settings, query: string, rows: Option[seq[Row]], columnNames: Option[seq[string]], errorMsg: Option[string]): SqlContext =
+proc initSqlContext*(
+  urlPrefix: static string,
+  settings: Settings,
+  query: string,
+  rows: Option[seq[Row]],
+  columnNames: Option[seq[string]],
+  errorMsg: Option[string]
+): SqlContext =
   ## Generates the context for the `SQL` page
   let columns: seq[string] = @[]
 
@@ -239,7 +266,11 @@ type ConfigurationContext* = object of PageContext
   address*: string
   routes*: Table[string, seq[string]]
 
-proc initAboutApplicationContext*(urlPrefix: static string, settings: Settings, routes: Table[string, seq[string]]): ConfigurationContext =
+proc initAboutApplicationContext*(
+  urlPrefix: static string,
+  settings: Settings,
+  routes: Table[string, seq[string]]
+): ConfigurationContext =
   ## Generates the context for the `CONFIG` page
   {.cast(gcsafe).}:
     ConfigurationContext(

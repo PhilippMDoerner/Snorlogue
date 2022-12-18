@@ -14,9 +14,12 @@ export strutils # To enable strutils procs in templates
 
 ## Provides any and all controller procs for any HTTP request of type GET.
 
-proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides a `CREATE` page for creating an entry of `modelType`. 
+proc createCreateFormController*[T: Model](
+  modelType: typedesc[T],
+  urlPrefix: static string
+): HandlerAsync =
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides a `CREATE` page for creating an entry of `modelType`.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc (ctx: Context) {.async, gcsafe.} =
     let dummyModel = new(T)
@@ -26,9 +29,12 @@ proc createCreateFormController*[T: Model](modelType: typedesc[T], urlPrefix: st
 
     resp htmlResponse(html)
 
-proc createDetailController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides a `DETAIL` page, displaying and updating a specific entry of `modelType`. 
+proc createDetailController*[T: Model](
+  modelType: typedesc[T],
+  urlPrefix: static string
+): HandlerAsync =
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides a `DETAIL` page, displaying and updating a specific entry of `modelType`.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc (ctx: Context) {.async, gcsafe.} =
     mixin toFormField
@@ -39,15 +45,15 @@ proc createDetailController*[T: Model](modelType: typedesc[T], urlPrefix: static
     let html = renderNimjaPage(MODEL_DETAIL_PAGE, context)
 
     resp htmlResponse(html)
-  
+
 proc createListController*[T: Model](
-  modelType: typedesc[T], 
-  urlPrefix: static string, 
+  modelType: typedesc[T],
+  urlPrefix: static string,
   sortFields: seq[string],
   sortDirection: SortDirection
 ): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides a `LIST` page for displaying a list of all entries of `modelType`. 
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides a `LIST` page for displaying a list of all entries of `modelType`.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   ## Sorts the list of entries according to the provided fields in the provided direction.
   result = proc (ctx: Context) {.async, gcsafe.} =
@@ -62,9 +68,12 @@ proc createListController*[T: Model](
 
     resp htmlResponse(html)
 
-proc createConfirmDeleteController*[T: Model](modelType: typedesc[T], urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides a `DELETE` page for deleting an entry of `modelType`. 
+proc createConfirmDeleteController*[T: Model](
+  modelType: typedesc[T],
+  urlPrefix: static string
+): HandlerAsync =
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides a `DELETE` page for deleting an entry of `modelType`.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc (ctx: Context) {.async, gcsafe.} =
     let id = parseInt(ctx.getPathParams(ID_PARAM)).int64
@@ -75,21 +84,24 @@ proc createConfirmDeleteController*[T: Model](modelType: typedesc[T], urlPrefix:
 
     resp htmlResponse(html)
 
-proc createOverviewController*(registeredModels: seq[ModelMetaData], urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides the `OVERVIEW` page for displaying an overview over all models in `registeredModels`. 
+proc createOverviewController*(
+  registeredModels: seq[ModelMetaData],
+  urlPrefix: static string
+): HandlerAsync =
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides the `OVERVIEW` page for displaying an overview over all models in `registeredModels`.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc (ctx: Context) {.async, gcsafe.} =
     let settings = ctx.gScope.settings
     let context = initOverviewContext(registeredModels, urlPrefix, settings)
-    let html = renderNimjaPage(OVERVIEW_PAGE, context) 
+    let html = renderNimjaPage(OVERVIEW_PAGE, context)
 
     resp htmlResponse(html)
 
 proc createSqlController*(urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides the SQL page for direct SQL access to the 
-  ## database including the result of a provided query. 
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides the SQL page for direct SQL access to the
+  ## database including the result of a provided query.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc(ctx: Context) {.async, gcsafe.} =
     let queryParam = ctx.getFormParamsOption("sql")
@@ -98,7 +110,7 @@ proc createSqlController*(urlPrefix: static string): HandlerAsync =
       return
 
     let query = queryParam.get().strip()
-    
+
     var queryResult: Option[(seq[Row], seq[string])]
     var errorMsg: Option[string] = none(string)
     try:
@@ -115,11 +127,11 @@ proc createSqlController*(urlPrefix: static string): HandlerAsync =
 
     resp htmlResponse(html)
 
-  
+
 
 proc createSqlFrontendController*(urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides the SQL for direct SQL access to the database. 
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides the SQL for direct SQL access to the database.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc(ctx: Context) {.async, gcsafe.} =
     let settings = ctx.gScope.settings
@@ -147,8 +159,8 @@ func stringifyRoutingTree*(router: Router): Table[string, seq[string]] =
 
 
 proc createAboutApplicationFrontendController*(urlPrefix: static string): HandlerAsync =
-  ## Generates a prologue controller proc for GET HTTP requests. 
-  ## The controller provides the CONFIG page for general application information such as settings and urls. 
+  ## Generates a prologue controller proc for GET HTTP requests.
+  ## The controller provides the CONFIG page for general application information such as settings and urls.
   ## Requires the `urlPrefix` used for all admin-endpoints for generating links to other pages.
   result = proc(ctx: Context) {.async, gcsafe.} =
     let routes = ctx.gScope.router.stringifyRoutingTree()

@@ -27,21 +27,21 @@ type FormFieldKind* = enum
 type FormField* = object
   ## The data used to render a HTML Form Field.
   ## Any nim type must be converted into a `FormField` instance via
-  ## `toFormField<../formService.html#toFormField%2COption[bool]%2Cstring%2Cbool>`_ procs.  
+  ## `toFormField<../formService.html#toFormField%2COption[bool]%2Cstring%2Cbool>`_ procs.
   name*: string
   isRequired*: bool
   case kind*: FormFieldKind
-  of STRING: 
+  of STRING:
     strVal*: Option[string]
-  of FLOAT: 
+  of FLOAT:
     fVal*: Option[float64]
-  of INT: 
+  of INT:
     iVal*: Option[int64]
-  of DATE: 
+  of DATE:
     dtVal*: Option[string]
-  of BOOL: 
+  of BOOL:
     bVal*: Option[bool]
-  of INTSELECT: 
+  of INTSELECT:
     intSeqVal*: Option[int64]
     intOptions*: seq[IntOption]
   of STRSELECT:

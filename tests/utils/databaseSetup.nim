@@ -45,7 +45,7 @@ elif defined(sqlite):
     removeFile SQLITE_HOST
     delEnv(DB_HOST_ENV)
 
-else :
+else:
   {.error: "Snorlogue tests require you to specify which database type to test via specifying either '-d:sqlite' or '-d:postgres'".}
 
 proc getServerDbConn*(): DbConn =

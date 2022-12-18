@@ -18,6 +18,9 @@ proc hasField*[T: object | ref object](obj: T, fieldName: static string): bool {
   ## Checks at compileTime whether the given object instance has a field with the name `fieldName`
   result = compiles(obj.getField(fieldName))
 
-proc hasField*[T: object | ref object](t: typedesc[T], fieldName: static string): bool {.compileTime.} =
+proc hasField*[T: object | ref object](
+  t: typedesc[T],
+  fieldName: static string
+): bool {.compileTime.} =
   ## Checks at compileTime whether the given object type has a field with the name `fieldName`
   result = compiles(T().getField(fieldName))

@@ -11,12 +11,15 @@ type ModelMetaData* = object
   url*: string
 
 proc getForeignKeyFields*[T: Model](modelType: typedesc[T]): seq[string] {.compileTime.} =
-  ## Extracts the names of all foreign key fields from a model. 
+  ## Extracts the names of all foreign key fields from a model.
   for name, value in T()[].fieldPairs:
     if value.hasCustomPragma(fk):
       result.add(name)
 
-proc extractMetaData*[T: Model](urlPrefix: static string, modelType: typedesc[T]): ModelMetaData {.compileTime.}=
+proc extractMetaData*[T: Model](
+  urlPrefix: static string,
+  modelType: typedesc[T]
+): ModelMetaData {.compileTime.} =
   ModelMetaData(
     name: $T,
     url: fmt"{generateUrlStub(urlPrefix, Page.LIST, T)}/",

@@ -8,7 +8,7 @@ when defined(postgres):
 elif defined(sqlite):
   import norm/sqlite
 
-else :
+else:
   {.error: "Snorlogue tests require you to specify which database type to test via specifying either '-d:sqlite' or '-d:postgres'".}
 
 
@@ -39,7 +39,7 @@ func toFormField*(value: Option[CreatureFamily], fieldName: string): FormField =
   var options: seq[IntOption] = @[]
   for enumValue in CreatureFamily:
     options.add(IntOption(name: $enumValue, value: enumValue.int))
-  
+
   let formFieldValue: Option[int64] = value.map(val => val.int64)
 
   result.name = fieldName
