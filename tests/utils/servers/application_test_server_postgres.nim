@@ -13,7 +13,7 @@ proc addLogger*() =
   logging.setLogFilter(lvlDebug)
 
 proc getStartUpEvents*(): seq[Event] =
-    result.add(initEvent(() => addLogger()))
+  result.add(initEvent(() => addLogger()))
 
 proc main() =
   withDb:

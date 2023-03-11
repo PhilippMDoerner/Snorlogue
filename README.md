@@ -22,6 +22,15 @@ Finally, copy the resources folder from the snorlogue package into your project 
     
     cp -r <NIMBLE_DIRECTORY>/pkgs/snorlogue-X.X.X/snorlogue/resources <YOUR_PROJECT_DIRECTORY>/src
 
+
+## Feature-Scope Overview
+Snorlogue provides the following pages:
+- **Table Overview** - Shows all registered Model-types and their corresponding SQL tables
+- **SQL** - Enables direct interaction with the database. Only allows DML-SQL, not DDL-SQL.
+- **About** - Displays configs and routes of your prologue application in general
+- **Model Table Overview** - Shows all entries of a given Model in a paginated list
+- **Model CRUD pages** - Pages enabling Create/Update/Delete interaction with individual Model entries
+
 ## Example Screenshots
 ### Table Overview Page
 ![Table overview of all tables in example](https://i.imgur.com/YiEumKz.png "Table overview of all tables in example")
@@ -41,3 +50,9 @@ Finally, copy the resources folder from the snorlogue package into your project 
 
 ### Update Model Page
 ![Update Form for a specific model in example](https://i.imgur.com/QffpYHn.png "Update Form for a specific model in example")
+
+## Running Tests
+Clone the repository. Make sure you have docker and docker-compose installed (this is necessary as all tests run in a container) and a running internet connection.
+
+    $ nimble sqliteTests        # Runs the entire test-suite using an sqlite database
+    $ nimble postgresTests      # Runs the entire test-suite using a postgres database container

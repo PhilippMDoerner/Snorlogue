@@ -10,10 +10,12 @@ export constants
 export pageContexts
 export frontendController
 
+## Snorlogues main module. Provides all procs that add Snorlogue routes to a given `Prologue` instance.
+
 proc addCrudRoutes*[T: Model](
-  app: Prologue, 
-  modelType: typedesc[T], 
-  middlewares: seq[HandlerAsync] = @[], 
+  app: Prologue,
+  modelType: typedesc[T],
+  middlewares: seq[HandlerAsync] = @[],
   urlPrefix: static string = "admin",
   sortFields: seq[string] = @["id"],
   sortDirection: SortDirection = SortDirection.ASC,
@@ -24,15 +26,15 @@ proc addCrudRoutes*[T: Model](
   afterUpdateAction: ActionProc[T] = nil
 ) =
   ## Adds create, read, update and delete pages with `middlewares` for `modelType`.
-  ## These pages have the URL pattern: 
-  ## `<urlPrefix>/<modelType>/[create|delete|detail|list]/`. 
-  ## The url uses the modelType in all lowercase. 
+  ## These pages have the URL pattern:
+  ## `<urlPrefix>/<modelType>/[create|delete|detail|list]/`.
+  ## The url uses the modelType in all lowercase.
   ## By specifying `urlPrefix` you can customize the start of these URLs.
-  ## 
-  ## The list of Model entries on the list page can be sorted according 
+  ##
+  ## The list of Model entries on the list page can be sorted according
   ## to the provided `sortFields`, which is "id" by default.
   ## You can sort them in ascending or descending order.
-  ## 
+  ##
   ## You can also provide event procs to execute before/after you create/update/delete
   ## an entry:
   ## - `beforeCreateAction` - Gets executed before creating a model. Note that the model will not have an id yet.
@@ -59,7 +61,7 @@ proc addCrudRoutes*[T: Model](
   const pageableListUrl = fmt"/{urlPrefix}/{modelName}/{$Page.LIST}/{PAGE_PATTERN}/"
   app.addRoute(
     re pageableListUrl,
-    handler = createListController(T, urlPrefix,  sortFields, sortDirection),
+    handler = createListController(T, urlPrefix, sortFields, sortDirection),
     httpMethod = HttpGet,
     middlewares = middlewares
   )
@@ -95,7 +97,15 @@ proc addCrudRoutes*[T: Model](
   const backendUrl = fmt"/{urlPrefix}/{modelName}/"
   app.addRoute(
     backendUrl,
-    handler = createBackendController(T, urlPrefix, beforeCreateAction, afterCreateAction, beforeUpdateAction, afterUpdateAction, beforeDeleteAction),
+    handler = createBackendController(
+      T,
+      urlPrefix,
+      beforeCreateAction,
+      afterCreateAction,
+      beforeUpdateAction,
+      afterUpdateAction,
+      beforeDeleteAction
+    ),
     httpMethod = HttpPost,
     middlewares = middlewares,
   )
@@ -103,7 +113,7 @@ proc addCrudRoutes*[T: Model](
 
 
 proc addAdminRoutes*(
-  app: var Prologue, 
+  app: var Prologue,
   middlewares: seq[HandlerAsync] = @[],
   urlPrefix: static string = "admin"
 ) =
@@ -111,9 +121,9 @@ proc addAdminRoutes*(
   ## The overview route provides an overview over all registered models
   ## The sql route provides a page to execute raw SQL and look at the results.
   ## This view supports DML SQL only.
-  ## The config route provides an overview over some settings, as well as all 
+  ## The config route provides an overview over some settings, as well as all
   ## registered routes of your prologue application.
-  ## These routes will be available after the pattern 
+  ## These routes will be available after the pattern
   ## `urlPrefix/[overview | sql | config]/`
   debug fmt"Add Admin Overview Pages with {REGISTERED_MODELS.len} models"
   const overviewUrl = fmt"/{urlPrefix}/{$Page.OVERVIEW}/"

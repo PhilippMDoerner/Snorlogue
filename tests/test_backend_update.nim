@@ -35,9 +35,9 @@ suite "Testing POST Endpoint":
     var data: MultipartData = newMultipartData({
       "request-type": "put",
       "id": $model.id,
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -49,7 +49,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(200)
@@ -82,9 +82,9 @@ suite "Testing POST Endpoint":
     var data: MultipartData = newMultipartData({
       "request-type": "put",
       "id": $model.id,
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -96,7 +96,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(200)
@@ -128,9 +128,9 @@ suite "Testing POST Endpoint":
     const newModelName = "A new name for the model"
     var data: MultipartData = newMultipartData({
       "request-type": "put",
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -142,7 +142,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
@@ -175,9 +175,9 @@ suite "Testing POST Endpoint":
     var data: MultipartData = newMultipartData({
       "request-type": "put",
       "id": $model.id,
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -188,7 +188,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
@@ -224,7 +224,7 @@ suite "Testing POST Endpoint":
       "id": $model.id,
       "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -236,7 +236,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(301)
@@ -258,14 +258,14 @@ suite "Testing POST Endpoint":
 
     #When
     const newModelName = "A new name for the model"
-    const superfluousValue =  "I will not show up anywhere"
+    const superfluousValue = "I will not show up anywhere"
     var data: MultipartData = newMultipartData({
       "request-type": "put",
       "id": $model.id,
       "superfluous field": superfluousValue,
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -277,7 +277,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(200)
@@ -313,9 +313,9 @@ suite "Testing POST Endpoint":
     var data: MultipartData = newMultipartData({
       "request-type": "",
       "id": $model.id,
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -327,7 +327,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
@@ -360,9 +360,9 @@ suite "Testing POST Endpoint":
     var data: MultipartData = newMultipartData({
       "request-type": "",
       "id": $model.id,
-      "name": newModelName ,
+      "name": newModelName,
       "description": model.description.get(),
-      "family": $(model.family.int) ,
+      "family": $(model.family.int),
       "birthDate": "2022-01-01T00:00",
       "evilness": $model.evilness,
       "evilness2": $model.evilness2,
@@ -374,7 +374,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)

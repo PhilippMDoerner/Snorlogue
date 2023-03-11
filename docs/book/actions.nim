@@ -29,7 +29,7 @@ nbCode:
     db.createTables(image)
 
   # Setup the server
-  let action: ActionProc[Image] = proc(connection: DbConn, entry: Image) = 
+  let action: ActionProc[Image] = proc(connection: DbConn, entry: Image) =
     echo fmt"New Image File under path {entry.imageFile}"
 
   var app: Prologue = newApp()

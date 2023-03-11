@@ -30,7 +30,7 @@ suite "Testing POST Endpoint":
     conn.close()
 
     Creature.expectModelCount(1)
-    
+
     #When
     var data: MultipartData = newMultipartData({
       "request-type": "delete",
@@ -38,7 +38,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(200)
@@ -68,7 +68,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
@@ -97,7 +97,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
@@ -127,7 +127,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(200)
@@ -154,7 +154,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(301)
@@ -184,7 +184,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(200)
@@ -214,7 +214,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
@@ -242,7 +242,7 @@ suite "Testing POST Endpoint":
     })
 
     let url = fmt"{TEST_SERVER_DOMAIN}/admin/creature/"
-    let response = client.post(url, multipart=data)
+    let response = client.post(url, multipart = data)
 
     #Then
     response.expectHttpCode(500)
