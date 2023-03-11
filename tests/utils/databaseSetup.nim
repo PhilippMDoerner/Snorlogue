@@ -6,7 +6,7 @@ when defined(postgres):
   export postgres
 
   const TESTED_DB_TYPE* = "postgres"
-  const ADDITIONAL_COMPILER_PARAMS* = "--define:ndbPostgresOld"
+  const ADDITIONAL_COMPILER_PARAMS* = "--define:lowdbPostgresOld"
 
   proc resetDatabase*() =
     debug "Resetting DB"

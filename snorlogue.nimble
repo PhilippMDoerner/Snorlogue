@@ -12,7 +12,8 @@ requires "nim >= 1.6.8"
 requires "norm >= 2.5.0"
 requires "prologue >= 0.6.0"
 requires "nimja >= 0.8.4"
-requires "ndb >= 0.19.9"
+requires "lowdb >= 0.1.0"
+requires "HTest >= 0.1.0"
 
 skipDirs = @["example"]
 
