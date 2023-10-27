@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Book
-        run: docker-compose run book
+        run: nimble nimidocs
 
   Docs:
     runs-on: ubuntu-latest
