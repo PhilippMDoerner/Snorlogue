@@ -41,11 +41,13 @@ func toFormField*(value: Option[CreatureFamily], fieldName: string): FormField =
     options.add(IntOption(name: $enumValue, value: enumValue.int))
 
   let formFieldValue: Option[int64] = value.map(val => val.int64)
-
-  result.name = fieldName
-  result.kind = FormFieldKind.INTSELECT
-  result.intSeqVal = formFieldValue
-  result.intOptions = options
+  
+  FormField(
+    name: fieldName,
+    kind: FormFieldKind.INTSELECT,
+    intSeqVal: formFieldValue,
+    intOptions: options
+  )
 
 proc afterCreateAction*(connection: DbConn, model: Creature): void =
   echo fmt"Just created Creature '{model.name}'!"

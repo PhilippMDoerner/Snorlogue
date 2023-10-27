@@ -93,11 +93,13 @@ nbCode:
       options.add(IntOption(name: $enumValue, value: enumValue.int))
 
     let formFieldValue: Option[int64] = value.map(val => val.int64)
-
-    result.name = fieldName
-    result.kind = FormFieldKind.INTSELECT
-    result.intSeqVal = formFieldValue
-    result.intOptions = options
+    
+    FormField(
+      name: fieldName, 
+      kind: FormFieldKind.INTSELECT, 
+      intSeqVal: formFieldValue,
+      intOptions: options
+    )
 
   # Maps `Level` to the `IntSelect` `FormField` and any value such a field might have is to be converted to an int on the form.
   func toFormField*(value: Option[Level], fieldName: string): FormField =
@@ -111,11 +113,13 @@ nbCode:
     let formFieldValue: Option[int64] = value.map(val => val.int64)
 
     options.sort((opt1, opt2: IntOption) => cmp(opt1.name, opt2.name))
-
-    result.name = fieldName
-    result.kind = FormFieldKind.INTSELECT
-    result.intSeqVal = formFieldValue
-    result.intOptions = options
+    
+    FormField(
+      name: fieldName,
+      kind: FormFieldKind.INTSELECT,
+      intSeqVal: formFieldValue,
+      intOptions: options
+    )
 
   # Example Usage
   putEnv("DB_HOST", ":memory:")
