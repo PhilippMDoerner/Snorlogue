@@ -31,7 +31,7 @@ jobs:
       - name: Setup nim
         uses: jiro4989/setup-nim-action@v1.4.5
         with:
-          nim-version: devel
+          nim-version: stable
 
       - name: Install Packages
         run: nimble install -y
