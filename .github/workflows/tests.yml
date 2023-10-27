@@ -20,17 +20,3 @@ jobs:
       - name: sqlite tests
         run: docker-compose run tests-sqlite
 
-  Book:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Book
-        run: nimble nimidocs
-
-  Docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Docs
-        run: docker-compose run docs
-
