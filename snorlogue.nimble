@@ -18,6 +18,7 @@ requires "HTest >= 0.1.0"
 skipDirs = @["example"]
 
 task run_example, "NOTE TO USER: Remember to copy the resources folder into your project from which you are compiling! - Compiles and runs the snorlogue example":
+  exec("cp -r ./src/snorlogue/resources ./src/example")
   --run
   --deepcopy:on
   --define:normDebug
