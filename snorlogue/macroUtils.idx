@@ -1,0 +1,8 @@
+nimTitle	macroUtils	snorlogue/macroUtils.html	module src/snorlogue/macroUtils		0
+nim	getField	snorlogue/macroUtils.html#getField.m,T,staticstring	macro getField[T: object | ref object](obj: T; fieldName: static string): untyped		5
+nim	getField	snorlogue/macroUtils.html#getField.m,typedesc[T],staticstring	macro getField[T: object | ref object](someType: typedesc[T]; fieldName: static string): untyped		9
+nim	setField	snorlogue/macroUtils.html#setField.t,T,staticstring,untyped	template setField[T: object | ref object](obj: var T; fieldName: static string;\n                                 value: untyped)		13
+nim	hasField	snorlogue/macroUtils.html#hasField,T,staticstring	proc hasField[T: object | ref object](obj: T; fieldName: static string): bool		17
+nim	hasField	snorlogue/macroUtils.html#hasField,typedesc[T],staticstring	proc hasField[T: object | ref object](t: typedesc[T]; fieldName: static string): bool		21
+nimgrp	hasfield	snorlogue/macroUtils.html#hasField-procs-all	proc		17
+nimgrp	getfield	snorlogue/macroUtils.html#getField-macros-all	macro		5

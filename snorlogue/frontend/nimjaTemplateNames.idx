@@ -1,0 +1,8 @@
+nimTitle	nimjaTemplateNames	snorlogue/frontend/nimjaTemplateNames.html	module src/snorlogue/frontend/nimjaTemplateNames		0
+nim	MODEL_DELETE_PAGE	snorlogue/frontend/nimjaTemplateNames.html#MODEL_DELETE_PAGE	const MODEL_DELETE_PAGE		3
+nim	MODEL_LIST_PAGE	snorlogue/frontend/nimjaTemplateNames.html#MODEL_LIST_PAGE	const MODEL_LIST_PAGE		6
+nim	MODEL_DETAIL_PAGE	snorlogue/frontend/nimjaTemplateNames.html#MODEL_DETAIL_PAGE	const MODEL_DETAIL_PAGE		9
+nim	MODEL_CREATE_PAGE	snorlogue/frontend/nimjaTemplateNames.html#MODEL_CREATE_PAGE	const MODEL_CREATE_PAGE		12
+nim	SQL_PAGE	snorlogue/frontend/nimjaTemplateNames.html#SQL_PAGE	const SQL_PAGE		15
+nim	OVERVIEW_PAGE	snorlogue/frontend/nimjaTemplateNames.html#OVERVIEW_PAGE	const OVERVIEW_PAGE		18
+nim	ABOUT_PAGE	snorlogue/frontend/nimjaTemplateNames.html#ABOUT_PAGE	const ABOUT_PAGE		21

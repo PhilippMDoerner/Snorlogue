@@ -1,0 +1,13 @@
+nimTitle	fieldTypes	snorlogue/frontend/fieldUtils/fieldTypes.html	module src/snorlogue/frontend/fieldUtils/fieldTypes		0
+nim	IntOption	snorlogue/frontend/fieldUtils/fieldTypes.html#IntOption	object IntOption		6
+nim	StringOption	snorlogue/frontend/fieldUtils/fieldTypes.html#StringOption	object StringOption		11
+nim	STRING	snorlogue/frontend/fieldUtils/fieldTypes.html#STRING	FormFieldKind.STRING		16
+nim	INT	snorlogue/frontend/fieldUtils/fieldTypes.html#INT	FormFieldKind.INT		16
+nim	FLOAT	snorlogue/frontend/fieldUtils/fieldTypes.html#FLOAT	FormFieldKind.FLOAT		16
+nim	DATE	snorlogue/frontend/fieldUtils/fieldTypes.html#DATE	FormFieldKind.DATE		16
+nim	BOOL	snorlogue/frontend/fieldUtils/fieldTypes.html#BOOL	FormFieldKind.BOOL		16
+nim	INTSELECT	snorlogue/frontend/fieldUtils/fieldTypes.html#INTSELECT	FormFieldKind.INTSELECT		16
+nim	STRSELECT	snorlogue/frontend/fieldUtils/fieldTypes.html#STRSELECT	FormFieldKind.STRSELECT		16
+nim	FILE	snorlogue/frontend/fieldUtils/fieldTypes.html#FILE	FormFieldKind.FILE		16
+nim	FormFieldKind	snorlogue/frontend/fieldUtils/fieldTypes.html#FormFieldKind	enum FormFieldKind		16
+nim	FormField	snorlogue/frontend/fieldUtils/fieldTypes.html#FormField	object FormField		27

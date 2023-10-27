@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html lang="English" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using nimibook -->
+        <meta charset="UTF-8">
+        <title>Custom Datatypes - Snorlogue</title>
+
+        <!-- Custom HTML head -->
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A Prologue extension for easy database administration">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+        <link rel="stylesheet" href="./assets/css/variables.css">
+        <link rel="stylesheet" href="./assets/css/general.css">
+        <link rel="stylesheet" href="./assets/css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="./assets/FontAwesome/css/font-awesome.min.css">
+
+        <!-- Highlight.js Stylesheets - I could use nimib native highlight but let's keep it for styling... -->
+        <link rel="stylesheet" href="./assets/css/highlight.css">
+        <link rel="stylesheet" href="./assets/css/tomorrow-night.css">
+        <link rel="stylesheet" href="./assets/css/ayu-highlight.css">
+
+        <!-- Custom theme stylesheets - why the "../"? -->
+
+
+        
+
+            <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+        
+        <!-- plausible analytics (new in nimibook) -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = ".//assets";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                                <ol class="chapter">
+                <li class="chapter-item expanded ">
+                  <a href="./index.html" tabindex="0">
+                    <strong aria-hidden="true">1.</strong> Welcome to Snorlogue!
+                  </a></li>
+                <li class="chapter-item expanded ">
+                  <a href="./basicUsage.html" tabindex="0">
+                    <strong aria-hidden="true">2.</strong> Basic Usage
+                  </a></li>
+                <li class="chapter-item expanded ">
+                  <a href="./fileFields.html" tabindex="0">
+                    <strong aria-hidden="true">3.</strong> File Fields
+                  </a></li>
+                <li class="chapter-item expanded ">
+                  <a href="./actions.html" tabindex="0">
+                    <strong aria-hidden="true">4.</strong> Actions
+                  </a></li>
+                <li class="chapter-item expanded ">
+                  <a href="./customDatatypes.html" class="active" tabindex="0">
+                    <strong aria-hidden="true">5.</strong> Custom Datatypes
+                  </a></li>
+                <li class="chapter-item expanded ">
+                  <a href="./changelog.html" tabindex="0">
+                    <strong aria-hidden="true">6.</strong> Changelog
+                  </a></li>
+                </ol>
+<!-- I could use also an unescaped context value -->
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                    </div>
+
+                    <h1 class="menu-title">Snorlogue</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/PhilippMDoerner/Snorlogue.git" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1>Default Supported Datatypes</h1>
+<p>Out of the box, Snorlogue has support for the majority of &quot;normal&quot; data-types in nim.
+For every datatype, the following 2 steps need to be defined:</p>
+<ol>
+<li>How to map norm model-fields to FormField instances via <code>toFormField</code> procs.</li>
+<li>How to map form-field values (which are always strings) to norm model-field types via <code>toModelValue</code> procs</li>
+</ol>
+<p>FormFields define the type of HTML form-fields that are available in Snorlogue to represent a nim-type of a model-field in an HTML form.
+These are the fields Snorlogue provides:</p>
+<table>
+<thead>
+<tr>
+<th>FormFieldKind</th>
+<th>HTML field</th>
+<th>nim-types</th>
+<th>FormField-fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>STRING</td>
+<td><a href="https://www.w3schools.com/jsref/dom_obj_text.asp">Text input</a></td>
+<td>string</td>
+<td>kind, name, strVal</td>
+</tr>
+<tr>
+<td>INT</td>
+<td><a href="https://www.w3schools.com/jsref/dom_obj_number.asp">Number input</a></td>
+<td>int, int32, int64, uint, uint32, uint64, Natural</td>
+<td>kind, name, iVal</td>
+</tr>
+<tr>
+<td>FLOAT</td>
+<td><a href="https://www.w3schools.com/jsref/dom_obj_number.asp">Number input</a></td>
+<td>float, float32, float64</td>
+<td>kind, name, fVal</td>
+</tr>
+<tr>
+<td>BOOL</td>
+<td><a href="https://www.w3schools.com/jsref/dom_obj_checkbox.asp">Checkbox input</a></td>
+<td>bool</td>
+<td>kind, name, bVal</td>
+</tr>
+<tr>
+<td>DATE</td>
+<td><a href="https://www.w3schools.com/jsref/dom_obj_datetime-local.asp">Datetime-local input</a></td>
+<td>DateTime</td>
+<td>kind, name, dtVal</td>
+</tr>
+<tr>
+<td>FILE</td>
+<td><a href="https://www.w3schools.com/jsref/dom_obj_fileupload.asp">File input</a></td>
+<td>FilePath</td>
+<td>kind, name, fileVal</td>
+</tr>
+<tr>
+<td>INTSELECT</td>
+<td><a href="https://www.w3schools.com/tags/tag_select.asp">Select</a></td>
+<td>foreignKey*</td>
+<td>kind, name, intSeqVal, intOptions</td>
+</tr>
+<tr>
+<td>STRSELECT</td>
+<td><a href="https://www.w3schools.com/tags/tag_select.asp">Select</a></td>
+<td>-**</td>
+<td>kind, name, strSeqVal, strOptions</td>
+</tr></tbody></table>
+<p>*type int64 annotated with norm's <code>fk</code> pragma. The Model in the pragma must also be registered to Snorlogue <br>
+**exists for users that want select fields with string values</p>
+<h1>Custom Datatypes</h1>
+<p>To extend that list with your own datatypes, just define <code>toFormField</code> and <code>toModelValue</code> procs for them!
+This takes care of only the frontend though, you will still need to define <code>dbType</code>, <code>dbValue</code> and <code>to</code> <a href="https://norm.nim.town/customDatatypes.html">procs for norm</a>.</p>
+<p>For example if we had a distinct string type of <code>UID</code> and wanted to support this in snorlogue:</p>
+                        <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> prologue
+<span class="hljs-keyword">import</span> snorlogue
+<span class="hljs-keyword">import</span> norm/[sqlite, model]
+<span class="hljs-keyword">import</span> std/[options, sequtils, algorithm, strformat, sugar]
+
+<span class="hljs-comment"># Type Definitions</span>
+<span class="hljs-keyword">type</span> <span class="hljs-type">Level</span> = <span class="hljs-number">0.</span>.<span class="hljs-number">9</span>
+<span class="hljs-keyword">type</span> <span class="hljs-type">UID</span> = <span class="hljs-keyword">distinct</span> <span class="hljs-built_in">string</span>
+<span class="hljs-keyword">type</span> <span class="hljs-type">CreatureType</span> = <span class="hljs-keyword">enum</span>
+  <span class="hljs-type">A</span>, <span class="hljs-type">B</span>, <span class="hljs-type">C</span>
+
+<span class="hljs-keyword">type</span> <span class="hljs-type">Creature</span>* = <span class="hljs-keyword">ref</span> <span class="hljs-keyword">object</span> <span class="hljs-keyword">of</span> <span class="hljs-type">Model</span>
+  uid*: <span class="hljs-type">UID</span>
+  name*: <span class="hljs-built_in">string</span>
+  level*: <span class="hljs-type">Level</span>
+  kind*: <span class="hljs-type">CreatureType</span>
+
+<span class="hljs-keyword">func</span> `$`*(model: <span class="hljs-type">Creature</span>): <span class="hljs-built_in">string</span> = model.name
+
+<span class="hljs-comment"># Converts a `string` value to `UID`</span>
+<span class="hljs-keyword">func</span> toModelValue*(formValue: <span class="hljs-built_in">string</span>, <span class="hljs-type">T</span>: typedesc[<span class="hljs-type">UID</span>]): <span class="hljs-type">T</span> = formValue.<span class="hljs-type">UID</span>
+
+<span class="hljs-comment"># Maps `UID` to the `String` `FormField` and any value such a field might have is to be converted to `string` as well.</span>
+<span class="hljs-keyword">func</span> toFormField*(value: <span class="hljs-type">Option</span>[<span class="hljs-type">UID</span>], fieldName: <span class="hljs-built_in">string</span>): <span class="hljs-type">FormField</span> =
+  <span class="hljs-keyword">let</span> compatibilityValue: <span class="hljs-type">Option</span>[<span class="hljs-built_in">string</span>] = value.map(val =&gt; val.<span class="hljs-built_in">string</span>)
+  <span class="hljs-literal">result</span> = <span class="hljs-type">FormField</span>(
+    kind: <span class="hljs-type">FormFieldKind</span>.<span class="hljs-type">STRING</span>,
+    name: fieldName,
+    strVal: compatibilityValue
+  )
+
+<span class="hljs-comment">## Procs for norm DB interaction</span>
+<span class="hljs-comment"># UID</span>
+<span class="hljs-keyword">func</span> dbType*(<span class="hljs-type">T</span>: typedesc[<span class="hljs-type">UID</span>]): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;TEXT&quot;</span>
+<span class="hljs-keyword">func</span> dbValue*(val: <span class="hljs-type">UID</span>): <span class="hljs-type">DbValue</span> = dbValue(val.<span class="hljs-built_in">string</span>)
+<span class="hljs-keyword">proc</span> to*(dbVal: <span class="hljs-type">DbValue</span>, <span class="hljs-type">T</span>: typedesc[<span class="hljs-type">UID</span>]): <span class="hljs-type">T</span> = dbVal.s.<span class="hljs-type">UID</span>
+<span class="hljs-comment"># CreatureType</span>
+<span class="hljs-keyword">func</span> dbType*(<span class="hljs-type">T</span>: typedesc[<span class="hljs-type">CreatureType</span>]): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;TEXT&quot;</span>
+<span class="hljs-keyword">func</span> dbValue*(val: <span class="hljs-type">CreatureType</span>): <span class="hljs-type">DbValue</span> = dbValue($val)
+<span class="hljs-keyword">proc</span> to*(dbVal: <span class="hljs-type">DbValue</span>, <span class="hljs-type">T</span>: typedesc[<span class="hljs-type">CreatureType</span>]): <span class="hljs-type">T</span> = parseEnum[<span class="hljs-type">CreatureType</span>](dbVal.s)
+<span class="hljs-comment"># Level</span>
+<span class="hljs-keyword">func</span> dbType*(<span class="hljs-type">T</span>: typedesc[<span class="hljs-type">Level</span>]): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;INT&quot;</span>
+<span class="hljs-keyword">func</span> dbValue*(val: <span class="hljs-type">Level</span>): <span class="hljs-type">DbValue</span> = dbValue(val.<span class="hljs-built_in">int</span>)
+<span class="hljs-keyword">proc</span> to*(dbVal: <span class="hljs-type">DbValue</span>, <span class="hljs-type">T</span>: typedesc[<span class="hljs-type">Level</span>]): <span class="hljs-type">T</span> = dbVal.i.<span class="hljs-type">Level</span>
+
+
+<span class="hljs-comment">## Procs for Snorlogue Form interaction</span>
+<span class="hljs-comment"># Maps `CreatureType` to the `IntSelect` `FormField` and any value such a field might have is to be converted to an int on the form.</span>
+<span class="hljs-keyword">func</span> toFormField*(value: <span class="hljs-type">Option</span>[<span class="hljs-type">CreatureType</span>], fieldName: <span class="hljs-built_in">string</span>): <span class="hljs-type">FormField</span> =
+  <span class="hljs-keyword">var</span> options: <span class="hljs-built_in">seq</span>[<span class="hljs-type">IntOption</span>] = @[]
+  <span class="hljs-keyword">for</span> enumValue <span class="hljs-keyword">in</span> <span class="hljs-type">CreatureType</span>:
+    options.add(<span class="hljs-type">IntOption</span>(name: $enumValue, value: enumValue.<span class="hljs-built_in">int</span>))
+
+  <span class="hljs-keyword">let</span> formFieldValue: <span class="hljs-type">Option</span>[<span class="hljs-built_in">int64</span>] = value.map(val =&gt; val.<span class="hljs-built_in">int64</span>)
+  
+  <span class="hljs-type">FormField</span>(
+    name: fieldName, 
+    kind: <span class="hljs-type">FormFieldKind</span>.<span class="hljs-type">INTSELECT</span>, 
+    intSeqVal: formFieldValue,
+    intOptions: options
+  )
+
+<span class="hljs-comment"># Maps `Level` to the `IntSelect` `FormField` and any value such a field might have is to be converted to an int on the form.</span>
+<span class="hljs-keyword">func</span> toFormField*(value: <span class="hljs-type">Option</span>[<span class="hljs-type">Level</span>], fieldName: <span class="hljs-built_in">string</span>): <span class="hljs-type">FormField</span> =
+  <span class="hljs-keyword">var</span> options: <span class="hljs-built_in">seq</span>[<span class="hljs-type">IntOption</span>] = @[]
+  <span class="hljs-keyword">const</span> rangeName = $<span class="hljs-type">Level</span>
+  <span class="hljs-keyword">for</span> rangeVal <span class="hljs-keyword">in</span> <span class="hljs-type">Level</span>.<span class="hljs-keyword">low</span>..<span class="hljs-type">Level</span>.<span class="hljs-keyword">high</span>:
+    <span class="hljs-keyword">let</span> optionLabel = <span class="hljs-string">fmt&quot;{rangeName} {rangeVal}&quot;</span>
+    <span class="hljs-keyword">let</span> optionValue = rangeVal.<span class="hljs-built_in">int</span>
+    options.add(<span class="hljs-type">IntOption</span>(name: optionLabel, value: optionValue))
+
+  <span class="hljs-keyword">let</span> formFieldValue: <span class="hljs-type">Option</span>[<span class="hljs-built_in">int64</span>] = value.map(val =&gt; val.<span class="hljs-built_in">int64</span>)
+
+  options.sort((opt1, opt2: <span class="hljs-type">IntOption</span>) =&gt; cmp(opt1.name, opt2.name))
+  
+  <span class="hljs-type">FormField</span>(
+    name: fieldName,
+    kind: <span class="hljs-type">FormFieldKind</span>.<span class="hljs-type">INTSELECT</span>,
+    intSeqVal: formFieldValue,
+    intOptions: options
+  )
+
+<span class="hljs-comment"># Example Usage</span>
+putEnv(<span class="hljs-string">&quot;DB_HOST&quot;</span>, <span class="hljs-string">&quot;:memory:&quot;</span>)
+withDb:
+  <span class="hljs-keyword">var</span> human = <span class="hljs-type">Creature</span>(name: <span class="hljs-string">&quot;Karl&quot;</span>, level: <span class="hljs-number">5</span>, uid: <span class="hljs-string">&quot;12345abcde&quot;</span>.<span class="hljs-type">UID</span>)
+  db.createTables(human)
+
+<span class="hljs-comment"># Setup the server</span>
+<span class="hljs-keyword">var</span> app: <span class="hljs-type">Prologue</span> = newApp()
+app.addCrudRoutes(<span class="hljs-type">Creature</span>)
+app.addAdminRoutes()
+<span class="hljs-comment"># app.run()</span></code></pre>
+                        <p>Note that no <code>toModelValue</code> had to be defined for <code>CreatureType</code> or <code>Level</code>.
+Enums and range are somwhat special in that they do have default <code>toModelValue</code> procs defined for them, but can not have a default <code>toFormField</code> proc.
+It is heavily discouraged to try and supply a generic <code>toFormField</code> for either of those types, as the nim compiler appears to not act consistently when those procs are defined, leading to various runtime bugs.</p>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="./actions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="./changelog.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="./actions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="./changelog.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+
+
+
+        <script src="./assets/js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="./assets/js/book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </body>
+</html>

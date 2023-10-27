@@ -1,0 +1,3 @@
+nimTitle	controllerUtils	snorlogue/frontend/controllerUtils.html	module src/snorlogue/frontend/controllerUtils		0
+nim	getPageSize	snorlogue/frontend/controllerUtils.html#getPageSize,Context	proc getPageSize(ctx: Context): int		9
+nim	renderNimjaPage	snorlogue/frontend/controllerUtils.html#renderNimjaPage,staticstring,T	proc renderNimjaPage[T: PageContext](pageName: static string; context: T): string		16

@@ -1,0 +1,10 @@
+nimTitle	formParseService	snorlogue/backend/formParseService.html	module src/snorlogue/backend/formParseService		0
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[SomeInteger]	proc toModelValue(formValue: string; T: typedesc[SomeInteger]): T:type		12
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[SomeFloat]	proc toModelValue(formValue: string; T: typedesc[SomeFloat]): T:type		16
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[string]	proc toModelValue(formValue: string; T: typedesc[string]): T:type		20
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[bool]	proc toModelValue(formValue: string; T: typedesc[bool]): T:type		25
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[DateTime]	proc toModelValue(formValue: string; T: typedesc[DateTime]): T:type		29
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[T]	proc toModelValue[T: enum](formValue: string; O: typedesc[T]): T		33
+nim	toModelValue	snorlogue/backend/formParseService.html#toModelValue,string,typedesc[Option[T]]	proc toModelValue[T](formValue: string; O: typedesc[Option[T]]): O:type		37
+nim	parseFormData	snorlogue/backend/formParseService.html#parseFormData,Context,typedesc[T],staticbool	proc parseFormData[T: Model](ctx: Context; model: typedesc[T];\n                        skipIdField: static bool = false): T		89
+nimgrp	tomodelvalue	snorlogue/backend/formParseService.html#toModelValue-procs-all	proc		12

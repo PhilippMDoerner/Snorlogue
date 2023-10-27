@@ -1,0 +1,10 @@
+nimTitle	filePathType	snorlogue/filePathType.html	module src/snorlogue/filePathType		0
+nim	FilePath	snorlogue/filePathType.html#FilePath	type FilePath		5
+nim	`$`	snorlogue/filePathType.html#$,FilePath	proc `$`(x: FilePath): string		14
+nim	add	snorlogue/filePathType.html#add,FilePath,string	proc add(x: var FilePath; s: string)		16
+nim	add	snorlogue/filePathType.html#add,FilePath,FilePath	proc add(x: var FilePath; s: FilePath)		20
+nim	to	snorlogue/filePathType.html#to,DbValue,typedesc[FilePath]	proc to(dbVal: DbValue; T: typedesc[FilePath]): T:type		24
+nim	dbValue	snorlogue/filePathType.html#dbValue,FilePath	proc dbValue(val: FilePath): DbValue		28
+nim	dbType	snorlogue/filePathType.html#dbType,typedesc[FilePath]	proc dbType(T: typedesc[FilePath]): string		32
+nim	subdir	snorlogue/filePathType.html#subdir.t,string	template subdir(directory: string)		36
+nimgrp	add	snorlogue/filePathType.html#add-procs-all	proc		16

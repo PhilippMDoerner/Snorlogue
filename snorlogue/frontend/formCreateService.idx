@@ -1,0 +1,18 @@
+nimTitle	formCreateService	snorlogue/frontend/formCreateService.html	module src/snorlogue/frontend/formCreateService		0
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[string],string	proc toFormField(value: Option[string]; fieldName: string): FormField		14
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[int64],string	proc toFormField(value: Option[int64]; fieldName: string): FormField		18
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[int],string	proc toFormField(value: Option[int]; fieldName: string): FormField		22
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[int32],string	proc toFormField(value: Option[int32]; fieldName: string): FormField		27
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[Natural],string	proc toFormField(value: Option[Natural]; fieldName: string): FormField		32
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[float64],string	proc toFormField(value: Option[float64]; fieldName: string): FormField		37
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[float32],string	proc toFormField(value: Option[float32]; fieldName: string): FormField		41
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[bool],string	proc toFormField(value: Option[bool]; fieldName: string): FormField		46
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[DateTime],string	proc toFormField(value: Option[DateTime]; fieldName: string): FormField		50
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[FilePath],string	proc toFormField(value: Option[FilePath]; fieldName: string): FormField		55
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,Option[T: enum or range],string	proc toFormField[T: enum or range](value: Option[T]; fieldName: string): FormField		66
+nim	toFormField	snorlogue/frontend/formCreateService.html#toFormField,T,string	proc toFormField[T](value: T; fieldName: string): FormField		91
+nim	toForeignKeyField	snorlogue/frontend/formCreateService.html#toForeignKeyField,Option[int64],staticstring,typedesc[T]	proc toForeignKeyField[T: Model](value: Option[int64]; fieldName: static string;\n                            foreignKeyModelType: typedesc[T]): FormField		102
+nim	toForeignKeyField	snorlogue/frontend/formCreateService.html#toForeignKeyField,int64,staticstring,typedesc[T]	proc toForeignKeyField[T: Model](value: int64; fieldName: static string;\n                            foreignKeyModelType: typedesc[T]): FormField		111
+nim	extractFields	snorlogue/frontend/formCreateService.html#extractFields,T	proc extractFields[T: Model](model: T): seq[FormField]		117
+nimgrp	toforeignkeyfield	snorlogue/frontend/formCreateService.html#toForeignKeyField-procs-all	proc		102
+nimgrp	toformfield	snorlogue/frontend/formCreateService.html#toFormField-procs-all	proc		14

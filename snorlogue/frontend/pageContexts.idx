@@ -1,0 +1,18 @@
+nimTitle	pageContexts	snorlogue/frontend/pageContexts.html	module src/snorlogue/frontend/pageContexts		0
+nim	REGISTERED_MODELS	snorlogue/frontend/pageContexts.html#REGISTERED_MODELS	var REGISTERED_MODELS		14
+nim	hasFileField	snorlogue/frontend/pageContexts.html#hasFileField,seq[FormField]	proc hasFileField(fields: seq[FormField]): bool		16
+nim	PageContext	snorlogue/frontend/pageContexts.html#PageContext	object PageContext		20
+nim	ModelListContext	snorlogue/frontend/pageContexts.html#ModelListContext	object ModelListContext		31
+nim	initListContext	snorlogue/frontend/pageContexts.html#initListContext,seq[T],staticstring,Settings,int64,int,int	proc initListContext[T](models: seq[T]; urlPrefix: static string; settings: Settings;\n                   totalModelCount: int64; pageIndex: int; pageSize: int): ModelListContext[\n    T]		57
+nim	ModelDetailContext	snorlogue/frontend/pageContexts.html#ModelDetailContext	object ModelDetailContext		94
+nim	initDetailContext	snorlogue/frontend/pageContexts.html#initDetailContext,T,staticstring,Settings	proc initDetailContext[T: Model](model: T; urlPrefix: static string;\n                            settings: Settings): ModelDetailContext[T]		105
+nim	ModelDeleteContext	snorlogue/frontend/pageContexts.html#ModelDeleteContext	object ModelDeleteContext		133
+nim	initDeleteContext	snorlogue/frontend/pageContexts.html#initDeleteContext,T,staticstring,Settings	proc initDeleteContext[T: Model](model: T; urlPrefix: static string;\n                            settings: Settings): ModelDeleteContext[T]		140
+nim	ModelCreateContext	snorlogue/frontend/pageContexts.html#ModelCreateContext	object ModelCreateContext		163
+nim	initCreateContext	snorlogue/frontend/pageContexts.html#initCreateContext,T,staticstring,Settings	proc initCreateContext[T: Model](model: T; urlPrefix: static string;\n                            settings: Settings): ModelCreateContext[T]		171
+nim	OverviewContext	snorlogue/frontend/pageContexts.html#OverviewContext	object OverviewContext		196
+nim	initOverviewContext	snorlogue/frontend/pageContexts.html#initOverviewContext,seq[ModelMetaData],staticstring,Settings	proc initOverviewContext(metaDataEntries: seq[ModelMetaData];\n                    urlPrefix: static string; settings: Settings): OverviewContext		206
+nim	SqlContext	snorlogue/frontend/pageContexts.html#SqlContext	object SqlContext		228
+nim	initSqlContext	snorlogue/frontend/pageContexts.html#initSqlContext,staticstring,Settings,string,Option[seq[Row]],Option[seq[string]],Option[string]	proc initSqlContext(urlPrefix: static string; settings: Settings; query: string;\n               rows: Option[seq[Row]]; columnNames: Option[seq[string]];\n               errorMsg: Option[string]): SqlContext		235
+nim	ConfigurationContext	snorlogue/frontend/pageContexts.html#ConfigurationContext	object ConfigurationContext		262
+nim	initAboutApplicationContext	snorlogue/frontend/pageContexts.html#initAboutApplicationContext,staticstring,Settings,Table[string,seq[string]]	proc initAboutApplicationContext(urlPrefix: static string; settings: Settings;\n                            routes: Table[string, seq[string]]): ConfigurationContext		269

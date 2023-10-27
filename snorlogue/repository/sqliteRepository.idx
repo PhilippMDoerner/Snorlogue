@@ -1,0 +1,10 @@
+nimTitle	sqliteRepository	snorlogue/repository/sqliteRepository.html	module src/snorlogue/repository/sqliteRepository		0
+nim	read	snorlogue/repository/sqliteRepository.html#read,int64	proc read[T: Model](id: int64): T		13
+nim	create	snorlogue/repository/sqliteRepository.html#create,T,ActionProc[T: Model],ActionProc[T: Model]	proc create[T: Model](newModel: var T; beforeCreateAction: ActionProc[T];\n                 afterCreateAction: ActionProc[T])		27
+nim	list	snorlogue/repository/sqliteRepository.html#list,int,int,seq[string],SortDirection	proc list[T: Model](pageIndex: int; pageSize: int; sortFields: seq[string];\n               sortDirection: SortDirection): seq[T]		44
+nim	update	snorlogue/repository/sqliteRepository.html#update,T,ActionProc[T: Model],ActionProc[T: Model]	proc update[T: Model](updateModel: var T; beforeUpdateAction: ActionProc[T];\n                 afterUpdateAction: ActionProc[T])		69
+nim	delete	snorlogue/repository/sqliteRepository.html#delete,typedesc[T],int64,ActionProc[T: Model]	proc delete[T: Model](modelType: typedesc[T]; id: int64;\n                 beforeDeleteAction: ActionProc[T])		86
+nim	count	snorlogue/repository/sqliteRepository.html#count,typedesc[T]	proc count[T: Model](modelType: typedesc[T]): int64		101
+nim	QueryResult	snorlogue/repository/sqliteRepository.html#QueryResult	type QueryResult		106
+nim	executeQuery	snorlogue/repository/sqliteRepository.html#executeQuery,string	proc executeQuery(query: string): Option[QueryResult]		108
+nim	listAll	snorlogue/repository/sqliteRepository.html#listAll,typedesc[T]	proc listAll[T: Model](modelType: typedesc[T]): seq[T]		134

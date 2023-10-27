@@ -1,0 +1,13 @@
+nimTitle	urlUtils	snorlogue/urlUtils.html	module src/snorlogue/urlUtils		0
+nim	CREATE	snorlogue/urlUtils.html#CREATE	Page.CREATE		6
+nim	DELETE	snorlogue/urlUtils.html#DELETE	Page.DELETE		6
+nim	DETAIL	snorlogue/urlUtils.html#DETAIL	Page.DETAIL		6
+nim	LIST	snorlogue/urlUtils.html#LIST	Page.LIST		6
+nim	OVERVIEW	snorlogue/urlUtils.html#OVERVIEW	Page.OVERVIEW		6
+nim	BACKEND	snorlogue/urlUtils.html#BACKEND	Page.BACKEND		6
+nim	SQL	snorlogue/urlUtils.html#SQL	Page.SQL		6
+nim	CONFIG	snorlogue/urlUtils.html#CONFIG	Page.CONFIG		6
+nim	Page	snorlogue/urlUtils.html#Page	enum Page		6
+nim	generateUrlStub	snorlogue/urlUtils.html#generateUrlStub,staticstring,Page,string	proc generateUrlStub(urlPrefix: static string; action: Page; modelName: string): string		16
+nim	generateUrlStub	snorlogue/urlUtils.html#generateUrlStub,staticstring,Page,typedesc[T]	proc generateUrlStub[T: Model](urlPrefix: static string; action: Page;\n                          model: typedesc[T]): string		31
+nimgrp	generateurlstub	snorlogue/urlUtils.html#generateUrlStub-procs-all	proc		16

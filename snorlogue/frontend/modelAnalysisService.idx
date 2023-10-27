@@ -1,0 +1,6 @@
+nimTitle	modelAnalysisService	snorlogue/frontend/modelAnalysisService.html	module src/snorlogue/frontend/modelAnalysisService		0
+nim	ModelMetaData	snorlogue/frontend/modelAnalysisService.html#ModelMetaData	object ModelMetaData		8
+nim	getForeignKeyFields	snorlogue/frontend/modelAnalysisService.html#getForeignKeyFields,typedesc[T]	proc getForeignKeyFields[T: Model](modelType: typedesc[T]): seq[string]		13
+nim	extractMetaData	snorlogue/frontend/modelAnalysisService.html#extractMetaData,staticstring,typedesc[T]	proc extractMetaData[T: Model](urlPrefix: static string; modelType: typedesc[T]): ModelMetaData		19
+nim	checkForModelFields	snorlogue/frontend/modelAnalysisService.html#checkForModelFields,typedesc[T]	proc checkForModelFields[T: Model](modelType: typedesc[T])		29
+nim	validateModel	snorlogue/frontend/modelAnalysisService.html#validateModel,typedesc[T]	proc validateModel[T: Model](model: typedesc[T])		36
