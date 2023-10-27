@@ -25,10 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Book
-        run: |
-          sudo apt update -y
-          sudo apt install -y libpcre++-dev
-          nimble nimidocs
+        run: docker-compose run book
 
   Docs:
     runs-on: ubuntu-latest
